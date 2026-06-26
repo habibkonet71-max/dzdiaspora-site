@@ -5,11 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DZ Diaspora</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: #0D1117;
@@ -24,50 +20,64 @@
       align-items: center;
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 20;
       border-bottom: 1px solid rgba(255,255,255,0.08);
     }
-    header h1 {
-      font-size: 20px;
-      font-weight: 700;
+    header h1 { font-size: 20px; font-weight: 700; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .menu-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 22px;
+      cursor: pointer;
+      padding: 4px 8px;
     }
-    .lang-btns {
-      display: flex;
-      gap: 6px;
+    .menu-dropdown {
+      position: absolute;
+      top: 56px;
+      right: 16px;
+      background: #1C2333;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      min-width: 220px;
+      display: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      z-index: 30;
     }
+    .menu-dropdown.open { display: block; }
+    .menu-dropdown a {
+      display: block;
+      padding: 12px 16px;
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .menu-dropdown a:last-child { border-bottom: none; }
+    .menu-dropdown a:hover { background: rgba(255,255,255,0.06); }
+    .lang-btns { display: flex; gap: 6px; }
     .lang-btn {
       background: rgba(255,255,255,0.08);
       border: 1px solid rgba(255,255,255,0.2);
       color: white;
       border-radius: 14px;
-      padding: 4px 10px;
-      font-size: 12px;
+      padding: 4px 9px;
+      font-size: 11px;
       cursor: pointer;
     }
-    .lang-btn.active {
-      background: rgba(255,255,255,0.25);
-      border-color: white;
-      font-weight: bold;
-    }
-    main {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 0 12px;
-    }
+    .lang-btn.active { background: rgba(255,255,255,0.25); border-color: white; font-weight: bold; }
+    main { max-width: 480px; margin: 0 auto; padding: 0 12px; }
     .bandeau {
       display: flex;
       gap: 12px;
       overflow-x: auto;
-      padding: 10px 0;
+      padding: 8px 0;
       font-size: 13px;
       color: rgba(255,255,255,0.8);
     }
-    .bandeau span {
-      white-space: nowrap;
-    }
-    .search-box {
-      margin: 8px 0;
-    }
+    .bandeau span { white-space: nowrap; }
+    .search-box { margin: 8px 0; }
     .search-box input {
       width: 100%;
       padding: 12px 14px;
@@ -77,14 +87,8 @@
       color: white;
       font-size: 14px;
     }
-    .search-box input::placeholder {
-      color: rgba(255,255,255,0.35);
-    }
-    .tuiles {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
+    .search-box input::placeholder { color: rgba(255,255,255,0.35); }
+    .tuiles { display: flex; gap: 10px; margin-bottom: 12px; }
     .tuile {
       flex: 1;
       padding: 14px;
@@ -98,36 +102,24 @@
       flex-direction: column;
       align-items: center;
       gap: 6px;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
     }
-    .tuile-urgence {
-      background: #D21034;
-    }
-    .tuile-transport {
-      background: #26C6DA;
-    }
-    .mosquees {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 10px;
-    }
+    .tuile-urgence { background: #D21034; }
+    .tuile-transport { background: #26C6DA; }
+    .mosquees { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; }
     .carte-mosquee {
-      min-width: 150px;
       min-width: 150px;
       background: #1C2333;
       border: 1px solid rgba(167,255,167,0.25);
       border-radius: 12px;
       padding: 10px 12px;
       font-size: 12px;
+      cursor: pointer;
     }
-    .carte-mosquee .ville {
-      font-weight: bold;
-      margin-bottom: 4px;
-    }
-    .carte-mosquee .horaire {
-      color: #A8E063;
-      font-weight: bold;
-    }
+    .carte-mosquee .ville { font-weight: bold; margin-bottom: 4px; }
+    .carte-mosquee .horaire { color: #A8E063; font-weight: bold; }
     .presse-article {
       background: #1C2333;
       border: 1px solid rgba(255,255,255,0.08);
@@ -136,15 +128,8 @@
       overflow: hidden;
       cursor: pointer;
     }
-    .presse-article img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-      display: block;
-    }
-    .presse-article .contenu {
-      padding: 14px;
-    }
+    .presse-article img { width: 100%; height: 150px; object-fit: cover; display: block; }
+    .presse-article .contenu { padding: 14px; }
     .presse-article .source {
       display: inline-block;
       background: rgba(255,193,7,0.15);
@@ -155,49 +140,41 @@
       border-radius: 6px;
       margin-bottom: 8px;
     }
-    .presse-article h3 {
-      font-size: 15px;
-      margin-bottom: 6px;
-      line-height: 1.3;
-    }
-    .presse-article p {
-      color: rgba(255,255,255,0.6);
-      font-size: 13px;
-      line-height: 1.4;
-    }
-    .presse-article .meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 8px;
-      font-size: 11px;
-      color: rgba(255,255,255,0.4);
-    }
-    .chargement {
-      text-align: center;
-      padding: 40px 0;
-      color: rgba(255,255,255,0.4);
-    }
-    footer {
-      text-align: center;
-      padding: 24px;
-      color: rgba(255,255,255,0.3);
-      font-size: 12px;
-    }
+    .presse-article h3 { font-size: 15px; margin-bottom: 6px; line-height: 1.3; }
+    .presse-article p { color: rgba(255,255,255,0.6); font-size: 13px; line-height: 1.4; }
+    .chargement { text-align: center; padding: 40px 0; color: rgba(255,255,255,0.4); }
+    footer { text-align: center; padding: 24px; color: rgba(255,255,255,0.3); font-size: 12px; }
   </style>
 </head>
 <body>
   <header>
     <h1>DZ Diaspora</h1>
-    <div class="lang-btns">
-      <button class="lang-btn active">FR</button>
-      <button class="lang-btn">EN</button>
+    <div class="header-right">
+      <div class="lang-btns">
+        <button class="lang-btn active">FR</button>
+        <button class="lang-btn">EN</button>
+        <button class="lang-btn">中文</button>
+      </div>
+      <button class="menu-btn" onclick="document.getElementById('menuDropdown').classList.toggle('open')">⋮</button>
     </div>
   </header>
+
+  <div class="menu-dropdown" id="menuDropdown">
+    <a href="#" onclick="alert('Securite: Police 17, Pompiers 18, SAMU 1548'); return false;">Securite</a>
+    <a href="#" onclick="alert('Sante: numeros et infos disponibles dans l app mobile'); return false;">Sante</a>
+    <a href="#" onclick="alert('Finance: infos disponibles dans l app mobile'); return false;">Finance</a>
+    <a href="#" onclick="alert('Administratif: passeport, consulats - app mobile'); return false;">Administratif</a>
+    <a href="#presse">Transport</a>
+    <a href="#presse">Presse et actualites</a>
+    <a href="mailto:contact@dzdiaspora-app.com">Contact</a>
+  </div>
 
   <main>
     <div class="bandeau" id="bandeauMeteo">
       <span>Chargement meteo...</span>
+    </div>
+    <div class="bandeau" id="bandeauDevises">
+      <span>Chargement devises...</span>
     </div>
 
     <div class="search-box">
@@ -205,7 +182,7 @@
     </div>
 
     <div class="tuiles">
-      <a href="tel:1548" class="tuile tuile-urgence">🚨 Urgences</a>
+      <button class="tuile tuile-urgence" onclick="alert('Police: 17\nPompiers: 18\nSAMU: 1548\nGendarmerie: 1055')">🚨 Urgences</button>
       <a href="#presse" class="tuile tuile-transport">✈️ Transport</a>
     </div>
 
@@ -213,6 +190,7 @@
       <div class="carte-mosquee">Chargement mosquees...</div>
     </div>
 
+    <div id="presse"></div>
     <div id="presseContainer">
       <div class="chargement">Chargement des actualites...</div>
     </div>
@@ -242,6 +220,19 @@
         }
       } catch (e) {
         document.getElementById("bandeauMeteo").innerHTML = "<span>Meteo indisponible</span>";
+      }
+    }
+
+    async function chargerDevises() {
+      try {
+        const reponse = await fetch("https://api.exchangerate-api.com/v4/latest/EUR");
+        const data = await reponse.json();
+        const dzd = data.rates?.DZD;
+        const usd = data.rates?.USD;
+        const bandeau = document.getElementById("bandeauDevises");
+        bandeau.innerHTML = `<span>1 EUR = ${dzd?.toFixed(2)} DZD</span><span>1 USD = ${(dzd/usd).toFixed(2)} DZD</span>`;
+      } catch (e) {
+        document.getElementById("bandeauDevises").innerHTML = "<span>Devises indisponibles</span>";
       }
     }
 
@@ -289,36 +280,28 @@
           { nom: "TSA", url: "https://www.tsa-algerie.com/feed/" },
           { nom: "El Watan", url: "https://www.elwatan.com/feed" }
         ];
-        const proxy = "https://api.allorigins.win/raw?url=";
+        const proxy = "https://api.rss2json.com/v1/api.json?rss_url=";
         let articlesHtml = "";
 
         for (const source of sources) {
           try {
             const reponse = await fetch(proxy + encodeURIComponent(source.url));
-            const texte = await reponse.text();
-            const parser = new DOMParser();
-            const xml = parser.parseFromString(texte, "text/xml");
-            const items = xml.querySelectorAll("item");
+            const data = await reponse.json();
 
-            items.forEach((item, index) => {
-              if (index >= 5) return;
-              const titre = item.querySelector("title")?.textContent || "";
-              const lien = item.querySelector("link")?.textContent || "";
-              const desc = (item.querySelector("description")?.textContent || "").replace(/<[^>]*>/g, "").substring(0, 120);
-
-              articlesHtml += `
-                <div class="presse-article" onclick="window.open('${lien}', '_blank')">
-                  <div class="contenu">
-                    <span class="source">${source.nom}</span>
-                    <h3>${titre}</h3>
-                    <p>${desc}...</p>
-                    <div class="meta">
-                      <span>Lire l'article</span>
+            if (data.status === "ok" && data.items) {
+              data.items.slice(0, 5).forEach((item) => {
+                const desc = (item.description || "").replace(/<[^>]*>/g, "").substring(0, 120);
+                articlesHtml += `
+                  <div class="presse-article" onclick="window.open('${item.link}', '_blank')">
+                    <div class="contenu">
+                      <span class="source">${source.nom}</span>
+                      <h3>${item.title}</h3>
+                      <p>${desc}...</p>
                     </div>
                   </div>
-                </div>
-              `;
-            });
+                `;
+              });
+            }
           } catch (e) {
           }
         }
@@ -337,6 +320,7 @@
     });
 
     chargerMeteo();
+    chargerDevises();
     chargerMosquees();
     chargerPresse();
   </script>
