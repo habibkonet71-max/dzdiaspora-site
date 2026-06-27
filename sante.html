@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sante — DZ Diaspora</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">DZ Diaspora</a>
+    <nav class="nav-desktop">
+      <a href="securite.html">Securite</a>
+      <a href="sante.html" class="active">Sante</a>
+      <a href="finance.html">Finance</a>
+      <a href="transport.html">Transport</a>
+      <a href="annonces.html">Annonces</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn">⋮</button>
+  </header>
+
+  <div class="menu-dropdown" id="menuDropdown">
+    <a href="securite.html">Securite</a>
+    <a href="sante.html">Sante</a>
+    <a href="finance.html">Finance</a>
+    <a href="administratif.html">Administratif</a>
+    <a href="wilayas.html">Wilayas</a>
+    <a href="transport.html">Transport</a>
+    <a href="annonces.html">Annonces</a>
+    <a href="abonnement.html">Devenir Pro</a>
+    <a href="contact.html">Contact</a>
+    <a href="cgu.html">CGU et mentions legales</a>
+  </div>
+
+  <main class="page-content">
+    <h1>🏥 Sante</h1>
+    <p class="intro">Securite sociale, remboursements, pharmacies de garde et numeros utiles pour vos besoins de sante en Algerie.</p>
+
+    <section class="bloc">
+      <h2>💊 Pharmacies de garde par wilaya</h2>
+      <div class="carte" style="margin-bottom: 0;">
+        <label for="selectWilaya" style="display: block; margin-bottom: 10px; color: rgba(255,255,255,0.7); font-size: 13px;">
+          Selectionnez votre wilaya :
+        </label>
+        <select id="selectWilaya" style="width: 100%; padding: 10px; border-radius: 8px; background: #0D1117; color: white; border: 1px solid rgba(255,255,255,0.15); font-size: 14px;">
+          <option value="">-- Choisir une wilaya --</option>
+          <option value="alger">Alger</option>
+          <option value="oran">Oran</option>
+          <option value="constantine">Constantine</option>
+          <option value="annaba">Annaba</option>
+          <option value="blida">Blida</option>
+        </select>
+        <div id="resultatPharmacie" style="margin-top: 16px; color: rgba(255,255,255,0.5); font-size: 13px; text-align: center; padding: 20px 0;">
+          Selectionnez une wilaya pour voir les pharmacies de garde.
+        </div>
+      </div>
+      <p style="color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 10px; font-style: italic;">
+        🔧 Service en cours de construction — les donnees par wilaya seront ajoutees progressivement. Vous etes pharmacien et souhaitez etre reference ? <a href="contact.html" style="color: #4DD0E1;">Contactez-nous</a>.
+      </p>
+    </section>
+
+    <section class="bloc">
+      <h2>Securite sociale : CNAS et CASNOS</h2>
+      <div class="grid-cartes">
+        <div class="carte">
+          <h3>CNAS — Salaries</h3>
+          <p>Caisse Nationale des Assurances Sociales des travailleurs salaries. Couvre maladie, maternite, invalidite, deces et accidents du travail.</p>
+          <p class="detail">Cotisation : 34,5% du salaire brut (9% salarie, 25,5% employeur)</p>
+        </div>
+        <div class="carte">
+          <h3>CASNOS — Non-salaries</h3>
+          <p>Equivalent CNAS pour les independants, commercants, artisans et professions liberales.</p>
+          <p class="detail">Cotisation annuelle calculee sur le revenu declare</p>
+        </div>
+        <div class="carte">
+          <h3>Carte Chifa</h3>
+          <p>Carte d assure social permettant le tiers payant (pas d avance de frais) dans les pharmacies et etablissements conventionnes.</p>
+          <p class="detail">Prise en charge directe des ordonnances ≤ 3000 DA</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bloc">
+      <h2>Taux de remboursement</h2>
+      <ul class="liste-conseils">
+        <li>Remboursement standard : <strong>80%</strong> du tarif reglementaire (20% restent a votre charge)</li>
+        <li>Remboursement a <strong>100%</strong> pour les maladies chroniques, actes lourds, accouchements pathologiques et hemodialyse</li>
+        <li>Hospitalisation dans les structures publiques : prise en charge directe sur convention CNAS/CASNOS</li>
+        <li>Sans tiers payant : vous avancez les frais puis transmettez votre feuille de soins — remboursement sous 15 a 30 jours</li>
+        <li>Conge maternite : 150 jours indemnises a 100% du salaire (depuis la reforme de juillet 2025)</li>
+      </ul>
+    </section>
+
+    <section class="bloc">
+      <h2>Numeros utiles sante</h2>
+      <div class="grid-cartes">
+        <div class="carte" style="text-align: center;">
+          <h3 style="font-size: 24px; color: #A8E063;">16</h3>
+          <p>SAMU — urgences medicales</p>
+        </div>
+        <div class="carte" style="text-align: center;">
+          <h3 style="font-size: 22px; color: #A8E063;">021 97 98 98</h3>
+          <p>Centre anti-poison</p>
+        </div>
+        <div class="carte" style="text-align: center;">
+          <h3 style="font-size: 16px; color: #A8E063;">cnas.dz</h3>
+          <p>Portail officiel CNAS (El Hana)</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>DZ Diaspora — Tous droits reserves</p>
+    <p><a href="cgu.html">CGU</a> · <a href="contact.html">Contact</a></p>
+  </footer>
+
+  <script>
+    document.getElementById("selectWilaya").addEventListener("change", function () {
+      const resultat = document.getElementById("resultatPharmacie");
+      if (this.value === "") {
+        resultat.innerHTML = "Selectionnez une wilaya pour voir les pharmacies de garde.";
+        return;
+      }
+      resultat.innerHTML = "Donnees a venir pour cette wilaya. Revenez bientot !";
+    });
+  </script>
+  <script src="recherche.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
