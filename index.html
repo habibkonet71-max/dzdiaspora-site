@@ -178,14 +178,17 @@
   </header>
 
   <div class="menu-dropdown" id="menuDropdown">
-    <a id="menuSecurite">Securite</a>
-    <a id="menuSante">Sante</a>
-    <a id="menuFinance">Finance</a>
-    <a id="menuAdministratif">Administratif</a>
-    <a id="menuWilayas">Wilayas</a>
-    <a href="#presse">Transport</a>
-    <a href="mailto:contact@dzdiaspora-app.com">Contact</a>
-    <a id="menuCgu">CGU et mentions legales</a>
+    <a href="securite.html">Securite</a>
+    <a href="sante.html">Sante</a>
+    <a href="finance.html">Finance</a>
+    <a href="justice.html">Justice</a>
+    <a href="administratif.html">Administratif</a>
+    <a href="wilayas.html">Wilayas</a>
+    <a href="transport.html">Transport</a>
+    <a href="annonces.html">Annonces</a>
+    <a href="abonnement.html">Devenir Pro</a>
+    <a href="contact.html">Contact</a>
+  </div>
   </div>
 
   <main>
@@ -216,7 +219,7 @@
   <footer>
     DZ Diaspora — Tous droits reserves
   </footer>
-
+    DZ Diaspora — Tous droits reserves
   <script>
     document.getElementById("menuBtn").addEventListener("click", function () {
       document.getElementById("menuDropdown").classList.toggle("open");
@@ -225,33 +228,6 @@
     document.getElementById("btnUrgences").addEventListener("click", function () {
       alert("Police: 17\nPompiers: 18\nSAMU: 1548\nGendarmerie: 1055");
     });
-
-    document.getElementById("menuSecurite").addEventListener("click", function () {
-      alert("Securite: Police 17, Pompiers 18, SAMU 1548");
-    });
-    document.getElementById("menuSante").addEventListener("click", function () {
-      alert("Sante: numeros et infos disponibles dans l app mobile");
-    });
-    document.getElementById("menuFinance").addEventListener("click", function () {
-      alert("Finance: infos disponibles dans l app mobile");
-    });
-    document.getElementById("menuAdministratif").addEventListener("click", function () {
-      alert("Administratif: passeport, consulats - app mobile");
-    });
-    document.getElementById("menuWilayas").addEventListener("click", function () {
-      alert("Wilayas: liste complete disponible dans l app mobile");
-    });
-    document.getElementById("menuCgu").addEventListener("click", function () {
-      alert("CGU et mentions legales: document disponible dans l app mobile");
-    });
-
-    function changerLangue(lang) {
-      document.querySelectorAll(".lang-btn").forEach(b => b.classList.remove("active"));
-      document.getElementById("btn" + lang).classList.add("active");
-    }
-    document.getElementById("btnFr").addEventListener("click", () => changerLangue("Fr"));
-    document.getElementById("btnEn").addEventListener("click", () => changerLangue("En"));
-    document.getElementById("btnZh").addEventListener("click", () => changerLangue("Zh"));
 
     async function chargerMeteo() {
       try {
@@ -376,5 +352,7 @@
     chargerMosquees();
     chargerPresse();
   </script>
+
+  <script src="traduction.js"></script>
 </body>
 </html>
