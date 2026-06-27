@@ -14,7 +14,7 @@
     }
     header {
       background: #1C2333;
-      padding: 16px 20px;
+      padding: 16px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -36,7 +36,7 @@
     .menu-dropdown {
       position: absolute;
       top: 56px;
-      right: 16px;
+      right: 24px;
       background: #1C2333;
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 12px;
@@ -53,6 +53,7 @@
       text-decoration: none;
       font-size: 14px;
       border-bottom: 1px solid rgba(255,255,255,0.06);
+      cursor: pointer;
     }
     .menu-dropdown a:last-child { border-bottom: none; }
     .menu-dropdown a:hover { background: rgba(255,255,255,0.06); }
@@ -62,40 +63,51 @@
       border: 1px solid rgba(255,255,255,0.2);
       color: white;
       border-radius: 14px;
-      padding: 4px 9px;
-      font-size: 11px;
+      padding: 5px 10px;
+      font-size: 12px;
       cursor: pointer;
     }
     .lang-btn.active { background: rgba(255,255,255,0.25); border-color: white; font-weight: bold; }
-    main { max-width: 480px; margin: 0 auto; padding: 0 12px; }
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .bandeaux-row {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      padding: 10px 0;
+    }
     .bandeau {
       display: flex;
-      gap: 12px;
+      gap: 16px;
       overflow-x: auto;
-      padding: 8px 0;
-      font-size: 13px;
-      color: rgba(255,255,255,0.8);
+      font-size: 14px;
+      color: rgba(255,255,255,0.85);
+      flex: 1;
+      min-width: 280px;
     }
     .bandeau span { white-space: nowrap; }
-    .search-box { margin: 8px 0; }
+    .search-box { margin: 10px 0; }
     .search-box input {
       width: 100%;
-      padding: 12px 14px;
+      padding: 14px 16px;
       border-radius: 12px;
       border: none;
       background: #1C2333;
       color: white;
-      font-size: 14px;
+      font-size: 15px;
     }
     .search-box input::placeholder { color: rgba(255,255,255,0.35); }
-    .tuiles { display: flex; gap: 10px; margin-bottom: 12px; }
+    .tuiles { display: flex; gap: 12px; margin-bottom: 14px; }
     .tuile {
       flex: 1;
-      padding: 14px;
+      padding: 16px;
       border-radius: 12px;
       text-align: center;
       font-weight: bold;
-      font-size: 14px;
+      font-size: 15px;
       color: white;
       text-decoration: none;
       display: flex;
@@ -108,9 +120,9 @@
     }
     .tuile-urgence { background: #D21034; }
     .tuile-transport { background: #26C6DA; }
-    .mosquees { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; }
+    .mosquees { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 12px; }
     .carte-mosquee {
-      min-width: 150px;
+      min-width: 160px;
       background: #1C2333;
       border: 1px solid rgba(167,255,167,0.25);
       border-radius: 12px;
@@ -120,15 +132,18 @@
     }
     .carte-mosquee .ville { font-weight: bold; margin-bottom: 4px; }
     .carte-mosquee .horaire { color: #A8E063; font-weight: bold; }
+    .presse-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+    }
     .presse-article {
       background: #1C2333;
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 14px;
-      margin-bottom: 12px;
       overflow: hidden;
       cursor: pointer;
     }
-    .presse-article img { width: 100%; height: 150px; object-fit: cover; display: block; }
     .presse-article .contenu { padding: 14px; }
     .presse-article .source {
       display: inline-block;
@@ -142,8 +157,11 @@
     }
     .presse-article h3 { font-size: 15px; margin-bottom: 6px; line-height: 1.3; }
     .presse-article p { color: rgba(255,255,255,0.6); font-size: 13px; line-height: 1.4; }
-    .chargement { text-align: center; padding: 40px 0; color: rgba(255,255,255,0.4); }
+    .chargement { text-align: center; padding: 40px 0; color: rgba(255,255,255,0.4); grid-column: 1/-1; }
     footer { text-align: center; padding: 24px; color: rgba(255,255,255,0.3); font-size: 12px; }
+    @media (max-width: 700px) {
+      .bandeaux-row { flex-direction: column; gap: 4px; }
+    }
   </style>
 </head>
 <body>
@@ -151,30 +169,29 @@
     <h1>DZ Diaspora</h1>
     <div class="header-right">
       <div class="lang-btns">
-        <button class="lang-btn active">FR</button>
-        <button class="lang-btn">EN</button>
-        <button class="lang-btn">中文</button>
+        <button class="lang-btn active" id="btnFr">FR</button>
+        <button class="lang-btn" id="btnEn">EN</button>
+        <button class="lang-btn" id="btnZh">中文</button>
       </div>
-      <button class="menu-btn" onclick="document.getElementById('menuDropdown').classList.toggle('open')">⋮</button>
+      <button class="menu-btn" id="menuBtn">⋮</button>
     </div>
   </header>
 
   <div class="menu-dropdown" id="menuDropdown">
-    <a href="#" onclick="alert('Securite: Police 17, Pompiers 18, SAMU 1548'); return false;">Securite</a>
-    <a href="#" onclick="alert('Sante: numeros et infos disponibles dans l app mobile'); return false;">Sante</a>
-    <a href="#" onclick="alert('Finance: infos disponibles dans l app mobile'); return false;">Finance</a>
-    <a href="#" onclick="alert('Administratif: passeport, consulats - app mobile'); return false;">Administratif</a>
+    <a id="menuSecurite">Securite</a>
+    <a id="menuSante">Sante</a>
+    <a id="menuFinance">Finance</a>
+    <a id="menuAdministratif">Administratif</a>
+    <a id="menuWilayas">Wilayas</a>
     <a href="#presse">Transport</a>
-    <a href="#presse">Presse et actualites</a>
     <a href="mailto:contact@dzdiaspora-app.com">Contact</a>
+    <a id="menuCgu">CGU et mentions legales</a>
   </div>
 
   <main>
-    <div class="bandeau" id="bandeauMeteo">
-      <span>Chargement meteo...</span>
-    </div>
-    <div class="bandeau" id="bandeauDevises">
-      <span>Chargement devises...</span>
+    <div class="bandeaux-row">
+      <div class="bandeau" id="bandeauMeteo"><span>Chargement meteo...</span></div>
+      <div class="bandeau" id="bandeauDevises"><span>Chargement devises...</span></div>
     </div>
 
     <div class="search-box">
@@ -182,7 +199,7 @@
     </div>
 
     <div class="tuiles">
-      <button class="tuile tuile-urgence" onclick="alert('Police: 17\nPompiers: 18\nSAMU: 1548\nGendarmerie: 1055')">🚨 Urgences</button>
+      <button class="tuile tuile-urgence" id="btnUrgences">🚨 Urgences</button>
       <a href="#presse" class="tuile tuile-transport">✈️ Transport</a>
     </div>
 
@@ -191,7 +208,7 @@
     </div>
 
     <div id="presse"></div>
-    <div id="presseContainer">
+    <div class="presse-grid" id="presseContainer">
       <div class="chargement">Chargement des actualites...</div>
     </div>
   </main>
@@ -201,6 +218,41 @@
   </footer>
 
   <script>
+    document.getElementById("menuBtn").addEventListener("click", function () {
+      document.getElementById("menuDropdown").classList.toggle("open");
+    });
+
+    document.getElementById("btnUrgences").addEventListener("click", function () {
+      alert("Police: 17\nPompiers: 18\nSAMU: 1548\nGendarmerie: 1055");
+    });
+
+    document.getElementById("menuSecurite").addEventListener("click", function () {
+      alert("Securite: Police 17, Pompiers 18, SAMU 1548");
+    });
+    document.getElementById("menuSante").addEventListener("click", function () {
+      alert("Sante: numeros et infos disponibles dans l app mobile");
+    });
+    document.getElementById("menuFinance").addEventListener("click", function () {
+      alert("Finance: infos disponibles dans l app mobile");
+    });
+    document.getElementById("menuAdministratif").addEventListener("click", function () {
+      alert("Administratif: passeport, consulats - app mobile");
+    });
+    document.getElementById("menuWilayas").addEventListener("click", function () {
+      alert("Wilayas: liste complete disponible dans l app mobile");
+    });
+    document.getElementById("menuCgu").addEventListener("click", function () {
+      alert("CGU et mentions legales: document disponible dans l app mobile");
+    });
+
+    function changerLangue(lang) {
+      document.querySelectorAll(".lang-btn").forEach(b => b.classList.remove("active"));
+      document.getElementById("btn" + lang).classList.add("active");
+    }
+    document.getElementById("btnFr").addEventListener("click", () => changerLangue("Fr"));
+    document.getElementById("btnEn").addEventListener("click", () => changerLangue("En"));
+    document.getElementById("btnZh").addEventListener("click", () => changerLangue("Zh"));
+
     async function chargerMeteo() {
       try {
         const villes = [
@@ -289,7 +341,7 @@
             const data = await reponse.json();
 
             if (data.status === "ok" && data.items) {
-              data.items.slice(0, 5).forEach((item) => {
+              data.items.slice(0, 6).forEach((item) => {
                 const desc = (item.description || "").replace(/<[^>]*>/g, "").substring(0, 120);
                 articlesHtml += `
                   <div class="presse-article" onclick="window.open('${item.link}', '_blank')">
