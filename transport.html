@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transport — DZ Diaspora</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">DZ Diaspora</a>
+    <nav class="nav-desktop">
+      <a href="securite.html">Securite</a>
+      <a href="sante.html">Sante</a>
+      <a href="finance.html">Finance</a>
+      <a href="transport.html" class="active">Transport</a>
+      <a href="annonces.html">Annonces</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn">⋮</button>
+  </header>
+
+  <div class="menu-dropdown" id="menuDropdown">
+    <a href="securite.html">Securite</a>
+    <a href="sante.html">Sante</a>
+    <a href="finance.html">Finance</a>
+    <a href="administratif.html">Administratif</a>
+    <a href="wilayas.html">Wilayas</a>
+    <a href="transport.html">Transport</a>
+    <a href="annonces.html">Annonces</a>
+    <a href="abonnement.html">Devenir Pro</a>
+    <a href="contact.html">Contact</a>
+    <a href="cgu.html">CGU et mentions legales</a>
+  </div>
+
+  <main class="page-content">
+    <h1>✈️ Transport</h1>
+    <p class="intro">Vols entre l Algerie et le reste du monde, horaires mis a jour automatiquement.</p>
+
+    <section class="bloc">
+      <h2>Vols en temps reel</h2>
+      <div id="volsContainer">
+        <p style="color: rgba(255,255,255,0.4); text-align: center; padding: 20px 0;">Chargement des vols...</p>
+      </div>
+    </section>
+
+    <section class="bloc">
+      <h2>Lignes maritimes</h2>
+      <div class="grid-cartes">
+        <div class="carte">
+          <h3>Algerie Ferries</h3>
+          <p>Liaisons Alger-Marseille, Oran-Marseille, Bejaia-Marseille. Reservation recommandee plusieurs mois a l avance en periode estivale.</p>
+        </div>
+        <div class="carte">
+          <h3>Corsica Linea</h3>
+          <p>Traversees Alger-Marseille et Oran-Marseille, avec possibilite de transport de vehicule.</p>
+        </div>
+        <div class="carte">
+          <h3>GNV / Balearia</h3>
+          <p>Alternatives au depart de Sete et Alicante vers les ports algeriens.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bloc">
+      <h2>Conseils pratiques</h2>
+      <ul class="liste-conseils">
+        <li>Verifiez la validite de votre passeport (minimum 6 mois avant expiration recommande)</li>
+        <li>Anticipez vos reservations en periode de vacances scolaires et de Ramadan</li>
+        <li>Conservez une copie numerique de vos documents de voyage</li>
+        <li>Verifiez les franchises bagages avant de partir pour eviter les surtaxes</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>DZ Diaspora — Tous droits reserves</p>
+    <p><a href="cgu.html">CGU</a> · <a href="contact.html">Contact</a></p>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ",
+      appId: "1:223003656315:web:100de190b8b5e74ddae2de",
+      messagingSenderId: "223003656315",
+      projectId: "dzdiaspora-7260a",
+      authDomain: "dzdiaspora-7260a.firebaseapp.com",
+      storageBucket: "dzdiaspora-7260a.firebasestorage.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function chargerVols() {
+      const container = document.getElementById("volsContainer");
+      try {
+        const snap = await getDocs(collection(db, "vols_cache"));
+
+        if (snap.empty) {
+          container.innerHTML = "<p style=\"color: rgba(255,255,255,0.4); text-align: center; padding: 20px 0;\">Aucun vol en cache pour le moment</p>";
+          return;
+        }
+
+        let html = "<div class=\"grid-cartes\">";
+        snap.forEach((doc) => {
+          const data = doc.data();
+          const vols = data.vols || [];
+          vols.slice(0, 4).forEach((vol) => {
+            html += `
+              <div class="carte">
+                <h3>${vol.compagnie || doc.id} ${vol.numeroVol || ""}</h3>
+                <p>${vol.depart || "?"} → ${vol.arrivee || "?"}</p>
+                <p class="detail">Depart: ${vol.heureDepart || "?"} — Arrivee: ${vol.heureArrivee || "?"}</p>
+                <p class="detail">Statut: ${vol.statut || "inconnu"}</p>
+              </div>
+            `;
+          });
+        });
+        html += "</div>";
+        container.innerHTML = html;
+      } catch (e) {
+        container.innerHTML = "<p style=\"color: rgba(255,255,255,0.4); text-align: center; padding: 20px 0;\">Vols indisponibles pour le moment</p>";
+      }
+    }
+
+    chargerVols();
+  </script>
+  <script src="recherche.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
