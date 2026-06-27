@@ -140,3 +140,45 @@ footer a { color: rgba(255,255,255,0.4); }
   .nav-desktop { display: none; }
   .menu-btn { display: block; }
 }
+.bandeau-devises-anime {
+  overflow: hidden;
+  background: #1C2333;
+  border-radius: 10px;
+  margin: 16px 0;
+  padding: 10px 0;
+}
+.bandeau-devises-track {
+  display: flex;
+  gap: 32px;
+  white-space: nowrap;
+  animation: defilement 18s linear infinite;
+  font-size: 14px;
+  color: #A8E063;
+  font-weight: bold;
+  padding-left: 16px;
+}
+@keyframes defilement {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.carte-lien {
+  text-decoration: none;
+  color: white;
+  display: block;
+  transition: border-color 0.2s;
+}
+.carte-lien:hover {
+  border-color: #4DD0E1;
+}
+.btn-telecharger {
+  background: #4DD0E1;
+  color: #0D1117;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
