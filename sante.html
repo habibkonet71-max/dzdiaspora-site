@@ -60,20 +60,45 @@
     </section>
 
     <section class="bloc">
+      <h2>👨‍⚕️ Medecins specialistes — consultation et RDV</h2>
+      <div class="carte" style="margin-bottom: 0;">
+        <label for="selectSpecialite" style="display: block; margin-bottom: 10px; color: rgba(255,255,255,0.7); font-size: 13px;">
+          Selectionnez une specialite :
+        </label>
+        <select id="selectSpecialite" style="width: 100%; padding: 10px; border-radius: 8px; background: #0D1117; color: white; border: 1px solid rgba(255,255,255,0.15); font-size: 14px;">
+          <option value="">-- Choisir une specialite --</option>
+          <option value="generaliste">Medecin generaliste</option>
+          <option value="cardiologue">Cardiologue</option>
+          <option value="dentiste">Dentiste</option>
+          <option value="gynecologue">Gynecologue</option>
+          <option value="pediatre">Pediatre</option>
+          <option value="ophtalmologue">Ophtalmologue</option>
+          <option value="dermatologue">Dermatologue</option>
+        </select>
+        <div id="resultatSpecialiste" style="margin-top: 16px; color: rgba(255,255,255,0.5); font-size: 13px; text-align: center; padding: 20px 0;">
+          Selectionnez une specialite pour voir les medecins disponibles.
+        </div>
+      </div>
+      <p style="color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 10px; font-style: italic;">
+        🔧 Service en cours de construction — annuaire des medecins et prise de RDV en ligne a venir. Vous etes medecin et souhaitez etre reference ? <a href="contact.html" style="color: #4DD0E1;">Contactez-nous</a>.
+      </p>
+    </section>
+
+    <section class="bloc">
       <h2>Securite sociale : CNAS et CASNOS</h2>
       <div class="grid-cartes">
         <div class="carte">
-          <h3>CNAS — Salaries</h3>
+          <h3><a href="https://www.cnas.dz" target="_blank" style="color: #4DD0E1; text-decoration: none;">CNAS — Salaries ↗</a></h3>
           <p>Caisse Nationale des Assurances Sociales des travailleurs salaries. Couvre maladie, maternite, invalidite, deces et accidents du travail.</p>
           <p class="detail">Cotisation : 34,5% du salaire brut (9% salarie, 25,5% employeur)</p>
         </div>
         <div class="carte">
-          <h3>CASNOS — Non-salaries</h3>
+          <h3><a href="https://www.casnos.com.dz" target="_blank" style="color: #4DD0E1; text-decoration: none;">CASNOS — Non-salaries ↗</a></h3>
           <p>Equivalent CNAS pour les independants, commercants, artisans et professions liberales.</p>
           <p class="detail">Cotisation annuelle calculee sur le revenu declare</p>
         </div>
         <div class="carte">
-          <h3>Carte Chifa</h3>
+          <h3><a href="https://www.cnas.dz" target="_blank" style="color: #4DD0E1; text-decoration: none;">Carte Chifa ↗</a></h3>
           <p>Carte d assure social permettant le tiers payant (pas d avance de frais) dans les pharmacies et etablissements conventionnes.</p>
           <p class="detail">Prise en charge directe des ordonnances ≤ 3000 DA</p>
         </div>
@@ -123,6 +148,15 @@
         return;
       }
       resultat.innerHTML = "Donnees a venir pour cette wilaya. Revenez bientot !";
+    });
+
+    document.getElementById("selectSpecialite").addEventListener("change", function () {
+      const resultat = document.getElementById("resultatSpecialiste");
+      if (this.value === "") {
+        resultat.innerHTML = "Selectionnez une specialite pour voir les medecins disponibles.";
+        return;
+      }
+      resultat.innerHTML = "Annuaire a venir pour cette specialite. Revenez bientot !";
     });
   </script>
   <script src="recherche.js"></script>
