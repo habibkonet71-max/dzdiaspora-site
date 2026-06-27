@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Immobilier — DZ Diaspora</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">DZ Diaspora</a>
+    <nav class="nav-desktop">
+      <a href="securite.html">Securite</a>
+      <a href="sante.html">Sante</a>
+      <a href="finance.html">Finance</a>
+      <a href="immobilier.html" class="active">Immobilier</a>
+      <a href="annonces.html">Annonces</a>
+    </nav>
+    <div class="lang-btns">
+      <button class="lang-btn active notranslate" data-lang="fr" onclick="changerLangueSite('fr')">FR</button>
+      <button class="lang-btn notranslate" data-lang="en" onclick="changerLangueSite('en')">EN</button>
+      <button class="lang-btn notranslate" data-lang="zh" onclick="changerLangueSite('zh')">中文</button>
+    </div>
+    <button class="menu-btn" id="menuBtn">⋮</button>
+  </header>
+
+  <div class="menu-dropdown" id="menuDropdown">
+    <a href="securite.html">Securite</a>
+    <a href="sante.html">Sante</a>
+    <a href="finance.html">Finance</a>
+    <a href="justice.html">Justice</a>
+    <a href="immobilier.html">Immobilier</a>
+    <a href="administratif.html">Administratif</a>
+    <a href="wilayas.html">Wilayas</a>
+    <a href="transport.html">Transport</a>
+    <a href="annonces.html">Annonces</a>
+    <a href="abonnement.html">Devenir Pro</a>
+    <a href="contact.html">Contact</a>
+    <a href="cgu.html">CGU et mentions legales</a>
+  </div>
+
+  <main class="page-content">
+    <h1>🏠 Immobilier</h1>
+    <p class="intro">Location vacances, vente, achat, terrains, locaux commerciaux et financement immobilier en Algerie.</p>
+
+    <div id="badgeAnnonces" class="carte" style="background: rgba(167,255,167,0.08); border-color: rgba(167,255,167,0.4); margin-bottom: 24px; text-align: center; cursor: pointer;" onclick="window.location.href='annonces.html#immobilier'">
+      <p style="color: #A8E063; font-weight: bold; font-size: 14px;">⏳ Chargement des annonces disponibles...</p>
+    </div>
+
+    <section class="bloc">
+      <h2>🏖️ Location vacances et hebergement</h2>
+      <div class="grid-cartes">
+        <div class="carte">
+          <h3>Location vacances</h3>
+          <p>Appartements et villas meubles a la semaine ou au mois, ideal pour les sejours de la diaspora durant l ete ou les vacances scolaires.</p>
+        </div>
+        <div class="carte">
+          <h3>Hebergement longue duree</h3>
+          <p>Studios, appartements ou maisons en location classique, pour une installation durable.</p>
+        </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bloc">
+      <h2>🏘️ Vente — appartements, villas, maisons</h2>
+      <div class="grid-cartes">
+        <div class="carte">
+          <h3>Appartements</h3>
+          <p>Tous types de F1 a F5, neufs ou anciens, dans toutes les wilayas.</p>
+        </div>
+        <div class="carte">
+          <h3>Villas et maisons individuelles</h3>
+          <p>Biens avec ou sans jardin, en centre-ville ou en peripherie.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bloc">
+      <h2>🏢 Local commercial et fonds de commerce</h2>
+      <div class="grid-cartes">
+        <div class="carte">
+          <h3>Locaux commerciaux</h3>
+          <p>Vente ou location de locaux pour commerce, bureau ou activite professionnelle.</p>
+        </div>
+        <div class="carte">
+          <h3>Fonds de commerce</h3>
+          <p>Cession d activites commerciales existantes avec clientele et droit au bail.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bloc">
+      <h2>🌾 Terrains</h2>
+      <div class="grid-cartes">
+        <div class="carte">
+          <h3>Terrain a batir</h3>
+          <p>Parcelles viabilisees ou non, avec ou sans permis de construire, pour projet immobilier.</p>
+        </div>
+        <div class="carte">
+          <h3>Terrain agricole</h3>
+          <p>Exploitations et parcelles agricoles, avec ou sans point d eau, pour activite agricole ou investissement.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bloc">
+      <h2>🏗️ Promoteurs immobiliers</h2>
+      <div class="carte">
+        <p>Vous etes promoteur et souhaitez presenter vos programmes neufs a la diaspora ? <a href="contact.html" style="color: #4DD0E1;">Contactez-nous</a> pour etre reference sur cette page.</p>
+      </div>
+    </section>
+
+    <section class="bloc">
+      <h2>💰 Financement immobilier</h2>
+      <p style="color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 14px;">
+        Conditions generales d eligibilite au credit immobilier en Algerie :
+      </p>
+      <ul class="liste-conseils">
+        <li>Etre de nationalite algerienne ou resident en Algerie avec justificatif de revenus stables</li>
+        <li>Apport personnel generalement exige (souvent 10 a 30% du montant du bien)</li>
+        <li>Duree de remboursement pouvant aller jusqu a 20-30 ans selon l age de l emprunteur</li>
+        <li>La BNH (Banque Nationale de l Habitat) est l etablissement de reference pour le credit immobilier</li>
+      </ul>
+      <a href="https://bnh.dz" target="_blank" class="btn-telecharger" style="margin-top: 14px; display: inline-block;">🏦 BNH — Financement habitat</a>
+    </section>
+
+    <section class="bloc">
+      <h2>📧 Alertes par email</h2>
+      <div class="carte">
+        <p style="margin-bottom: 14px;">Recevez une notification par email des qu une nouvelle annonce immobiliere correspondant a vos criteres est publiee.</p>
+        <p style="color: rgba(255,255,255,0.4); font-size: 12px; font-style: italic;">🔧 Service en cours de developpement — disponible prochainement.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>DZ Diaspora — Tous droits reserves</p>
+    <p><a href="cgu.html">CGU</a> · <a href="contact.html">Contact</a></p>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ",
+      appId: "1:223003656315:web:100de190b8b5e74ddae2de",
+      messagingSenderId: "223003656315",
+      projectId: "dzdiaspora-7260a",
+      authDomain: "dzdiaspora-7260a.firebaseapp.com",
+      storageBucket: "dzdiaspora-7260a.firebasestorage.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function chargerBadgeAnnonces() {
+      const badge = document.getElementById("badgeAnnonces");
+      try {
+        const snap = await getDocs(collection(db, "annonces_immobilier"));
+        const nombre = snap.size;
+
+        if (nombre === 0) {
+          badge.innerHTML = "<p style=\"color: rgba(255,255,255,0.5); font-size: 14px;\">Aucune annonce immobiliere pour le moment</p>";
+        } else {
+          badge.innerHTML = `<p style="color: #A8E063; font-weight: bold; font-size: 14px;">🔔 ${nombre} annonce${nombre > 1 ? "s" : ""} immobiliere${nombre > 1 ? "s" : ""} disponible${nombre > 1 ? "s" : ""} — Consulter sur la page Annonces →</p>`;
+        }
+      } catch (e) {
+        badge.innerHTML = "<p style=\"color: rgba(255,255,255,0.4); font-size: 13px;\">Annonces indisponibles pour le moment</p>";
+      }
+    }
+
+    chargerBadgeAnnonces();
+  </script>
+  <script src="recherche.js"></script>
+  <script src="script.js"></script>
+  <script src="traduction.js"></script>
+</body>
+</html>
