@@ -108,6 +108,7 @@
           const data = doc.data();
           const vols = data.vols || [];
           vols.slice(0, 4).forEach((vol) => {
+            console.log("DEBUG vol complet:", JSON.stringify(vol));
             html += `
               <div class="carte">
                 <h3>${vol.airline?.name || doc.id} ${vol.flight?.iata || ""}</h3>
