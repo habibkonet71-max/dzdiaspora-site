@@ -108,13 +108,12 @@
           const data = doc.data();
           const vols = data.vols || [];
           vols.slice(0, 4).forEach((vol) => {
-            console.log("DEBUG vol complet:", JSON.stringify(vol));
             html += `
               <div class="carte">
                 <h3>${vol.airline?.name || doc.id} ${vol.flight?.iata || ""}</h3>
                 <p>${vol.departure?.airport || "?"} → ${vol.arrival?.airport || "?"}</p>
                 <p class="detail">Depart prevu: ${vol.departure?.scheduled?.substring(11,16) || "?"} — Arrivee prevue: ${vol.arrival?.scheduled?.substring(11,16) || "?"}</p>
-                <p class="detail">Statut: ${vol.flight?.flight_status || "inconnu"}</p>
+                <p class="detail">Statut: ${vol.flight_status || "inconnu"}</p>
               </div>
             `;
           });
