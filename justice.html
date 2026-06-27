@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Justice — DZ Diaspora</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">DZ Diaspora</a>
+    <nav class="nav-desktop">
+      <a href="securite.html">Securite</a>
+      <a href="sante.html">Sante</a>
+      <a href="finance.html">Finance</a>
+      <a href="justice.html" class="active">Justice</a>
+      <a href="transport.html">Transport</a>
+    </nav>
+    <div class="lang-btns">
+      <button class="lang-btn active notranslate" data-lang="fr" onclick="changerLangueSite('fr')">FR</button>
+      <button class="lang-btn notranslate" data-lang="en" onclick="changerLangueSite('en')">EN</button>
+      <button class="lang-btn notranslate" data-lang="zh" onclick="changerLangueSite('zh')">中文</button>
+    </div>
+    <button class="menu-btn" id="menuBtn">⋮</button>
+  </header>
+
+  <div class="menu-dropdown" id="menuDropdown">
+    <a href="securite.html">Securite</a>
+    <a href="sante.html">Sante</a>
+    <a href="finance.html">Finance</a>
+    <a href="justice.html">Justice</a>
+    <a href="administratif.html">Administratif</a>
+    <a href="wilayas.html">Wilayas</a>
+    <a href="transport.html">Transport</a>
+    <a href="annonces.html">Annonces</a>
+    <a href="abonnement.html">Devenir Pro</a>
+    <a href="contact.html">Contact</a>
+    <a href="cgu.html">CGU et mentions legales</a>
+  </div>
+
+  <main class="page-content">
+    <h1>⚖️ Justice</h1>
+    <p class="intro">Tribunaux, cours d appel, avocats, notaires et mediateurs — trouvez la juridiction competente pour votre wilaya.</p>
+
+    <section class="bloc">
+      <h2>🏛️ Trouver le tribunal de votre wilaya</h2>
+      <div class="carte">
+        <p style="margin-bottom: 14px;">L Algerie compte 48 cours d appel et 210 tribunaux repartis sur l ensemble des wilayas. Consultez le site officiel du Ministere de la Justice pour trouver les coordonnees exactes de votre juridiction.</p>
+        <a href="https://www.mjustice.dz/fr/cours-et-tribunaux/" target="_blank" class="btn-telecharger">🔍 Rechercher mon tribunal sur mjustice.dz</a>
+      </div>
+    </section>
+
+    <section class="bloc">
+      <h2>Organisation judiciaire</h2>
+      <div class="grid-cartes">
+        <div class="carte">
+          <h3>Tribunal (1er degre)</h3>
+          <p>Juridiction de premiere instance. Sections : civile, penale, affaires familiales, sociale, fonciere, commerciale, mineurs.</p>
+        </div>
+        <div class="carte">
+          <h3>Cour d appel</h3>
+          <p>48 cours en Algerie. Statue en appel des decisions des tribunaux. Comprend un tribunal criminel (crimes, delits et contraventions connexes).</p>
+        </div>
+        <div class="carte">
+          <h3>Cour supreme</h3>
+        <a href="https://www.mjustice.dz" target="_blank" class="carte carte-lien">
+          <h3>Parquet electronique (e-Nyaba)</h3>
+          <p>Plateforme officielle pour introduire une plainte ou requete devant le procureur a distance — particulierement utile pour la diaspora.</p>
+        </a>
+        <a href="https://ppgn.mdn.dz/cgn_fr/index.php" target="_blank" class="carte carte-lien">
+          <h3>Pre-plainte en ligne (Gendarmerie)</h3>
+          <p>Signalez un crime ou deposez une pre-plainte via internet, a confirmer ensuite auprès de l unite competente.</p>
+        </a>
+      </div>
+      <p style="color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 14px; font-style: italic;">
+        Ces services concernent generalement les atteintes aux biens dont l auteur est inconnu. Pour les urgences ou infractions graves, contactez directement le 17 (Police) ou le 1055 (Gendarmerie).
+      </p>
+    </section>
+
+    <section class="bloc">
+      <h2>Organisation judiciaire</h2>
+      <div class="grid-cartes">
+        <div class="carte">
+          <h3>Tribunal (1er degre)</h3>
+          <p>Juridiction de premiere instance. Sections : civile, penale, affaires familiales, sociale, fonciere, commerciale, mineurs.</p>
+        </div>
+        <div class="carte">
+          <h3>Cour d appel</h3>
+          <p>48 cours en Algerie. Statue en appel des decisions des tribunaux. Comprend un tribunal criminel (crimes, delits et contraventions connexes).</p>
+        </div>
+        <div class="carte">
+          <h3>Cour supreme</h3>
+          <p>Controle la bonne application de la loi et le respect des procedures par les juridictions inferieures.</p>
+        </div>
+        <div class="carte">
+          <h3>Tribunal administratif</h3>
+          <p>44 tribunaux. Competent pour les litiges impliquant l Etat, la wilaya, la commune ou un etablissement public.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bloc">
+      <h2>👨‍⚖️ Avocats, notaires et mediateurs</h2>
+      <div class="carte" style="margin-bottom: 0;">
+        <label for="selectWilayaJustice" style="display: block; margin-bottom: 10px; color: rgba(255,255,255,0.7); font-size: 13px;">
+          Selectionnez votre wilaya :
+        </label>
+        <select id="selectWilayaJustice" style="width: 100%; padding: 10px; border-radius: 8px; background: #0D1117; color: white; border: 1px solid rgba(255,255,255,0.15); font-size: 14px;">
+          <option value="">-- Choisir une wilaya --</option>
+          <option value="alger">Alger</option>
+          <option value="oran">Oran</option>
+          <option value="constantine">Constantine</option>
+          <option value="annaba">Annaba</option>
+          <option value="blida">Blida</option>
+        </select>
+        <div id="resultatJustice" style="margin-top: 16px; color: rgba(255,255,255,0.5); font-size: 13px; text-align: center; padding: 20px 0;">
+          Selectionnez une wilaya pour voir les professionnels disponibles.
+        </div>
+      </div>
+      <p style="color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 10px; font-style: italic;">
+        🔧 Annuaire en cours de construction. Vous etes avocat, notaire ou mediateur et souhaitez etre reference ? <a href="contact.html" style="color: #4DD0E1;">Contactez-nous</a>.
+      </p>
+    </section>
+
+    <section class="bloc">
+      <h2>Bon a savoir</h2>
+      <ul class="liste-conseils">
+        <li>L aide juridictionnelle (gratuite ou a frais reduits) est accessible sous conditions de ressources auprès du tribunal competent</li>
+        <li>Le notaire intervient pour les actes authentiques : actes de vente immobiliere, contrats de mariage, successions</li>
+        <li>Le mediateur de la Republique peut etre saisi pour resoudre un litige avec l administration sans passer par un tribunal</li>
+        <li>Pour la diaspora, certaines procedures peuvent etre engagees via le consulat algerien de votre pays de residence</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>DZ Diaspora — Tous droits reserves</p>
+    <p><a href="cgu.html">CGU</a> · <a href="contact.html">Contact</a></p>
+  </footer>
+
+  <script>
+    document.getElementById("selectWilayaJustice").addEventListener("change", function () {
+      const resultat = document.getElementById("resultatJustice");
+      if (this.value === "") {
+        resultat.innerHTML = "Selectionnez une wilaya pour voir les professionnels disponibles.";
+        return;
+      }
+      resultat.innerHTML = "Annuaire a venir pour cette wilaya. Revenez bientot !";
+    });
+  </script>
+  <script src="recherche.js"></script>
+  <script src="script.js"></script>
+  <script src="traduction.js"></script>
+</body>
+</html>
