@@ -392,9 +392,12 @@
       for (let i = 0; i < avec.length; i++) r = r.split(avec[i]).join(sans[i]);
       return r;
     }
-
     document.getElementById("rechercheInput").addEventListener("keypress", function (e) {
       if (e.key === "Enter") {
+        if (!utilisateurConnecte) {
+          window.location.href = "connexion.html";
+          return;
+        }
         const texteTape = normaliserAccueil(this.value.trim());
         let pageTrouvee = null;
         for (const entree of indexRechercheAccueil) {
@@ -404,11 +407,7 @@
           }
         }
         if (pageTrouvee) {
-          if (!utilisateurConnecte) {
-            window.location.href = "connexion.html";
-          } else {
-            window.location.href = pageTrouvee;
-          }
+          window.location.href = pageTrouvee;
         } else {
           const requete = encodeURIComponent(this.value + " Algerie diaspora");
           window.open(`https://www.google.com/search?q=${requete}`, "_blank");
