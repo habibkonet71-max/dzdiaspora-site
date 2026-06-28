@@ -258,10 +258,16 @@
       authDomain: "dzdiaspora-7260a.firebaseapp.com",
       storageBucket: "dzdiaspora-7260a.firebasestorage.app"
     };
+    const EMAILS_ADMIN = ["kourrak.habib@hotmail.com"];
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     onAuthStateChanged(auth, (user) => {
-      if (!user || !user.emailVerified) {
+      if (!user) {
+        window.location.href = "connexion.html";
+        return;
+      }
+      const estAdmin = EMAILS_ADMIN.includes(user.email);
+      if (!user.emailVerified && !estAdmin) {
         window.location.href = "connexion.html";
       }
     });
