@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deposer une annonce — DZ Diaspora</title>
+  <meta name="description" content="Deposez gratuitement votre annonce immobiliere, vehicule, covoiturage ou service pour la diaspora algerienne.">
+  <link rel="canonical" href="https://habibkonet71-max.github.io/dzdiaspora-site/deposer-annonce.html">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; margin-bottom: 6px; font-size: 13px; color: rgba(255,255,255,0.7); }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: #0D1117;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.15);
+      font-size: 14px;
+      font-family: inherit;
+    }
+    .form-group textarea { min-height: 100px; resize: vertical; }
+    .radio-group { display: flex; gap: 16px; }
+    .radio-group label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: rgba(255,255,255,0.8); }
+    .cat-selector { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+    .cat-btn {
+      background: #1C2333;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.7);
+      padding: 10px 18px;
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .cat-btn.active { background: #4DD0E1; color: #0D1117; font-weight: bold; border-color: #4DD0E1; }
+    .msg-erreur { background: rgba(214,16,52,0.15); border: 1px solid rgba(214,16,52,0.5); color: #ff6b6b; padding: 12px; border-radius: 8px; margin-bottom: 16px; display: none; }
+    .msg-succes { background: rgba(167,255,167,0.1); border: 1px solid rgba(167,255,167,0.4); color: #A8E063; padding: 12px; border-radius: 8px; margin-bottom: 16px; display: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">DZ Diaspora</a>
+    <nav class="nav-desktop">
+      <a href="securite.html">Securite</a>
+      <a href="sante.html">Sante</a>
+      <a href="finance.html">Finance</a>
+      <a href="annonces.html">Annonces</a>
+      <a href="transport.html">Transport</a>
+    </nav>
+    <div class="lang-btns">
+      <button class="lang-btn active notranslate" data-lang="fr" onclick="changerLangueSite('fr')">FR</button>
+      <button class="lang-btn notranslate" data-lang="en" onclick="changerLangueSite('en')">EN</button>
+      <button class="lang-btn notranslate" data-lang="zh" onclick="changerLangueSite('zh')">中文</button>
+    </div>
+    <button class="menu-btn" id="menuBtn">⋮</button>
+  </header>
+
+  <div class="menu-dropdown" id="menuDropdown">
+    <a href="securite.html">Securite</a>
+    <a href="sante.html">Sante</a>
+    <a href="finance.html">Finance</a>
+    <a href="justice.html">Justice</a>
+    <a href="immobilier.html">Immobilier</a>
+    <a href="administratif.html">Administratif</a>
+    <a href="wilayas.html">Wilayas</a>
+    <a href="transport.html">Transport</a>
+    <a href="annonces.html">Annonces</a>
+    <a href="abonnement.html">Devenir Pro</a>
+    <a href="contact.html">Contact</a>
+    <a href="cgu.html">CGU et mentions legales</a>
+  </div>
+
+  <main class="page-content">
+    <h1>➕ Deposer une annonce</h1>
+    <p class="intro">Choisissez une categorie et remplissez le formulaire. Votre annonce sera publiee apres verification automatique.</p>
+
+    <div class="cat-selector">
+      <button class="cat-btn active" data-cat="immobilier" onclick="changerCategorieForm('immobilier')">🏠 Immobilier</button>
+      <button class="cat-btn" data-cat="vehicule" onclick="changerCategorieForm('vehicule')">🚗 Vehicule</button>
+      <button class="cat-btn" data-cat="covoiturage" onclick="changerCategorieForm('covoiturage')">🧳 Covoiturage</button>
+      <button class="cat-btn" data-cat="service" onclick="changerCategorieForm('service')">🔧 Service</button>
+    </div>
+
+    <div class="msg-erreur" id="msgErreur"></div>
+    <div class="msg-succes" id="msgSucces"></div>
+
+    <form id="formAnnonce">
+      <div id="champsSpecifiques"></div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="champDescription" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Comment souhaitez-vous apparaitre ?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="identite" value="nom" checked> Mon nom</label>
+          <label><input type="radio" name="identite" value="pseudo"> Un pseudo</label>
+        </div>
+      </div>
+
+      <div class="form-group" id="champNomPseudo">
+        <label>Votre nom</label>
+        <input type="text" id="champIdentite" required>
+      </div>
+
+      <div class="form-group">
+        <label>Contact (telephone ou email — reste cache jusqu au clic d un interesse)</label>
+        <input type="text" id="champContact" required>
+      </div>
+
+      <button type="submit" class="btn-telecharger" style="width: 100%; padding: 12px; margin-top: 10px;">📤 Publier l annonce</button>
+    </form>
+  </main>
+
+  <footer>
+    <p>DZ Diaspora — Tous droits reserves</p>
+    <p><a href="cgu.html">CGU</a> · <a href="contact.html">Contact</a></p>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ",
+      appId: "1:223003656315:web:100de190b8b5e74ddae2de",
+      messagingSenderId: "223003656315",
+      projectId: "dzdiaspora-7260a",
+      authDomain: "dzdiaspora-7260a.firebaseapp.com",
+      storageBucket: "dzdiaspora-7260a.firebasestorage.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const motsInterdits = ["arnaque", "escroquerie", "drogue", "stupefiant", "arme a feu", "contrefacon", "prostitution", "fraude"];
+
+    let categorieActuelle = "immobilier";
+
+    const templatesChamps = {
+      immobilier: `
+        <div class="form-group">
+          <label>Type d annonce</label>
+          <select id="champTypeAnnonce">
+            <option value="vente">Vente</option>
+            <option value="location">Location</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Secteur / Wilaya</label><input type="text" id="champSecteur" required></div>
+        <div class="form-group"><label>Superficie (m²)</label><input type="number" id="champSuperficie" required></div>
+        <div class="form-group"><label>Nombre de pieces</label><input type="number" id="champPieces" required></div>
+        <div class="form-group"><label>Proximite (ecole, transport, commerces...)</label><input type="text" id="champProximite"></div>
+        <div class="form-group">
+          <label>Type d acte</label>
+          <select id="champTypeActe">
+            <option value="livret_foncier">Livret foncier</option>
+            <option value="acte_notarie">Acte notarie</option>
+            <option value="autre">Autre</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Tarif</label><input type="text" id="champTarif" required></div>
+      `,
+      vehicule: `
+        <div class="form-group"><label>Marque</label><input type="text" id="champMarque" required></div>
+        <div class="form-group"><label>Modele</label><input type="text" id="champModele" required></div>
+        <div class="form-group"><label>Annee</label><input type="number" id="champAnnee" required></div>
+        <div class="form-group"><label>Kilometrage</label><input type="number" id="champKilometrage"></div>
+        <div class="form-group">
+          <label>Type de vehicule</label>
+          <select id="champTypeVehicule">
+            <option value="voiture">Voiture</option>
+            <option value="moto">Moto</option>
+            <option value="scooter">Scooter</option>
+            <option value="velo">Velo</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Etat</label>
+          <select id="champEtat">
+            <option value="neuf">Neuf</option>
+            <option value="occasion">Occasion</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Carburant (si applicable)</label><input type="text" id="champCarburant"></div>
+        <div class="form-group"><label>Boite de vitesse (si applicable)</label><input type="text" id="champBoiteVitesse"></div>
+        <div class="form-group"><label>Ville</label><input type="text" id="champVille" required></div>
+        <div class="form-group"><label>Prix</label><input type="text" id="champPrix" required></div>
+      `,
+      covoiturage: `
+        <div class="form-group"><label>Depart</label><input type="text" id="champDepart" required></div>
+        <div class="form-group"><label>Arrivee</label><input type="text" id="champArrivee" required></div>
+        <div class="form-group"><label>Date</label><input type="date" id="champDate" required></div>
+        <div class="form-group"><label>Nombre de places disponibles</label><input type="number" id="champPlaces" required></div>
+        <div class="form-group"><label>Bagages acceptes (kg ou description)</label><input type="text" id="champBagages"></div>
+        <div class="form-group"><label>Participation aux frais</label><input type="text" id="champParticipation"></div>
+      `,
+      service: `
+        <div class="form-group"><label>Type de service</label><input type="text" id="champTypeService" required></div>
+        <div class="form-group"><label>Ville</label><input type="text" id="champVilleService" required></div>
+        <div class="form-group"><label>Tarif</label><input type="text" id="champTarifService"></div>
+      `
+    };
+
+    window.changerCategorieForm = function (cat) {
+      categorieActuelle = cat;
+      document.querySelectorAll(".cat-btn").forEach((b) => b.classList.remove("active"));
+      document.querySelector(`.cat-btn[data-cat="${cat}"]`).classList.add("active");
+      document.getElementById("champsSpecifiques").innerHTML = templatesChamps[cat];
+    };
+
+    document.querySelectorAll('input[name="identite"]').forEach((radio) => {
+      radio.addEventListener("change", function () {
+        document.querySelector("#champNomPseudo label").textContent = this.value === "pseudo" ? "Votre pseudo" : "Votre nom";
+      });
+    });
+
+    function contientMotInterdit(texte) {
+      const texteMin = texte.toLowerCase();
+      return motsInterdits.some((mot) => texteMin.includes(mot));
+    }
+
+    document.getElementById("formAnnonce").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const msgErreur = document.getElementById("msgErreur");
+      const msgSucces = document.getElementById("msgSucces");
+      msgErreur.style.display = "none";
+      msgSucces.style.display = "none";
+
+      const description = document.getElementById("champDescription").value;
+      const identite = document.getElementById("champIdentite").value;
+
+      if (contientMotInterdit(description) || contientMotInterdit(identite)) {
+        msgErreur.textContent = "⚠️ Votre annonce contient des termes non autorises. Veuillez la corriger.";
+        msgErreur.style.display = "block";
+        return;
+      }
+
+      const donnees = {
+        description: description,
+        identite: identite,
+        type_identite: document.querySelector('input[name="identite"]:checked').value,
+        contact: document.getElementById("champContact").value,
+        date_publication: serverTimestamp()
+      };
+
+      const collections = {
+        immobilier: "annonces_immobilier",
+        vehicule: "annonces_vehicule",
+        covoiturage: "annonces_covoiturage",
+        service: "annonces_service"
+      };
+
+      if (categorieActuelle === "immobilier") {
+        donnees.type_annonce = document.getElementById("champTypeAnnonce").value;
+        donnees.secteur = document.getElementById("champSecteur").value;
+        donnees.superficie = document.getElementById("champSuperficie").value;
+        donnees.nombre_pieces = document.getElementById("champPieces").value;
+        donnees.proximite = document.getElementById("champProximite").value;
+        donnees.type_acte = document.getElementById("champTypeActe").value;
+        donnees.tarif = document.getElementById("champTarif").value;
+      } else if (categorieActuelle === "vehicule") {
+        donnees.marque = document.getElementById("champMarque").value;
+        donnees.modele = document.getElementById("champModele").value;
+        donnees.annee = document.getElementById("champAnnee").value;
+        donnees.kilometrage = document.getElementById("champKilometrage").value;
+        donnees.type_vehicule = document.getElementById("champTypeVehicule").value;
+        donnees.etat = document.getElementById("champEtat").value;
+        donnees.carburant = document.getElementById("champCarburant").value;
+        donnees.boite_vitesse = document.getElementById("champBoiteVitesse").value;
+        donnees.ville = document.getElementById("champVille").value;
+        donnees.prix = document.getElementById("champPrix").value;
+      } else if (categorieActuelle === "covoiturage") {
+        donnees.depart = document.getElementById("champDepart").value;
+        donnees.arrivee = document.getElementById("champArrivee").value;
+        donnees.date = document.getElementById("champDate").value;
+        donnees.nombre_places = document.getElementById("champPlaces").value;
+        donnees.nombre_bagages = document.getElementById("champBagages").value;
+        donnees.participation_frais = document.getElementById("champParticipation").value;
+      } else {
+        donnees.type_service = document.getElementById("champTypeService").value;
+        donnees.ville = document.getElementById("champVilleService").value;
+        donnees.tarif = document.getElementById("champTarifService").value;
+      }
+
+      try {
+        await addDoc(collection(db, collections[categorieActuelle]), donnees);
+        msgSucces.textContent = "✅ Votre annonce a ete publiee avec succes !";
+        msgSucces.style.display = "block";
+        document.getElementById("formAnnonce").reset();
+      } catch (err) {
+        msgErreur.textContent = "❌ Erreur lors de la publication. Veuillez reessayer.";
+        msgErreur.style.display = "block";
+      }
+    });
+
+    changerCategorieForm("immobilier");
+  </script>
+  <script src="script.js"></script>
+  <script src="traduction.js"></script>
+</body>
+</html>
