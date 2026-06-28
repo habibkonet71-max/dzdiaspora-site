@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Annonces — DZ Diaspora</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .tab-btn {
+      background: #1C2333;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.7);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .tab-btn.active { background: #4DD0E1; color: #0D1117; font-weight: bold; border-color: #4DD0E1; }
+    .annonce-fiche {
+      background: #1C2333;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .annonce-fiche h3 { font-size: 15px; margin-bottom: 8px; color: #4DD0E1; }
+    .annonce-fiche .detail-ligne { font-size: 13px; color: rgba(255,255,255,0.75); margin-bottom: 4px; }
+    .annonce-fiche .prix { color: #A8E063; font-weight: bold; font-size: 15px; margin-top: 8px; }
+    .alerte-securite {
+      background: rgba(255,193,7,0.1);
+      border: 1px solid rgba(255,193,7,0.4);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: #FFC107;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">DZ Diaspora</a>
+    <nav class="nav-desktop">
+      <a href="securite.html">Securite</a>
+      <a href="sante.html">Sante</a>
+      <a href="finance.html">Finance</a>
+      <a href="annonces.html" class="active">Annonces</a>
+      <a href="transport.html">Transport</a>
+    </nav>
+    <div class="lang-btns">
+      <button class="lang-btn active notranslate" data-lang="fr" onclick="changerLangueSite('fr')">FR</button>
+      <button class="lang-btn notranslate" data-lang="en" onclick="changerLangueSite('en')">EN</button>
+      <button class="lang-btn notranslate" data-lang="zh" onclick="changerLangueSite('zh')">中文</button>
+    </div>
+    <button class="menu-btn" id="menuBtn">⋮</button>
+  </header>
+
+  <div class="menu-dropdown" id="menuDropdown">
+    <a href="securite.html">Securite</a>
+    <a href="sante.html">Sante</a>
+    <a href="finance.html">Finance</a>
+    <a href="justice.html">Justice</a>
+    <a href="immobilier.html">Immobilier</a>
+    <a href="administratif.html">Administratif</a>
+    <a href="wilayas.html">Wilayas</a>
+    <a href="transport.html">Transport</a>
+    <a href="annonces.html">Annonces</a>
+    <a href="abonnement.html">Devenir Pro</a>
+    <a href="contact.html">Contact</a>
+    <a href="cgu.html">CGU et mentions legales</a>
+  </div>
+
+  <main class="page-content">
+    <h1>📋 Annonces</h1>
+    <p class="intro">Immobilier, vehicules, covoiturage et services entre la diaspora et l Algerie.</p>
+
+    <div class="alerte-securite">
+      ⚠️ <strong>Securite :</strong> ne communiquez jamais vos coordonnees personnelles directement sur le site. Les echanges et mises en relation se font via notre intermediaire. Restez vigilant face a toute demande de paiement avant rencontre.
+    </div>
+
+    <p style="color: rgba(255,255,255,0.4); font-size: 12px; margin-bottom: 16px;">
+      📌 4 annonces gratuites par utilisateur. Au-dela, un abonnement Pro est necessaire — <a href="abonnement.html" style="color: #4DD0E1;">en savoir plus</a>.
+    </p>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-cat="immobilier" onclick="changerCategorie('immobilier')">🏠 Immobilier</button>
+      <button class="tab-btn" data-cat="vehicule" onclick="changerCategorie('vehicule')">🚗 Vehicule</button>
+      <button class="tab-btn" data-cat="covoiturage" onclick="changerCategorie('covoiturage')">🧳 Covoiturage / Bagages</button>
+      <button class="tab-btn" data-cat="service" onclick="changerCategorie('service')">🔧 Services</button>
+    </div>
+
+    <div id="listeAnnonces">
+      <p style="color: rgba(255,255,255,0.4); text-align: center; padding: 30px 0;">Chargement des annonces...</p>
+    </div>
+
+    <div style="margin-top: 24px; text-align: center;">
+      <a href="contact.html" class="btn-telecharger">➕ Deposer une annonce</a>
+    </div>
+  </main>
+
+  <footer>
+    <p>DZ Diaspora — Tous droits reserves</p>
+    <p><a href="cgu.html">CGU</a> · <a href="contact.html">Contact</a></p>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ",
+      appId: "1:223003656315:web:100de190b8b5e74ddae2de",
+      messagingSenderId: "223003656315",
+      projectId: "dzdiaspora-7260a",
+      authDomain: "dzdiaspora-7260a.firebaseapp.com",
+      storageBucket: "dzdiaspora-7260a.firebasestorage.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const collections = {
+      immobilier: "annonces_immobilier",
+      vehicule: "annonces_vehicule",
+      covoiturage: "annonces_covoiturage",
+      service: "annonces_service"
+    };
+
+    window.changerCategorie = async function (cat) {
+      document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+      document.querySelector(`.tab-btn[data-cat="${cat}"]`).classList.add("active");
+      await chargerAnnonces(cat);
+    };
+
+    async function chargerAnnonces(categorie) {
+      const container = document.getElementById("listeAnnonces");
+      container.innerHTML = "<p style=\"color: rgba(255,255,255,0.4); text-align: center; padding: 30px 0;\">Chargement...</p>";
+
+      try {
+        const snap = await getDocs(collection(db, collections[categorie]));
+
+        if (snap.empty) {
+          container.innerHTML = "<p style=\"color: rgba(255,255,255,0.4); text-align: center; padding: 30px 0;\">Aucune annonce dans cette categorie pour le moment.</p>";
+          return;
+        }
+
+        let html = "";
+        snap.forEach((doc) => {
+          const d = doc.data();
+          html += construireFiche(categorie, d);
+        });
+        container.innerHTML = html;
+      } catch (e) {
+        container.innerHTML = "<p style=\"color: rgba(255,255,255,0.4); text-align: center; padding: 30px 0;\">Annonces indisponibles pour le moment.</p>";
+      }
+    }
+
+    function construireFiche(categorie, d) {
+      const contactId = "contact-" + Math.random().toString(36).substring(7);
+      const contactHtml = `
+        <div id="${contactId}" style="margin-top: 10px;">
+          <button class="btn-telecharger" onclick="document.getElementById('${contactId}').innerHTML = '<p class=\\'detail-ligne\\' style=\\'color:#A8E063;\\'>📞 ${d.contact || "Non renseigne"}</p>'">👁️ Afficher le contact</button>
+        </div>
+      `;
+
+      if (categorie === "immobilier") {
+        return `
+          <div class="annonce-fiche">
+            <h3>🏠 ${d.type_annonce === "vente" ? "Vente" : "Location"} — ${d.secteur || "?"}</h3>
+            <p class="detail-ligne">Superficie : ${d.superficie || "?"} m² — ${d.nombre_pieces || "?"} pieces</p>
+            <p class="detail-ligne">Proximite : ${d.proximite || "Non precise"}</p>
+            <p class="detail-ligne">Type d acte : ${d.type_acte === "livret_foncier" ? "Livret foncier" : "Acte / Bien"}</p>
+            <p class="prix">${d.tarif || "Prix sur demande"}</p>
+            ${contactHtml}
+          </div>
+        `;
+      }
+      if (categorie === "vehicule") {
+        return `
+          <div class="annonce-fiche">
+            <h3>🚗 ${d.marque || "?"} ${d.modele || ""} — ${d.annee || "?"}</h3>
+            <p class="detail-ligne">Kilometrage : ${d.kilometrage || "?"} km — Etat : ${d.etat || "?"}</p>
+            <p class="detail-ligne">Carburant : ${d.carburant || "?"} — Boite : ${d.boite_vitesse || "?"}</p>
+            <p class="detail-ligne">Ville : ${d.ville || "?"}</p>
+            <p class="prix">${d.prix || "Prix sur demande"}</p>
+            ${contactHtml}
+          </div>
+        `;
+      }
+      if (categorie === "covoiturage") {
+        return `
+          <div class="annonce-fiche">
+            <h3>🧳 ${d.depart || "?"} → ${d.arrivee || "?"}</h3>
+            <p class="detail-ligne">Date : ${d.date || "?"}</p>
+            <p class="detail-ligne">Places disponibles : ${d.nombre_places || "?"} — Bagages : ${d.nombre_bagages || "?"}</p>
+            <p class="prix">${d.participation_frais || "Participation a convenir"}</p>
+            ${contactHtml}
+          </div>
+        `;
+      }
+      return `
+        <div class="annonce-fiche">
+          <h3>🔧 ${d.type_service || "Service"}</h3>
+          <p class="detail-ligne">${d.description || ""}</p>
+          <p class="detail-ligne">Ville : ${d.ville || "?"}</p>
+          <p class="prix">${d.tarif || "Tarif sur demande"}</p>
+          ${contactHtml}
+        </div>
+      `;
+    }
+
+    chargerAnnonces("immobilier");
+  </script>
+  <script src="recherche.js"></script>
+  <script src="script.js"></script>
+  <script src="traduction.js"></script>
+</body>
+</html>
