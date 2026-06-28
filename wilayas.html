@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wilayas d Algerie — Les 69 wilayas officielles</title>
+  <meta name="description" content="Liste complete des 69 wilayas d Algerie suite a la loi n 26-06 d avril 2026 : numero, nom, chef-lieu, indicatif telephonique, recherche instantanee.">
+  <meta property="og:title" content="Wilayas d Algerie — DZ Diaspora">
+  <meta property="og:description" content="Les 69 wilayas officielles d Algerie, recherche par nom ou numero.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://habibkonet71-max.github.io/dzdiaspora-site/wilayas.html">
+  <link rel="canonical" href="https://habibkonet71-max.github.io/dzdiaspora-site/wilayas.html">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .wilaya-search-box {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 10px;
+      background: #1C2333;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.15);
+      font-size: 15px;
+      margin-bottom: 18px;
+    }
+    .wilaya-search-box::placeholder { color: rgba(255,255,255,0.35); }
+    .wilaya-card { transition: border-color 0.2s; }
+    .wilaya-card:hover { border-color: #4DD0E1; }
+    .wilaya-num {
+      display: inline-block;
+      background: rgba(77,208,225,0.15);
+      color: #4DD0E1;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+    }
+    .wilaya-nom-ar { color: rgba(255,255,255,0.45); font-size: 13px; direction: rtl; margin-top: 2px; }
+    .wilaya-nouveau {
+      display: inline-block;
+      background: rgba(255,193,7,0.15);
+      color: #FFC107;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 1px 6px;
+      border-radius: 5px;
+      margin-left: 6px;
+    }
+    .wilaya-tel {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #A8E063;
+    }
+    .wilaya-tel-attente {
+      margin-top: 8px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      font-style: italic;
+    }
+    .wilaya-lien-officiel {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 12px;
+      color: #4DD0E1;
+      text-decoration: none;
+      border: 1px solid rgba(77,208,225,0.4);
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+    .wilaya-lien-officiel:hover { background: rgba(77,208,225,0.1); }
+    .compteur-resultats { color: rgba(255,255,255,0.4); font-size: 13px; margin-bottom: 14px; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">DZ Diaspora</a>
+    <nav class="nav-desktop">
+      <a href="securite.html">Securite</a>
+      <a href="administratif.html">Administratif</a>
+      <a href="wilayas.html" class="active">Wilayas</a>
+      <a href="transport.html">Transport</a>
+      <a href="annonces.html">Annonces</a>
+    </nav>
+    <div class="lang-btns">
+      <button class="lang-btn active notranslate" data-lang="fr" onclick="changerLangueSite('fr')">FR</button>
+      <button class="lang-btn notranslate" data-lang="en" onclick="changerLangueSite('en')">EN</button>
+      <button class="lang-btn notranslate" data-lang="zh" onclick="changerLangueSite('zh')">中文</button>
+    </div>
+    <button class="menu-btn" id="menuBtn">⋮</button>
+  </header>
+
+  <div class="menu-dropdown" id="menuDropdown">
+    <a href="securite.html">Securite</a>
+    <a href="sante.html">Sante</a>
+    <a href="finance.html">Finance</a>
+    <a href="justice.html">Justice</a>
+    <a href="immobilier.html">Immobilier</a>
+    <a href="administratif.html">Administratif</a>
+    <a href="wilayas.html">Wilayas</a>
+    <a href="transport.html">Transport</a>
+    <a href="annonces.html">Annonces</a>
+    <a href="abonnement.html">Devenir Pro</a>
+    <a href="contact.html">Contact</a>
+    <a href="cgu.html">CGU et mentions legales</a>
+  </div>
+
+  <main class="page-content">
+    <h1>🗺️ Les 69 Wilayas d Algerie</h1>
+    <p class="intro">Depuis la loi n°26-06 du 4 avril 2026, l Algerie compte 69 wilayas et 1 541 communes. Recherchez votre wilaya par nom ou par numero.</p>
+
+    <div class="carte" style="background: rgba(77,208,225,0.06); border-color: rgba(77,208,225,0.3); margin-bottom: 18px; font-size: 12px; color: rgba(255,255,255,0.6);">
+      ℹ️ Les indicatifs affiches sont des codes regionaux (partages entre plusieurs wilayas voisines), sources de l UIT (Union Internationale des Telecommunications). Pour les coordonnees exactes (adresse, telephone direct, email) de chaque siege de wilaya, utilisez le lien vers l annuaire officiel du Ministere de l Interieur sur chaque fiche.
+    </div>
+
+    <input type="text" class="wilaya-search-box" id="rechercheWilaya" placeholder="🔍 Rechercher une wilaya (ex: Alger, Oran, 31, Tizi Ouzou...)">
+
+    <p class="compteur-resultats" id="compteurResultats">69 wilayas</p>
+
+    <div class="grid-cartes" id="grilleWilayas"></div>
+
+    <p style="color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 24px; font-style: italic; text-align: center;">
+      🔧 Informations detaillees par wilaya (hopitaux, gendarmerie, tribunaux) en cours d ajout progressif.
+    </p>
+  </main>
+
+  <footer>
+    <p>DZ Diaspora — Tous droits reserves</p>
+    <p><a href="cgu.html">CGU</a> · <a href="contact.html">Contact</a></p>
+  </footer>
+
+  <script>
+    const WILAYAS = [
+      {n:1,fr:"Adrar",ar:"أدرار",chef:"Adrar",ind:"049"},
+      {n:2,fr:"Chlef",ar:"الشلف",chef:"Chlef",ind:"027"},
+      {n:3,fr:"Laghouat",ar:"الأغواط",chef:"Laghouat",ind:"029"},
+      {n:4,fr:"Oum El Bouaghi",ar:"أم البواقي",chef:"Oum El Bouaghi",ind:"032"},
+      {n:5,fr:"Batna",ar:"باتنة",chef:"Batna",ind:"033"},
+      {n:6,fr:"Bejaia",ar:"بجاية",chef:"Bejaia",ind:"034"},
+      {n:7,fr:"Biskra",ar:"بسكرة",chef:"Biskra",ind:"033"},
+      {n:8,fr:"Bechar",ar:"بشار",chef:"Bechar",ind:"049"},
+      {n:9,fr:"Blida",ar:"البليدة",chef:"Blida",ind:"025"},
+      {n:10,fr:"Bouira",ar:"البويرة",chef:"Bouira",ind:"026"},
+      {n:11,fr:"Tamanrasset",ar:"تمنراست",chef:"Tamanrasset",ind:"029"},
+      {n:12,fr:"Tebessa",ar:"تبسة",chef:"Tebessa",ind:"037"},
+      {n:13,fr:"Tlemcen",ar:"تلمسان",chef:"Tlemcen",ind:"043"},
+      {n:14,fr:"Tiaret",ar:"تيارت",chef:"Tiaret",ind:"046"},
+      {n:15,fr:"Tizi Ouzou",ar:"تيزي وزو",chef:"Tizi Ouzou",ind:"026"},
+      {n:16,fr:"Alger",ar:"الجزائر",chef:"Alger",ind:"021"},
+      {n:17,fr:"Djelfa",ar:"الجلفة",chef:"Djelfa",ind:"027"},
+      {n:18,fr:"Jijel",ar:"جيجل",chef:"Jijel",ind:"034"},
+      {n:19,fr:"Setif",ar:"سطيف",chef:"Setif",ind:"036"},
+      {n:20,fr:"Saida",ar:"سعيدة",chef:"Saida",ind:"048"},
+      {n:21,fr:"Skikda",ar:"سكيكدة",chef:"Skikda",ind:"038"},
+      {n:22,fr:"Sidi Bel Abbes",ar:"سيدي بلعباس",chef:"Sidi Bel Abbes",ind:"048"},
+      {n:23,fr:"Annaba",ar:"عنابة",chef:"Annaba",ind:"038"},
+      {n:24,fr:"Guelma",ar:"قالمة",chef:"Guelma",ind:"037"},
+      {n:25,fr:"Constantine",ar:"قسنطينة",chef:"Constantine",ind:"031"},
+      {n:26,fr:"Medea",ar:"المدية",chef:"Medea",ind:"025"},
+      {n:27,fr:"Mostaganem",ar:"مستغانم",chef:"Mostaganem",ind:"045"},
+      {n:28,fr:"M'Sila",ar:"المسيلة",chef:"M'Sila",ind:"035"},
+      {n:29,fr:"Mascara",ar:"معسكر",chef:"Mascara",ind:"045"},
+      {n:30,fr:"Ouargla",ar:"ورقلة",chef:"Ouargla",ind:"029"},
+      {n:31,fr:"Oran",ar:"وهران",chef:"Oran",ind:"041"},
+      {n:32,fr:"El Bayadh",ar:"البيض",chef:"El Bayadh",ind:"049"},
+      {n:33,fr:"Illizi",ar:"إليزي",chef:"Illizi",ind:"029"},
+      {n:34,fr:"Bordj Bou Arreridj",ar:"برج بوعريريج",chef:"Bordj Bou Arreridj",ind:"035"},
+      {n:35,fr:"Boumerdes",ar:"بومرداس",chef:"Boumerdes",ind:"024"},
+      {n:36,fr:"El Tarf",ar:"الطارف",chef:"El Tarf",ind:"038"},
+      {n:37,fr:"Tindouf",ar:"تندوف",chef:"Tindouf",ind:"049"},
+      {n:38,fr:"Tissemsilt",ar:"تيسمسيلت",chef:"Tissemsilt",ind:"046"},
+      {n:39,fr:"El Oued",ar:"الوادي",chef:"El Oued",ind:"032"},
+      {n:40,fr:"Khenchela",ar:"خنشلة",chef:"Khenchela",ind:"032"},
+      {n:41,fr:"Souk Ahras",ar:"سوق أهراس",chef:"Souk Ahras",ind:"037"},
+      {n:42,fr:"Tipaza",ar:"تيبازة",chef:"Tipaza",ind:"024"},
+      {n:43,fr:"Mila",ar:"ميلة",chef:"Mila",ind:"031"},
+      {n:44,fr:"Ain Defla",ar:"عين الدفلى",chef:"Ain Defla",ind:"027"},
+      {n:45,fr:"Naama",ar:"النعامة",chef:"Naama",ind:"049"},
+      {n:46,fr:"Ain Temouchent",ar:"عين تيموشنت",chef:"Ain Temouchent",ind:"043"},
+      {n:47,fr:"Ghardaia",ar:"غرداية",chef:"Ghardaia",ind:"029"},
+      {n:48,fr:"Relizane",ar:"غليزان",chef:"Relizane",ind:"046"},
+      {n:49,fr:"Timimoun",ar:"تيميمون",chef:"Timimoun",ind:"049"},
+      {n:50,fr:"Bordj Badji Mokhtar",ar:"برج باجي مختار",chef:"Bordj Badji Mokhtar",ind:"049"},
+      {n:51,fr:"Ouled Djellal",ar:"أولاد جلال",chef:"Ouled Djellal",ind:"033"},
+      {n:52,fr:"Beni Abbes",ar:"بني عباس",chef:"Beni Abbes",ind:"049"},
+      {n:53,fr:"In Salah",ar:"عين صالح",chef:"In Salah",ind:"029"},
+      {n:54,fr:"In Guezzam",ar:"عين قزام",chef:"In Guezzam",ind:"029"},
+      {n:55,fr:"Touggourt",ar:"تقرت",chef:"Touggourt",ind:"029"},
+      {n:56,fr:"Djanet",ar:"جانت",chef:"Djanet",ind:"029"},
+      {n:57,fr:"El M'Ghair",ar:"المغير",chef:"El M'Ghair",ind:"032"},
+      {n:58,fr:"El Meniaa",ar:"المنيعة",chef:"El Meniaa",ind:"029"},
+      {n:59,fr:"Aflou",ar:"آفلو",chef:"Aflou",nouveau:true},
+      {n:60,fr:"Barika",ar:"بريكة",chef:"Barika",nouveau:true},
+      {n:61,fr:"El Kantara",ar:"القنطرة",chef:"El Kantara",nouveau:true},
+      {n:62,fr:"Bir El Ater",ar:"بئر العاتر",chef:"Bir El Ater",nouveau:true},
+      {n:63,fr:"El Aricha",ar:"العريشة",chef:"El Aricha",nouveau:true},
+      {n:64,fr:"Ksar Chellala",ar:"قصر الشلالة",chef:"Ksar Chellala",nouveau:true},
+      {n:65,fr:"Ain Oussara",ar:"عين وسارة",chef:"Ain Oussara",nouveau:true},
+      {n:66,fr:"Messaad",ar:"مسعد",chef:"Messaad",nouveau:true},
+      {n:67,fr:"Ksar El Boukhari",ar:"قصر البخاري",chef:"Ksar El Boukhari",nouveau:true},
+      {n:68,fr:"Bou Saada",ar:"بوسعادة",chef:"Bou Saada",nouveau:true},
+      {n:69,fr:"El Abiodh Sidi Cheikh",ar:"البيض سيدي الشيخ",chef:"El Abiodh Sidi Cheikh",nouveau:true}
+    ];
+
+    const LIEN_ANNUAIRE_OFFICIEL = "https://services.interieur.gov.dz/fr/";
+
+    function normaliserTexte(texte) {
+      const avec = "àâäáãåèéêëìíîïòóôõöùúûüçñ";
+      const sans = "aaaaaaeeeeiiiiooooouuuucn";
+      let r = texte.toLowerCase();
+      for (let i = 0; i < avec.length; i++) r = r.split(avec[i]).join(sans[i]);
+      return r;
+    }
+
+    function afficherWilaya(w) {
+      const blocTel = w.ind
+        ? `<div class="wilaya-tel">📞 Indicatif regional : 0${w.ind}</div>`
+        : `<div class="wilaya-tel-attente">📞 Indicatif en cours d attribution (nouvelle wilaya)</div>`;
+      return `
+        <div class="carte wilaya-card">
+          <div class="wilaya-num">N° ${String(w.n).padStart(2,'0')}${w.nouveau ? '<span class="wilaya-nouveau">NOUVELLE</span>' : ''}</div>
+          <h3>${w.fr}</h3>
+          <div class="wilaya-nom-ar">${w.ar}</div>
+          <p class="detail">Chef-lieu : ${w.chef}</p>
+          ${blocTel}
+          <a href="${LIEN_ANNUAIRE_OFFICIEL}" target="_blank" class="wilaya-lien-officiel" onclick="event.stopPropagation()">🔗 Coordonnees officielles (Ministere Interieur)</a>
+        </div>`;
+    }
+
+    function rendreGrille(liste) {
+      const grille = document.getElementById("grilleWilayas");
+      grille.innerHTML = liste.map(afficherWilaya).join("");
+      document.getElementById("compteurResultats").textContent =
+        liste.length + (liste.length === 1 ? " wilaya trouvee" : " wilayas");
+    }
+
+    document.getElementById("rechercheWilaya").addEventListener("input", function () {
+      const q = normaliserTexte(this.value.trim());
+      if (q === "") { rendreGrille(WILAYAS); return; }
+      const filtree = WILAYAS.filter(w =>
+        normaliserTexte(w.fr).includes(q) ||
+        w.ar.includes(this.value.trim()) ||
+        String(w.n).padStart(2,'0').includes(q) ||
+        String(w.n) === q
+      );
+      rendreGrille(filtree);
+    });
+
+    rendreGrille(WILAYAS);
+  </script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ",
+      appId: "1:223003656315:web:100de190b8b5e74ddae2de",
+      messagingSenderId: "223003656315",
+      projectId: "dzdiaspora-7260a",
+      authDomain: "dzdiaspora-7260a.firebaseapp.com",
+      storageBucket: "dzdiaspora-7260a.firebasestorage.app"
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    onAuthStateChanged(auth, (user) => {
+      if (!user || !user.emailVerified) {
+        window.location.href = "connexion.html";
+      }
+    });
+  </script>
+  <script src="recherche.js"></script>
+  <script src="script.js"></script>
+  <script src="traduction.js"></script>
+</body>
+</html>
