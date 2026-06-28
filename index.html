@@ -190,6 +190,7 @@
         <button class="lang-btn notranslate" data-lang="en" onclick="changerLangueSite('en')">EN</button>
         <button class="lang-btn notranslate" data-lang="zh" onclick="changerLangueSite('zh')">中文</button>
       </div>
+      <a href="connexion.html" class="lang-btn" style="background: #4DD0E1; color: #0D1117; font-weight: bold; text-decoration: none;">👤 Inscription</a>
       <button class="menu-btn" id="menuBtn">⋮</button>
     </div>
   </header>
@@ -237,7 +238,23 @@
   <footer>
     DZ Diaspora — Tous droits reserves
   </footer>
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ",
+      appId: "1:223003656315:web:100de190b8b5e74ddae2de",
+      messagingSenderId: "223003656315",
+      projectId: "dzdiaspora-7260a",
+      authDomain: "dzdiaspora-7260a.firebaseapp.com",
+      storageBucket: "dzdiaspora-7260a.firebasestorage.app"
+    };
+    const appFirebase = initializeApp(firebaseConfig);
+    const auth = getAuth(appFirebase);
+    let utilisateurConnecte = false;
+    onAuthStateChanged(auth, (user) => {
+      utilisateurConnecte = !!(user && user.emailVerified);
+    });
     document.getElementById("menuBtn").addEventListener("click", function () {
       document.getElementById("menuDropdown").classList.toggle("open");
     });
@@ -357,10 +374,45 @@
       }
     }
 
+    const indexRechercheAccueil = [
+      { motsCles: ["securite", "urgence", "police", "pompier", "samu", "danger"], page: "securite.html" },
+      { motsCles: ["sante", "medecin", "hopital", "pharmacie", "maladie", "vaccin"], page: "sante.html" },
+      { motsCles: ["finance", "banque", "argent", "change", "devise", "transfert"], page: "finance.html" },
+      { motsCles: ["administratif", "passeport", "consulat", "carte identite", "visa", "papier"], page: "administratif.html" },
+      { motsCles: ["wilaya", "wilayas", "region", "ville algerie"], page: "wilayas.html" },
+      { motsCles: ["annonce", "annonces", "immobilier", "covoiturage", "vehicule", "service", "vente", "location"], page: "annonces.html" },
+      { motsCles: ["justice", "tribunal", "avocat", "notaire", "plainte"], page: "justice.html" },
+      { motsCles: ["transport", "vol", "avion", "billet", "aeroport", "ferry"], page: "transport.html" }
+    ];
+
+    function normaliserAccueil(texte) {
+      const avec = "àâäáãåèéêëìíîïòóôõöùúûüçñ";
+      const sans = "aaaaaaeeeeiiiiooooouuuucn";
+      let r = texte.toLowerCase();
+      for (let i = 0; i < avec.length; i++) r = r.split(avec[i]).join(sans[i]);
+      return r;
+    }
+
     document.getElementById("rechercheInput").addEventListener("keypress", function (e) {
       if (e.key === "Enter") {
-        const requete = encodeURIComponent(this.value + " Algerie diaspora");
-        window.open(`https://www.google.com/search?q=${requete}`, "_blank");
+        const texteTape = normaliserAccueil(this.value.trim());
+        let pageTrouvee = null;
+        for (const entree of indexRechercheAccueil) {
+          if (entree.motsCles.some((mot) => texteTape.includes(mot))) {
+            pageTrouvee = entree.page;
+            break;
+          }
+        }
+        if (pageTrouvee) {
+          if (!utilisateurConnecte) {
+            window.location.href = "connexion.html";
+          } else {
+            window.location.href = pageTrouvee;
+          }
+        } else {
+          const requete = encodeURIComponent(this.value + " Algerie diaspora");
+          window.open(`https://www.google.com/search?q=${requete}`, "_blank");
+        }
       }
     });
 
