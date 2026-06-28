@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://habibkonet71-max.github.io/dzdiaspora-site/sitemap.xml
