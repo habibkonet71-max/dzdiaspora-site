@@ -85,6 +85,7 @@
         <div class="form-group"><label>Email</label><input type="email" id="emailConnexion" required></div>
         <div class="form-group"><label>Mot de passe</label><input type="password" id="passwordConnexion" required></div>
         <button type="submit" class="btn-telecharger" style="width: 100%; padding: 12px;">Se connecter</button>
+        <p style="text-align: center; margin-top: 10px;"><a href="#" id="lienMotDePasseOublie" style="color: #4DD0E1; font-size: 13px;">Mot de passe oublie ?</a></p>
       </form>
 
       <form id="formInscription" style="display: none;">
@@ -111,6 +112,7 @@
       createUserWithEmailAndPassword,
       signInWithEmailAndPassword,
       sendEmailVerification,
+      sendPasswordResetEmail,
       onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
@@ -171,6 +173,27 @@
           return;
         }
         window.location.href = "deposer-annonce.html";
+      } catch (err) {
+        msgErreur.textContent = "❌ " + traduireErreur(err.code);
+        msgErreur.style.display = "block";
+      }
+    });
+
+    document.getElementById("lienMotDePasseOublie").addEventListener("click", async function (e) {
+      e.preventDefault();
+      const email = document.getElementById("emailConnexion").value;
+      const msgErreur = document.getElementById("msgErreur");
+      const msgSucces = document.getElementById("msgSucces");
+      if (!email) {
+        msgErreur.textContent = "Veuillez saisir votre email dans le champ ci-dessus avant de cliquer.";
+        msgErreur.style.display = "block";
+        return;
+      }
+      try {
+        await sendPasswordResetEmail(auth, email);
+        msgSucces.textContent = "✅ Un email de reinitialisation a ete envoye a " + email;
+        msgSucces.style.display = "block";
+        msgErreur.style.display = "none";
       } catch (err) {
         msgErreur.textContent = "❌ " + traduireErreur(err.code);
         msgErreur.style.display = "block";
