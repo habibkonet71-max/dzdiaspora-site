@@ -167,11 +167,16 @@
 
       try {
         const cred = await signInWithEmailAndPassword(auth, email, password);
-        if (!cred.user.emailVerified) {
+
+        const EMAILS_ADMIN = ["kourrak.habib@hotmail.com"];
+        const estAdmin = EMAILS_ADMIN.includes(cred.user.email);
+
+        if (!cred.user.emailVerified && !estAdmin) {
           msgErreur.textContent = "⚠️ Veuillez verifier votre email avant de continuer (lien envoye lors de l inscription).";
           msgErreur.style.display = "block";
           return;
         }
+
         window.location.href = "deposer-annonce.html";
       } catch (err) {
         msgErreur.textContent = "❌ " + traduireErreur(err.code);
@@ -179,28 +184,7 @@
       }
     });
 
-    document.getElementById("lienMotDePasseOublie").addEventListener("click", async function (e) {
-      e.preventDefault();
-      const email = document.getElementById("emailConnexion").value;
-      const msgErreur = document.getElementById("msgErreur");
-      const msgSucces = document.getElementById("msgSucces");
-      if (!email) {
-        msgErreur.textContent = "Veuillez saisir votre email dans le champ ci-dessus avant de cliquer.";
-        msgErreur.style.display = "block";
-        return;
-      }
-      try {
-        await sendPasswordResetEmail(auth, email);
-        msgSucces.textContent = "✅ Un email de reinitialisation a ete envoye a " + email;
-        msgSucces.style.display = "block";
-        msgErreur.style.display = "none";
-      } catch (err) {
-        msgErreur.textContent = "❌ " + traduireErreur(err.code);
-        msgErreur.style.display = "block";
-      }
-    });
-
-    function traduireErreur(code) {
+        function traduireErreur(code) {
       const erreurs = {
         "auth/email-already-in-use": "Cet email est deja utilise.",
         "auth/invalid-email": "Email invalide.",
