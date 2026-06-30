@@ -1,3 +1,15 @@
+Voici le code complet et corrigé pour cgu.html, prêt à coller dans nano :
+
+🔧 Étapes dans le terminal
+nano cgu.html
+Une fois dans nano :
+
+Effacer tout le contenu actuel : maintenez Ctrl + K enfoncé jusqu'à ce que tout disparaisse
+(ou plus rapide : sortez avec Ctrl + X, faites > cgu.html pour vider, puis nano cgu.html)
+Faites un clic droit → Coller dans le terminal le code ci-dessous
+Sauvegarder : Ctrl + O, puis Entrée
+Quitter : Ctrl + X
+📋 Code complet à coller dans cgu.html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -8,42 +20,21 @@
   <meta property="og:title" content="CGU et mentions legales — DZ Diaspora">
   <meta property="og:description" content="Conditions generales d utilisation, responsabilites, contenus et contact legal du site DZ Diaspora.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://habibkonet71-max.github.io/dzdiaspora-site/contact.html">
-  <link rel="canonical" href="https://habibkonet71-max.github.io/dzdiaspora-site/contact.html">
+  <meta property="og:url" content="https://habibkonet71-max.github.io/dzdiaspora-site/cgu.html">
+  <link rel="canonical" href="https://habibkonet71-max.github.io/dzdiaspora-site/cgu.html">
   <link rel="stylesheet" href="style.css">
   <style>
-    .contact-container { max-width: 520px; margin: 0 auto; }
-    .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; margin-bottom: 6px; font-size: 13px; color: rgba(255,255,255,0.7); }
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 8px;
-      background: #0D1117;
-      color: white;
-      border: 1px solid rgba(255,255,255,0.15);
-      font-size: 14px;
-      font-family: inherit;
-    }
-    .form-group textarea { resize: vertical; min-height: 110px; }
-    .msg-succes {
-      background: rgba(167,255,167,0.1);
-      border: 1px solid rgba(167,255,167,0.4);
-      color: #A8E063;
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 16px;
-      display: none;
-      font-size: 13px;
-    }
-    .contact-info-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 14px;
-      margin-bottom: 32px;
-    }
+    .legal-container { max-width: 860px; margin: 0 auto; padding: 24px 20px 60px; color: rgba(255,255,255,0.85); line-height: 1.65; font-size: 15px; }
+    .legal-container h1 { font-size: 28px; margin-bottom: 8px; color: #fff; }
+    .legal-container .maj { font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 32px; }
+    .legal-container h2 { font-size: 20px; margin-top: 36px; margin-bottom: 12px; color: #4DD0E1; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px; }
+    .legal-container h3 { font-size: 16px; margin-top: 22px; margin-bottom: 8px; color: #fff; }
+    .legal-container p { margin-bottom: 12px; }
+    .legal-container ul { margin: 8px 0 14px 22px; }
+    .legal-container li { margin-bottom: 6px; }
+    .legal-container a { color: #4DD0E1; text-decoration: none; }
+    .legal-container a:hover { text-decoration: underline; }
+    .legal-box { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 16px 18px; margin: 16px 0; }
   </style>
 </head>
 <body>
@@ -54,7 +45,7 @@
       <a href="sante.html">Sante</a>
       <a href="finance.html">Finance</a>
       <a href="annonces.html">Annonces</a>
-      <a href="contact.html" class="active">Contact</a>
+      <a href="contact.html">Contact</a>
     </nav>
     <div class="lang-btns">
       <button class="lang-btn active notranslate" data-lang="fr" onclick="changerLangueSite('fr')">FR</button>
@@ -76,79 +67,96 @@
     <a href="annonces.html">Annonces</a>
     <a href="abonnement.html">Devenir Pro</a>
     <a href="contact.html">Contact</a>
-    <a href="cgu.html">CGU et mentions legales</a>
+    <a href="cgu.html" class="active">CGU et mentions legales</a>
   </div>
 
-  <main class="page-content">
-    <div class="contact-container">
-      <h1 style="text-align: center; margin-bottom: 8px;">✉️ Contact</h1>
-      <p class="intro" style="text-align: center;">Une question, un partenariat, ou vous etes professionnel et souhaitez etre reference sur le site ? Ecrivez-nous.</p>
+  <main class="legal-container">
+    <h1>📜 Conditions generales d utilisation et mentions legales</h1>
+    <p class="maj">Derniere mise a jour : janvier 2026</p>
 
-      <div class="contact-info-grid">
-        <div class="carte" style="text-align: center;">
-          <h3 style="font-size: 14px; color: #4DD0E1;">📧 Email direct</h3>
-          <p style="font-size: 13px;">contact@dzdiaspora.app</p>
-        </div>
-        <div class="carte" style="text-align: center;">
-          <h3 style="font-size: 14px; color: #4DD0E1;">⏱️ Delai de reponse</h3>
-          <p style="font-size: 13px;">48 a 72 heures en moyenne</p>
-        </div>
-      </div>
+    <div class="legal-box">
+      <p>Bienvenue sur <strong class="notranslate">DZ Diaspora</strong>. En accedant et en utilisant ce site, vous acceptez sans reserve les presentes conditions generales d utilisation (CGU). Si vous n etes pas d accord avec ces conditions, merci de ne pas utiliser le site.</p>
+    </div>
 
-      <div class="msg-succes" id="msgSucces">✅ Votre client email va s ouvrir avec votre message pre-rempli.</div>
+    <h2>1. Editeur du site</h2>
+    <p>Le site <strong class="notranslate">DZ Diaspora</strong> est edite a titre informatif par un editeur independant.</p>
+    <ul>
+      <li><strong>Nom du site :</strong> <span class="notranslate">DZ Diaspora</span></li>
+      <li><strong>URL :</strong> <a href="https://habibkonet71-max.github.io/dzdiaspora-site/" class="notranslate">habibkonet71-max.github.io/dzdiaspora-site</a></li>
+      <li><strong>Contact :</strong> <span class="notranslate">contact@dzdiaspora.app</span></li>
+      <li><strong>Hebergeur :</strong> GitHub Pages — GitHub Inc., 88 Colin P Kelly Jr Street, San Francisco, CA 94107, USA</li>
+    </ul>
 
-      <form id="formContact">
-        <div class="form-group">
-          <label>Votre nom</label>
-          <input type="text" id="contactNom" required>
-        </div>
-        <div class="form-group">
-          <label>Votre email</label>
-          <input type="email" id="contactEmail" required>
-        </div>
-        <div class="form-group">
-          <label>Objet</label>
-          <select id="contactSujet">
-            <option value="Question generale">Question generale</option>
-            <option value="Devenir Pro - Reference professionnel">Devenir Pro — etre reference (medecin, avocat, notaire, pharmacien...)</option>
-            <option value="Signalement d un probleme">Signalement d un probleme</option>
-            <option value="Partenariat">Partenariat / Presse</option>
-            <option value="Autre">Autre</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Votre message</label>
-          <textarea id="contactMessage" required></textarea>
-        </div>
-        <button type="submit" class="btn-telecharger" style="width: 100%; padding: 12px;">Envoyer le message</button>
-      </form>
+    <h2>2. Objet du site</h2>
+    <p>DZ Diaspora est un site d information et de services pratiques destine a la diaspora algerienne. Il regroupe des contenus relatifs a la securite, la sante, la finance, la justice, l immobilier, l administratif, les wilayas, le transport et les annonces.</p>
+    <p>Les informations publiees ont une valeur indicative et ne constituent en aucun cas un conseil juridique, medical, financier ou professionnel personnalise.</p>
 
-      <p style="text-align: center; margin-top: 16px; font-size: 12px; color: rgba(255,255,255,0.4);">
-        En nous contactant, vous acceptez nos <a href="cgu.html" style="color: #4DD0E1;">CGU</a>.
-      </p>
+    <h2>3. Acces au site</h2>
+    <p>L acces au site est gratuit. Certaines fonctionnalites (espace professionnel, depot d annonces, abonnement Pro) peuvent necessiter la creation d un compte ou un abonnement payant.</p>
+    <p>L editeur se reserve le droit de suspendre, modifier ou interrompre tout ou partie du site sans preavis, notamment pour des operations de maintenance.</p>
+
+    <h2>4. Comptes utilisateurs</h2>
+    <p>L utilisateur s engage a fournir des informations exactes lors de son inscription et a maintenir ses identifiants confidentiels. Toute utilisation du compte est presumee faite par son titulaire.</p>
+    <p>L editeur peut suspendre ou supprimer tout compte en cas d usage frauduleux, abusif ou contraire aux presentes CGU.</p>
+
+    <h2>5. Annonces et contenus deposes par les utilisateurs</h2>
+    <p>Les annonces, avis et contenus publies par les utilisateurs sont sous leur entiere responsabilite. L editeur ne saurait etre tenu pour responsable du contenu publie par des tiers.</p>
+    <p>Sont strictement interdits :</p>
+    <ul>
+      <li>Les contenus illegaux, diffamatoires, injurieux, racistes ou contraires aux bonnes mœurs</li>
+      <li>Les annonces frauduleuses, trompeuses ou portant atteinte aux droits d autrui</li>
+      <li>La promotion d activites illegales ou la vente de produits interdits</li>
+      <li>Les contenus portant atteinte aux droits d auteur ou a la propriete intellectuelle</li>
+    </ul>
+    <p>L editeur se reserve le droit de retirer sans preavis tout contenu non conforme et de signaler les abus aux autorites competentes.</p>
+
+    <h2>6. Espace Professionnel (Devenir Pro)</h2>
+    <p>Les professionnels (medecins, avocats, notaires, pharmaciens, etc.) referencies sur le site doivent justifier de leur activite. L editeur se reserve le droit de refuser ou de retirer une fiche en cas d informations inexactes ou de plaintes averees.</p>
+
+    <h2>7. Propriete intellectuelle</h2>
+    <p>L ensemble des elements du site (textes, logos, graphismes, structure, code) est protege par le droit d auteur. Toute reproduction, totale ou partielle, sans autorisation prealable ecrite de l editeur est interdite.</p>
+    <p>Les actualites republiees sur le site proviennent de sources tierces et restent la propriete de leurs auteurs respectifs.</p>
+
+    <h2>8. Donnees personnelles (RGPD)</h2>
+    <p>Conformement au Reglement General sur la Protection des Donnees (RGPD), vous disposez d un droit d acces, de rectification, de suppression et d opposition concernant vos donnees personnelles.</p>
+    <p>Les donnees collectees (email, nom, contenu des messages) sont utilisees uniquement pour repondre a vos demandes ou gerer votre compte. Elles ne sont jamais revendues a des tiers.</p>
+    <p>Pour exercer vos droits, contactez-nous a : <a href="mailto:contact@dzdiaspora.app" class="notranslate">contact@dzdiaspora.app</a></p>
+
+    <h2>9. Cookies</h2>
+    <p>Le site peut utiliser des cookies techniques necessaires a son fonctionnement (preferences de langue, session utilisateur). Aucun cookie publicitaire ou de tracking tiers n est utilise sans votre consentement.</p>
+
+    <h2>10. Limitation de responsabilite</h2>
+    <p>L editeur met tout en œuvre pour fournir des informations fiables et a jour, mais ne peut garantir l exactitude, l exhaustivite ou l actualite des contenus.</p>
+    <p>L editeur ne saurait etre tenu responsable :</p>
+    <ul>
+      <li>Des dommages directs ou indirects resultant de l utilisation du site</li>
+      <li>Des interruptions de service ou pertes de donnees</li>
+      <li>Des contenus publies par des utilisateurs ou des liens externes</li>
+      <li>Des decisions prises sur la base des informations du site</li>
+    </ul>
+
+    <h2>11. Liens externes</h2>
+    <p>Le site peut contenir des liens vers d autres sites. L editeur n exerce aucun controle sur ces sites et decline toute responsabilite quant a leur contenu ou leurs pratiques en matiere de donnees.</p>
+
+    <h2>12. Modification des CGU</h2>
+    <p>L editeur peut modifier les presentes CGU a tout moment. La version en vigueur est celle publiee sur cette page. L utilisateur est invite a la consulter regulierement.</p>
+
+    <h2>13. Droit applicable</h2>
+    <p>Les presentes CGU sont regies par le droit francais. Tout litige sera soumis aux tribunaux competents apres tentative de resolution amiable.</p>
+
+    <h2>14. Contact</h2>
+    <div class="legal-box">
+      <p>Pour toute question, reclamation ou demande relative aux presentes CGU :</p>
+      <p>📧 <a href="mailto:contact@dzdiaspora.app" class="notranslate">contact@dzdiaspora.app</a></p>
+      <p>📄 <a href="contact.html">Formulaire de contact</a></p>
     </div>
   </main>
 
   <footer>
-    <p>DZ Diaspora — Tous droits reserves</p>
+    <p><span class="notranslate">DZ Diaspora</span> — Tous droits reserves</p>
     <p><a href="cgu.html">CGU</a> · <a href="contact.html">Contact</a></p>
   </footer>
 
-  <script>
-    document.getElementById("formContact").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const nom = document.getElementById("contactNom").value;
-      const email = document.getElementById("contactEmail").value;
-      const sujet = document.getElementById("contactSujet").value;
-      const message = document.getElementById("contactMessage").value;
-
-      const corps = `Nom : ${nom}\nEmail : ${email}\n\nMessage :\n${message}`;
-      const lien = `mailto:contact@dzdiaspora.app?subject=${encodeURIComponent("[DZ Diaspora] " + sujet)}&body=${encodeURIComponent(corps)}`;
-
-      document.getElementById("msgSucces").style.display = "block";
-      window.location.href = lien;
-    });
-  </script>
   <script src="script.js"></script>
   <script src="traduction.js"></script>
 </body>
