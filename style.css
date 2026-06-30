@@ -41,7 +41,7 @@ header .logo {
   font-size: 22px;
   cursor: pointer;
   padding: 4px 8px;
-  display: none;
+  display: block;
 }
 .menu-dropdown {
   position: absolute;
