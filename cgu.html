@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CGU et mentions legales — DZ Diaspora</title>
+  <meta name="description" content="Consultez les conditions generales d utilisation et les mentions legales du site DZ Diaspora.">
+  <meta property="og:title" content="CGU et mentions legales — DZ Diaspora">
+  <meta property="og:description" content="Conditions generales d utilisation, responsabilites, contenus et contact legal du site DZ Diaspora.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://habibkonet71-max.github.io/dzdiaspora-site/contact.html">
+  <link rel="canonical" href="https://habibkonet71-max.github.io/dzdiaspora-site/contact.html">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .contact-container { max-width: 520px; margin: 0 auto; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; margin-bottom: 6px; font-size: 13px; color: rgba(255,255,255,0.7); }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: #0D1117;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.15);
+      font-size: 14px;
+      font-family: inherit;
+    }
+    .form-group textarea { resize: vertical; min-height: 110px; }
+    .msg-succes {
+      background: rgba(167,255,167,0.1);
+      border: 1px solid rgba(167,255,167,0.4);
+      color: #A8E063;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      display: none;
+      font-size: 13px;
+    }
+    .contact-info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">DZ Diaspora</a>
+    <nav class="nav-desktop">
+      <a href="securite.html">Securite</a>
+      <a href="sante.html">Sante</a>
+      <a href="finance.html">Finance</a>
+      <a href="annonces.html">Annonces</a>
+      <a href="contact.html" class="active">Contact</a>
+    </nav>
+    <div class="lang-btns">
+      <button class="lang-btn active notranslate" data-lang="fr" onclick="changerLangueSite('fr')">FR</button>
+      <button class="lang-btn notranslate" data-lang="en" onclick="changerLangueSite('en')">EN</button>
+      <button class="lang-btn notranslate" data-lang="zh" onclick="changerLangueSite('zh')">中文</button>
+    </div>
+    <button class="menu-btn" id="menuBtn">⋮</button>
+  </header>
+
+  <div class="menu-dropdown" id="menuDropdown">
+    <a href="securite.html">Securite</a>
+    <a href="sante.html">Sante</a>
+    <a href="finance.html">Finance</a>
+    <a href="justice.html">Justice</a>
+    <a href="immobilier.html">Immobilier</a>
+    <a href="administratif.html">Administratif</a>
+    <a href="wilayas.html">Wilayas</a>
+    <a href="transport.html">Transport</a>
+    <a href="annonces.html">Annonces</a>
+    <a href="abonnement.html">Devenir Pro</a>
+    <a href="contact.html">Contact</a>
+    <a href="cgu.html">CGU et mentions legales</a>
+  </div>
+
+  <main class="page-content">
+    <div class="contact-container">
+      <h1 style="text-align: center; margin-bottom: 8px;">✉️ Contact</h1>
+      <p class="intro" style="text-align: center;">Une question, un partenariat, ou vous etes professionnel et souhaitez etre reference sur le site ? Ecrivez-nous.</p>
+
+      <div class="contact-info-grid">
+        <div class="carte" style="text-align: center;">
+          <h3 style="font-size: 14px; color: #4DD0E1;">📧 Email direct</h3>
+          <p style="font-size: 13px;">contact@dzdiaspora.app</p>
+        </div>
+        <div class="carte" style="text-align: center;">
+          <h3 style="font-size: 14px; color: #4DD0E1;">⏱️ Delai de reponse</h3>
+          <p style="font-size: 13px;">48 a 72 heures en moyenne</p>
+        </div>
+      </div>
+
+      <div class="msg-succes" id="msgSucces">✅ Votre client email va s ouvrir avec votre message pre-rempli.</div>
+
+      <form id="formContact">
+        <div class="form-group">
+          <label>Votre nom</label>
+          <input type="text" id="contactNom" required>
+        </div>
+        <div class="form-group">
+          <label>Votre email</label>
+          <input type="email" id="contactEmail" required>
+        </div>
+        <div class="form-group">
+          <label>Objet</label>
+          <select id="contactSujet">
+            <option value="Question generale">Question generale</option>
+            <option value="Devenir Pro - Reference professionnel">Devenir Pro — etre reference (medecin, avocat, notaire, pharmacien...)</option>
+            <option value="Signalement d un probleme">Signalement d un probleme</option>
+            <option value="Partenariat">Partenariat / Presse</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Votre message</label>
+          <textarea id="contactMessage" required></textarea>
+        </div>
+        <button type="submit" class="btn-telecharger" style="width: 100%; padding: 12px;">Envoyer le message</button>
+      </form>
+
+      <p style="text-align: center; margin-top: 16px; font-size: 12px; color: rgba(255,255,255,0.4);">
+        En nous contactant, vous acceptez nos <a href="cgu.html" style="color: #4DD0E1;">CGU</a>.
+      </p>
+    </div>
+  </main>
+
+  <footer>
+    <p>DZ Diaspora — Tous droits reserves</p>
+    <p><a href="cgu.html">CGU</a> · <a href="contact.html">Contact</a></p>
+  </footer>
+
+  <script>
+    document.getElementById("formContact").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const nom = document.getElementById("contactNom").value;
+      const email = document.getElementById("contactEmail").value;
+      const sujet = document.getElementById("contactSujet").value;
+      const message = document.getElementById("contactMessage").value;
+
+      const corps = `Nom : ${nom}\nEmail : ${email}\n\nMessage :\n${message}`;
+      const lien = `mailto:contact@dzdiaspora.app?subject=${encodeURIComponent("[DZ Diaspora] " + sujet)}&body=${encodeURIComponent(corps)}`;
+
+      document.getElementById("msgSucces").style.display = "block";
+      window.location.href = lien;
+    });
+  </script>
+  <script src="script.js"></script>
+  <script src="traduction.js"></script>
+</body>
+</html>
