@@ -1,0 +1,184 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #0D1117;
+  color: #FFFFFF;
+  min-height: 100vh;
+}
+header {
+  background: #1C2333;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+header .logo {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  text-decoration: none;
+}
+.nav-desktop {
+  display: flex;
+  gap: 24px;
+}
+.nav-desktop a {
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-size: 14px;
+}
+.nav-desktop a.active, .nav-desktop a:hover {
+  color: #4DD0E1;
+}
+.menu-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px 8px;
+  display: none;
+}
+.menu-dropdown {
+  position: absolute;
+  top: 56px;
+  right: 24px;
+  background: #1C2333;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  min-width: 220px;
+  display: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  z-index: 30;
+}
+.menu-dropdown.open { display: block; }
+.menu-dropdown a {
+  display: block;
+  padding: 12px 16px;
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.menu-dropdown a:last-child { border-bottom: none; }
+.menu-dropdown a:hover { background: rgba(255,255,255,0.06); }
+.page-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+.page-content h1 {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+.page-content .intro {
+  color: rgba(255,255,255,0.6);
+  font-size: 15px;
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+.bloc { margin-bottom: 32px; }
+.bloc h2 {
+  font-size: 18px;
+  margin-bottom: 14px;
+  color: #4DD0E1;
+}
+.grid-cartes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+.carte {
+  background: #1C2333;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 16px;
+}
+.carte h3 {
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+.carte p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.5;
+}
+.carte .detail {
+  margin-top: 8px;
+  color: rgba(255,255,255,0.5);
+  font-size: 12px;
+}
+.liste-conseils {
+  list-style: none;
+  padding: 0;
+}
+.liste-conseils li {
+  padding: 10px 0 10px 24px;
+  position: relative;
+  font-size: 14px;
+  color: rgba(255,255,255,0.75);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.liste-conseils li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: #4DD0E1;
+}
+footer {
+  text-align: center;
+  padding: 24px;
+  color: rgba(255,255,255,0.3);
+  font-size: 12px;
+}
+footer a { color: rgba(255,255,255,0.4); }
+@media (max-width: 768px) {
+  .nav-desktop { display: none; }
+  .menu-btn { display: block; }
+}
+.bandeau-devises-anime {
+  overflow: hidden;
+  background: #1C2333;
+  border-radius: 10px;
+  margin: 16px 0;
+  padding: 10px 0;
+}
+.bandeau-devises-track {
+  display: flex;
+  gap: 32px;
+  white-space: nowrap;
+  animation: defilement 18s linear infinite;
+  font-size: 14px;
+  color: #A8E063;
+  font-weight: bold;
+  padding-left: 16px;
+}
+@keyframes defilement {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.carte-lien {
+  text-decoration: none;
+  color: white;
+  display: block;
+  transition: border-color 0.2s;
+}
+.carte-lien:hover {
+  border-color: #4DD0E1;
+}
+.btn-telecharger {
+  background: #4DD0E1;
+  color: #0D1117;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}

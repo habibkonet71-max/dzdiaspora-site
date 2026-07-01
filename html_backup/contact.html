@@ -60,9 +60,7 @@
       <button class="lang-btn active notranslate" data-lang="fr" onclick="changerLangueSite('fr')">FR</button>
       <button class="lang-btn notranslate" data-lang="en" onclick="changerLangueSite('en')">EN</button>
       <button class="lang-btn notranslate" data-lang="zh" onclick="changerLangueSite('zh')">中文</button>
-      <button class="lang-btn notranslate" data-lang="ar" onclick="changerLangueSite('ar')">عربي</button>
     </div>
-    <div id="auth-btn-header" style="margin-left:6px"></div>
     <button class="menu-btn" id="menuBtn">⋮</button>
   </header>
 
@@ -153,33 +151,5 @@
   </script>
   <script src="script.js"></script>
   <script src="traduction.js"></script>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  const firebaseConfig = {
-    apiKey: "AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ",
-    appId: "1:223003656315:web:100de190b8b5e74ddae2de",
-    messagingSenderId: "223003656315",
-    projectId: "dzdiaspora-7260a",
-    authDomain: "dzdiaspora-7260a.firebaseapp.com",
-    storageBucket: "dzdiaspora-7260a.firebasestorage.app"
-  };
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  onAuthStateChanged(auth, (user) => {
-    const btn = document.getElementById('auth-btn-header');
-    if (!btn) return;
-    if (user) {
-      btn.innerHTML = `<button onclick="signOutUser()" style="background:rgba(214,16,52,0.15);border:1px solid #D61034;color:#ff6b6b;padding:5px 12px;border-radius:14px;font-size:12px;cursor:pointer;font-weight:bold;">🚪 ${user.email.split('@')[0]}</button>`;
-    } else {
-      btn.innerHTML = `<a href="connexion.html" style="background:rgba(77,208,225,0.15);border:1px solid #4DD0E1;color:#4DD0E1;padding:5px 12px;border-radius:14px;font-size:12px;cursor:pointer;font-weight:bold;text-decoration:none;">👤 Connexion</a>`;
-    }
-  });
-  window.signOutUser = async function() {
-    await signOut(auth);
-    window.location.href = 'connexion.html';
-  };
-</script>
 </body>
 </html>
