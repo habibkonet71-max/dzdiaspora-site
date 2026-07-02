@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Objets Trouves — DZ Diaspora</title>
+  <meta name="description" content="Signalez un objet trouve ou recherchez un objet perdu en Algerie. Systeme securise avec code secret de verification.">
+  <meta name="keywords" content="objet trouve Algerie, objet perdu Algerie, CNI perdue Algerie, passeport trouve, sac perdu Algerie">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .tabs { display: flex; gap: 0; margin-bottom: 24px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+    .tab-btn { flex: 1; padding: 14px; background: #1C2333; color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
+    .tab-btn.active { background: #4DD0E1; color: #0D1117; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; color: rgba(255,255,255,0.7); font-size: 13px; margin-bottom: 6px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 12px; border-radius: 10px;
+      background: #1C2333; color: white; border: 1px solid rgba(255,255,255,0.15);
+      font-size: 14px; font-family: inherit;
+    }
+    .form-group textarea { min-height: 80px; resize: vertical; }
+    .form-group select option { background: #1C2333; }
+    .btn-submit { width: 100%; padding: 14px; background: #4DD0E1; color: #0D1117; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; }
+    .btn-submit:hover { opacity: 0.85; }
+    .btn-submit.green { background: #A8E063; }
+    .code-secret-info { background: rgba(255,193,7,0.08); border: 1px solid rgba(255,193,7,0.3); border-radius: 10px; padding: 12px; margin-bottom: 16px; font-size: 12px; color: rgba(255,255,255,0.6); }
+    .resultat-recherche { margin-top: 20px; }
+    .contact-revele { background: rgba(168,224,99,0.08); border: 1px solid rgba(168,224,99,0.4); border-radius: 12px; padding: 20px; text-align: center; }
+    .contact-revele h3 { color: #A8E063; margin-bottom: 12px; }
+    .objet-card { background: #1C2333; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+    .objet-card .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; margin-bottom: 8px; }
+    .badge-document { background: rgba(77,208,225,0.15); color: #4DD0E1; }
+    .badge-sac { background: rgba(168,224,99,0.15); color: #A8E063; }
+    .badge-electronique { background: rgba(255,193,7,0.15); color: #FFC107; }
+    .badge-cle { background: rgba(171,71,188,0.15); color: #CE93D8; }
+    .badge-autre { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
+    .message-succes { background: rgba(168,224,99,0.1); border: 1px solid rgba(168,224,99,0.4); border-radius: 10px; padding: 16px; text-align: center; color: #A8E063; display: none; }
+    .message-erreur { background: rgba(214,16,52,0.1); border: 1px solid rgba(214,16,52,0.4); border-radius: 10px; padding: 12px; color: #ff6b6b; display: none; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">DZ Diaspora</a>
+    <nav class="nav-desktop">
+      <a href="annonces.html">Annonces</a>
+      <a href="securite.html">Securite</a>
+      <a href="objets-trouves.html" class="active">Objets Trouves</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="lang-btns">
+      <button class="lang-btn active notranslate" data-lang="fr" onclick="changerLangueSite('fr')">FR</button>
+      <button class="lang-btn notranslate" data-lang="en" onclick="changerLangueSite('en')">EN</button>
+      <button class="lang-btn notranslate" data-lang="zh" onclick="changerLangueSite('zh')">中文</button>
+      <button class="lang-btn notranslate" data-lang="ar" onclick="changerLangueSite('ar')">عربي</button>
+    </div>
+    <div id="auth-btn-header" style="margin-left:6px"></div>
+    <button class="menu-btn" id="menuBtn">⋮</button>
+  </header>
+  <div class="menu-dropdown" id="menuDropdown">
+    <a href="securite.html">Securite</a>
+    <a href="sante.html">Sante</a>
+    <a href="finance.html">Finance</a>
+    <a href="justice.html">Justice</a>
+    <a href="immobilier.html">Immobilier</a>
+    <a href="administratif.html">Administratif</a>
+    <a href="wilayas.html">Wilayas</a>
+    <a href="transport.html">Transport</a>
+    <a href="annonces.html">Annonces</a>
+    <a href="objets-trouves.html">Objets Trouves</a>
+    <a href="arnaques.html">Anti-Arnaques</a>
+    <a href="tourisme.html">Tourisme</a>
+    <a href="abonnement.html">Devenir Pro</a>
+    <a href="contact.html">Contact</a>
+    <a href="cgu.html">CGU et mentions legales</a>
+  </div>
+
+  <main class="page-content">
+    <h1>🔍 Objets Trouves</h1>
+    <p class="intro">Vous avez trouve un objet ? Deposez une fiche. Vous avez perdu quelque chose ? Recherchez par code secret. Systeme securise — le contact ne s affiche que si vous connaissez le code.</p>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="changerTab('deposer')">📋 Deposer un objet trouve</button>
+      <button class="tab-btn" onclick="changerTab('rechercher')">🔎 Rechercher mon objet</button>
+      <button class="tab-btn" onclick="changerTab('liste')">📜 Objets recents</button>
+    </div>
+
+    <!-- TAB 1 : DEPOSER -->
+    <div id="tab-deposer" class="tab-content active">
+      <div class="code-secret-info">
+        🔐 <strong>Comment fonctionne le code secret ?</strong><br>
+        Choisissez un mot ou code que SEUL le proprietaire de l objet peut connaitre (ex: couleur interieure du sac, prenom grave, autocollant...). 
+        Le proprietaire devra taper exactement ce code pour voir vos coordonnees.
+      </div>
+
+      <div class="message-succes" id="succes-depot">
+        ✅ Votre fiche a ete enregistree avec succes ! Merci de votre geste.
+      </div>
+
+      <div class="form-group">
+        <label>Type d objet *</label>
+        <select id="type-objet">
+          <option value="">-- Selectionnez --</option>
+          <option value="document">📄 Document (CNI, passeport, permis de conduire, carte consulaire...)</option>
+          <option value="sac">👜 Sac, cabas, valise, portefeuille</option>
+          <option value="electronique">📱 Telephone, tablette, ordinateur, appareil photo</option>
+          <option value="cle">🔑 Cles (voiture, maison, cadenas...)</option>
+          <option value="bijou">💍 Bijou, montre, accessoire de valeur</option>
+          <option value="autre">📦 Autre objet</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Description de l objet *</label>
+        <textarea id="description-objet" placeholder="Ex: Sac a main rouge en cuir, contenant une carte d identite au nom de Fatima B., une carte bancaire CIB et des cles. Trouve le 2 juillet 2026 devant la gare de Constantine."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Lieu ou l objet a ete trouve *</label>
+        <input type="text" id="lieu-trouve" placeholder="Ex: Gare routiere de Constantine, aeroport d Alger, mosquee El Kebir Oran...">
+      </div>
+
+      <div class="form-group">
+        <label>Wilaya *</label>
+        <select id="wilaya-objet">
+          <option value="">-- Wilaya --</option>
+          <option>Alger</option><option>Oran</option><option>Constantine</option>
+          <option>Annaba</option><option>Blida</option><option>Bejaia</option>
+          <option>Tizi Ouzou</option><option>Setif</option><option>Batna</option>
+          <option>Tlemcen</option><option>Mostaganem</option><option>Sidi Bel Abbes</option>
+          <option>Skikda</option><option>Guelma</option><option>Medea</option>
+          <option>Mascara</option><option>Ghardaia</option><option>Ouargla</option>
+          <option>Tamanrasset</option><option>Adrar</option><option>Autre</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>🔐 Code secret (signe distinctif connu du seul proprietaire) *</label>
+        <input type="text" id="code-secret" placeholder="Ex: couleur de la doublure, mot grave, autocollant..." maxlength="50">
+        <p style="color:rgba(255,255,255,0.35);font-size:11px;margin-top:4px;">Ce code ne sera JAMAIS affiche publiquement. Seul quelqu un qui le connait verra vos coordonnees.</p>
+      </div>
+
+      <div style="background:rgba(255,255,255,0.03);border-radius:10px;padding:14px;margin-bottom:16px;">
+        <p style="color:rgba(255,255,255,0.6);font-size:13px;margin-bottom:10px;">Vos coordonnees de contact (visibles uniquement si le code est correct) :</p>
+        <div class="form-group">
+          <label>Votre nom ou prenom *</label>
+          <input type="text" id="contact-nom" placeholder="Votre prenom ou nom">
+        </div>
+        <div class="form-group">
+          <label>Telephone (optionnel)</label>
+          <input type="tel" id="contact-tel" placeholder="Ex: +33 6 12 34 56 78 ou +213 7 12 34 56 78">
+        </div>
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" id="contact-email" placeholder="votre@email.com">
+        </div>
+      </div>
+
+      <button class="btn-submit" onclick="deposerObjet()">📋 Deposer la fiche</button>
+    </div>
+
+    <!-- TAB 2 : RECHERCHER -->
+    <div id="tab-rechercher" class="tab-content">
+      <div class="code-secret-info">
+        🔎 <strong>Comment retrouver votre objet ?</strong><br>
+        Si quelqu un a depose une fiche pour votre objet, entrez le <strong>signe distinctif secret</strong> que vous seul connaissez. 
+        Si le code correspond, les coordonnees du depositaire s affichent.
+      </div>
+
+      <div class="form-group">
+        <label>Type d objet perdu</label>
+        <select id="type-recherche">
+          <option value="">-- Tous les types --</option>
+          <option value="document">📄 Document</option>
+          <option value="sac">👜 Sac / portefeuille</option>
+          <option value="electronique">📱 Electronique</option>
+          <option value="cle">🔑 Cles</option>
+          <option value="bijou">💍 Bijou</option>
+          <option value="autre">📦 Autre</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Wilaya</label>
+        <select id="wilaya-recherche">
+          <option value="">-- Toutes les wilayas --</option>
+          <option>Alger</option><option>Oran</option><option>Constantine</option>
+          <option>Annaba</option><option>Blida</option><option>Bejaia</option>
+          <option>Tizi Ouzou</option><option>Setif</option><option>Batna</option>
+          <option>Tlemcen</option><option>Autre</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>🔐 Votre code secret (signe distinctif) *</label>
+        <input type="text" id="code-recherche" placeholder="Tapez le signe distinctif que vous seul connaissez..." maxlength="50">
+      </div>
+
+      <div class="message-erreur" id="erreur-recherche">
+        ❌ Aucun objet trouve correspondant a ce code. Verifiez l orthographe ou contactez-nous.
+      </div>
+
+      <button class="btn-submit green" onclick="rechercherObjet()">🔎 Rechercher mon objet</button>
+
+      <div class="resultat-recherche" id="resultat-recherche" style="display:none;">
+        <div class="contact-revele">
+          <h3>✅ Objet trouve ! Contactez le depositaire :</h3>
+          <div id="info-contact" style="margin-top:12px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3 : LISTE -->
+    <div id="tab-liste" class="tab-content">
+      <p style="color:rgba(255,255,255,0.5);font-size:13px;margin-bottom:16px;">
+        Liste des objets trouves recemment. Les coordonnees de contact sont masquees — utilisez l onglet "Rechercher" avec votre code secret pour les afficher.
+      </p>
+      <div id="liste-objets">
+        <p style="color:rgba(255,255,255,0.3);text-align:center;padding:30px;">Chargement...</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>DZ Diaspora — Tous droits reserves</p>
+    <p><a href="cgu.html">CGU</a> · <a href="contact.html">Contact</a></p>
+  </footer>
+
+  <div id="btn-signaler-flottant" style="position:fixed;bottom:20px;right:20px;z-index:999;">
+    <a href="contact.html?sujet=Signalement" style="display:flex;align-items:center;gap:6px;background:rgba(28,35,51,0.95);border:1px solid rgba(255,100,100,0.4);color:#ff6b6b;padding:10px 14px;border-radius:25px;font-size:12px;font-weight:bold;text-decoration:none;">
+      🚩 Signaler une erreur
+    </a>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, limit, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ",
+      appId: "1:223003656315:web:100de190b8b5e74ddae2de",
+      messagingSenderId: "223003656315",
+      projectId: "dzdiaspora-7260a",
+      authDomain: "dzdiaspora-7260a.firebaseapp.com",
+      storageBucket: "dzdiaspora-7260a.firebasestorage.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Auth header
+    onAuthStateChanged(auth, (user) => {
+      const btn = document.getElementById('auth-btn-header');
+      if (!btn) return;
+      if (user) {
+        btn.innerHTML = '<button onclick="signOutUser()" style="background:rgba(214,16,52,0.15);border:1px solid #D61034;color:#ff6b6b;padding:5px 12px;border-radius:14px;font-size:12px;cursor:pointer;font-weight:bold;">🚪 ' + user.email.split('@')[0] + '</button>';
+      } else {
+        btn.innerHTML = '<a href="connexion.html" style="background:rgba(77,208,225,0.15);border:1px solid #4DD0E1;color:#4DD0E1;padding:5px 12px;border-radius:14px;font-size:12px;font-weight:bold;text-decoration:none;">👤 Connexion</a>';
+      }
+    });
+    window.signOutUser = async function() { await signOut(auth); window.location.href = 'connexion.html'; };
+
+    // DEPOSER UN OBJET
+    window.deposerObjet = async function() {
+      const type = document.getElementById('type-objet').value;
+      const description = document.getElementById('description-objet').value;
+      const lieu = document.getElementById('lieu-trouve').value;
+      const wilaya = document.getElementById('wilaya-objet').value;
+      const code = document.getElementById('code-secret').value.trim().toLowerCase();
+      const nom = document.getElementById('contact-nom').value;
+      const tel = document.getElementById('contact-tel').value;
+      const email = document.getElementById('contact-email').value;
+
+      if (!type || !description || !lieu || !wilaya || !code || !nom || !email) {
+        alert('Veuillez remplir tous les champs obligatoires (*)');
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, 'objets_trouves'), {
+          type,
+          description,
+          lieu,
+          wilaya,
+          code_secret: code,
+          contact_nom: nom,
+          contact_tel: tel,
+          contact_email: email,
+          date: Timestamp.now(),
+          actif: true
+        });
+
+        document.getElementById('succes-depot').style.display = 'block';
+        // Vider le formulaire
+        ['type-objet','description-objet','lieu-trouve','wilaya-objet','code-secret','contact-nom','contact-tel','contact-email'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = '';
+        });
+        setTimeout(() => document.getElementById('succes-depot').style.display = 'none', 5000);
+      } catch (e) {
+        alert('Erreur lors de l enregistrement. Reessayez.');
+      }
+    };
+
+    // RECHERCHER PAR CODE SECRET
+    window.rechercherObjet = async function() {
+      const code = document.getElementById('code-recherche').value.trim().toLowerCase();
+      const type = document.getElementById('type-recherche').value;
+      const wilaya = document.getElementById('wilaya-recherche').value;
+
+      if (!code) { alert('Entrez votre code secret'); return; }
+
+      document.getElementById('resultat-recherche').style.display = 'none';
+      document.getElementById('erreur-recherche').style.display = 'none';
+
+      try {
+        let q = query(collection(db, 'objets_trouves'), where('code_secret', '==', code), where('actif', '==', true));
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+          document.getElementById('erreur-recherche').style.display = 'block';
+          return;
+        }
+
+        let html = '';
+        snap.forEach(doc => {
+          const d = doc.data();
+          html += `
+            <div style="margin-bottom:16px;padding:14px;background:rgba(168,224,99,0.05);border-radius:10px;">
+              <p style="color:white;font-weight:bold;font-size:15px;">${d.type === 'document' ? '📄' : d.type === 'sac' ? '👜' : d.type === 'electronique' ? '📱' : d.type === 'cle' ? '🔑' : '📦'} ${d.description}</p>
+              <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:4px;">📍 ${d.lieu} — ${d.wilaya}</p>
+              <div style="margin-top:14px;padding:12px;background:rgba(168,224,99,0.1);border-radius:8px;">
+                <p style="color:#A8E063;font-weight:bold;font-size:13px;">👤 ${d.contact_nom}</p>
+                ${d.contact_tel ? `<p style="color:white;font-size:14px;margin-top:6px;">📞 <a href="tel:${d.contact_tel}" style="color:#4DD0E1;">${d.contact_tel}</a></p>` : ''}
+                <p style="color:white;font-size:14px;margin-top:4px;">✉️ <a href="mailto:${d.contact_email}" style="color:#4DD0E1;">${d.contact_email}</a></p>
+              </div>
+            </div>`;
+        });
+
+        document.getElementById('info-contact').innerHTML = html;
+        document.getElementById('resultat-recherche').style.display = 'block';
+      } catch(e) {
+        document.getElementById('erreur-recherche').style.display = 'block';
+      }
+    };
+
+    // LISTE DES OBJETS RECENTS (sans contact)
+    async function chargerListe() {
+      try {
+        const q = query(collection(db, 'objets_trouves'), where('actif', '==', true), orderBy('date', 'desc'), limit(20));
+        const snap = await getDocs(q);
+        const container = document.getElementById('liste-objets');
+
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);text-align:center;padding:30px;">Aucun objet enregistre pour le moment.</p>';
+          return;
+        }
+
+        let html = '';
+        const badges = { document: 'badge-document', sac: 'badge-sac', electronique: 'badge-electronique', cle: 'badge-cle', bijou: 'badge-electronique', autre: 'badge-autre' };
+        const emojis = { document: '📄', sac: '👜', electronique: '📱', cle: '🔑', bijou: '💍', autre: '📦' };
+        const labels = { document: 'Document', sac: 'Sac / Portefeuille', electronique: 'Electronique', cle: 'Cles', bijou: 'Bijou', autre: 'Autre' };
+
+        snap.forEach(doc => {
+          const d = doc.data();
+          const date = d.date?.toDate ? d.date.toDate().toLocaleDateString('fr-FR') : 'Date inconnue';
+          html += `
+            <div class="objet-card">
+              <span class="badge ${badges[d.type] || 'badge-autre'}">${emojis[d.type] || '📦'} ${labels[d.type] || 'Autre'}</span>
+              <p style="color:white;font-size:14px;line-height:1.5;">${d.description}</p>
+              <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:6px;">📍 ${d.lieu} — ${d.wilaya} &nbsp;|&nbsp; 📅 ${date}</p>
+              <p style="color:rgba(77,208,225,0.7);font-size:11px;margin-top:8px;font-style:italic;">🔐 Pour contacter le depositaire, utilisez l onglet "Rechercher" avec votre code secret.</p>
+            </div>`;
+        });
+
+        container.innerHTML = html;
+      } catch(e) {
+        document.getElementById('liste-objets').innerHTML = '<p style="color:rgba(255,255,255,0.3);text-align:center;">Chargement impossible.</p>';
+      }
+    }
+
+    chargerListe();
+  </script>
+
+  <script>
+    function changerTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('tab-' + tab).classList.add('active');
+      if (tab === 'liste') chargerListe();
+    }
+  </script>
+
+  <script src="script.js"></script>
+  <script src="traduction.js"></script>
+</body>
+</html>
