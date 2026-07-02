@@ -224,29 +224,144 @@
   </div>
   </div>
 
-  <main>
+    <main>
+    <!-- BANDEAUX -->
     <div class="bandeaux-row">
       <div class="bandeau" id="bandeauMeteo"><span>Chargement meteo...</span></div>
       <div class="bandeau" id="bandeauDevises"><span>Chargement devises...</span></div>
     </div>
 
-    <div class="search-box">
-      <input type="text" id="rechercheInput" placeholder="Rechercher: sante, transport, wilaya, passeport...">
+    <!-- HERO -->
+    <section style="text-align:center;padding:32px 16px 24px;">
+      <div style="font-size:48px;margin-bottom:12px;">🇩🇿</div>
+      <h1 style="color:white;font-size:26px;font-weight:900;margin-bottom:8px;">DZ Diaspora</h1>
+      <p style="color:rgba(255,255,255,0.55);font-size:14px;max-width:400px;margin:0 auto 20px;line-height:1.6;">
+        Le portail de reference de la diaspora algerienne — informations, services, annonces et actualites.
+      </p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        <a href="annonces.html" style="background:#4DD0E1;color:#0D1117;padding:10px 20px;border-radius:25px;font-weight:700;text-decoration:none;font-size:14px;">📢 Publier une annonce</a>
+        <a href="installer-app.html" style="background:rgba(77,208,225,0.15);border:1px solid #4DD0E1;color:#4DD0E1;padding:10px 20px;border-radius:25px;font-weight:700;text-decoration:none;font-size:14px;">📱 Telecharger l app</a>
+      </div>
+    </section>
+
+    <!-- RECHERCHE -->
+    <div style="padding:0 16px 20px;">
+      <div class="search-box">
+        <input type="text" id="rechercheInput" placeholder="🔍 Rechercher : sante, transport, wilaya, passeport...">
+      </div>
     </div>
 
-    <div class="tuiles">
-      <button class="tuile tuile-urgence" id="btnUrgences">🚨 Urgences</button>
-      <a href="#presse" class="tuile tuile-transport">✈️ Transport</a>
+    <!-- URGENCES -->
+    <div style="padding:0 16px 20px;">
+      <button class="tuile tuile-urgence" id="btnUrgences" style="width:100%;padding:14px;border-radius:12px;border:none;background:rgba(214,16,52,0.15);border:1px solid rgba(214,16,52,0.4);color:#ff6b6b;font-size:15px;font-weight:700;cursor:pointer;">
+        🚨 Numeros d urgence — Police 17 · Pompiers 18 · SAMU 1548
+      </button>
     </div>
 
-    <div class="mosquees" id="mosqueesContainer">
-      <div class="carte-mosquee">Chargement mosquees...</div>
-    </div>
+    <!-- CATEGORIES -->
+    <section style="padding:0 16px 24px;">
+      <h2 style="color:white;font-size:18px;font-weight:700;margin-bottom:16px;">Nos services</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;">
+        <a href="securite.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">🚨</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Securite</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Urgences & ambassades</div>
+        </a>
+        <a href="sante.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">🏥</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Sante</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">CNAS, medecins, pharmacies</div>
+        </a>
+        <a href="finance.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">💰</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Finance</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Banques & devises</div>
+        </a>
+        <a href="justice.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">⚖️</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Justice</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Avocats & tribunaux</div>
+        </a>
+        <a href="immobilier.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">🏠</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Immobilier</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">AADL, LPA, arnaques</div>
+        </a>
+        <a href="administratif.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">📄</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Administratif</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Passeport, CCR 2026</div>
+        </a>
+        <a href="wilayas.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">🗺️</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Wilayas</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">69 wilayas officielles</div>
+        </a>
+        <a href="transport.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">✈️</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Transport</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Vols, ferries, aeroports</div>
+        </a>
+        <a href="annonces.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">📢</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Annonces</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Immobilier, services</div>
+        </a>
+        <a href="tourisme.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">🏛️</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Tourisme</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Sites UNESCO & plages</div>
+        </a>
+        <a href="arnaques.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">⚠️</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Anti-Arnaques</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Protegez-vous</div>
+        </a>
+        <a href="objets-trouves.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">🔍</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Objets Trouves</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">CNI, sac, cles...</div>
+        </a>
+      </div>
+    </section>
 
-    <div id="presse"></div>
-    <div class="presse-grid" id="presseContainer">
-      <div class="chargement">Chargement des actualites...</div>
-    </div>
+    <!-- MOSQUEES -->
+    <section style="padding:0 16px 24px;">
+      <h2 style="color:white;font-size:18px;font-weight:700;margin-bottom:12px;">🕌 Mosquees & Horaires de priere</h2>
+      <div class="mosquees" id="mosqueesContainer">
+        <div class="carte-mosquee">Chargement mosquees...</div>
+      </div>
+    </section>
+
+    <!-- RESULTATS FOOT -->
+    <section style="padding:0 16px 24px;">
+      <h2 style="color:white;font-size:18px;font-weight:700;margin-bottom:12px;">⚽ Football — EN Algerie</h2>
+      <div id="footContainer" style="background:#1C2333;border-radius:12px;padding:14px;">
+        <div id="footResultats" style="color:rgba(255,255,255,0.4);text-align:center;padding:10px;">Chargement des resultats...</div>
+      </div>
+      <div style="margin-top:10px;text-align:right;">
+        <a href="https://www.faf.dz" target="_blank" style="color:#4DD0E1;font-size:12px;">Voir sur faf.dz →</a>
+      </div>
+    </section>
+
+    <!-- PRESSE / ACTUALITES -->
+    <section style="padding:0 16px 24px;" id="presse">
+      <h2 style="color:white;font-size:18px;font-weight:700;margin-bottom:12px;">📰 Actualites Algerie</h2>
+      <div class="presse-grid" id="presseContainer">
+        <div class="chargement">Chargement des actualites...</div>
+      </div>
+    </section>
+
+    <!-- TELECHARGER APP -->
+    <section style="padding:0 16px 32px;">
+      <div class="carte" style="text-align:center;background:linear-gradient(135deg,rgba(77,208,225,0.08),rgba(77,208,225,0.03));border-color:rgba(77,208,225,0.25);padding:24px;">
+        <div style="font-size:36px;margin-bottom:10px;">📱</div>
+        <h3 style="color:white;margin-bottom:6px;">Application Android disponible</h3>
+        <p style="color:rgba(255,255,255,0.5);font-size:13px;margin-bottom:16px;">Toutes les fonctionnalites dans votre poche — gratuit, sans Play Store.</p>
+        <a href="installer-app.html" class="btn-telecharger">📥 Telecharger l application</a>
+      </div>
+    </section>
+
   </main>
 
   <footer>
@@ -269,6 +384,53 @@
     onAuthStateChanged(auth, (user) => {
       utilisateurConnecte = !!(user && user.emailVerified);
     });
+
+    // RESULTATS FOOT EN Algerie
+    async function chargerFoot() {
+      const container = document.getElementById('footResultats');
+      try {
+        // API-Football via RapidAPI alternative gratuite
+        const res = await fetch('https://api.football-data.org/v4/teams/7459/matches?status=FINISHED&limit=5', {
+          headers: { 'X-Auth-Token': 'demo' }
+        });
+        if (!res.ok) throw new Error('API indisponible');
+        const data = await res.json();
+        const matches = data.matches || [];
+        if (matches.length === 0) {
+          container.innerHTML = chargerFootFallback();
+          return;
+        }
+        let html = '';
+        matches.forEach(m => {
+          const date = new Date(m.utcDate).toLocaleDateString('fr-FR');
+          const home = m.homeTeam?.shortName || m.homeTeam?.name || '?';
+          const away = m.awayTeam?.shortName || m.awayTeam?.name || '?';
+          const scoreHome = m.score?.fullTime?.home ?? '-';
+          const scoreAway = m.score?.fullTime?.away ?? '-';
+          html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+            <span style="color:rgba(255,255,255,0.7);font-size:13px;flex:1;text-align:right;">${home}</span>
+            <span style="color:#4DD0E1;font-weight:900;font-size:16px;padding:0 12px;">${scoreHome} - ${scoreAway}</span>
+            <span style="color:rgba(255,255,255,0.7);font-size:13px;flex:1;">${away}</span>
+          </div>`;
+        });
+        container.innerHTML = html || chargerFootFallback();
+      } catch(e) {
+        container.innerHTML = chargerFootFallback();
+      }
+    }
+
+    function chargerFootFallback() {
+      return `<div style="text-align:center;padding:10px;">
+        <p style="color:rgba(255,255,255,0.5);font-size:13px;">Resultats disponibles sur</p>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:10px;">
+          <a href="https://www.faf.dz" target="_blank" style="background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;padding:8px 16px;border-radius:20px;text-decoration:none;font-size:13px;">faf.dz</a>
+          <a href="https://www.bbc.com/sport/football/african" target="_blank" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:20px;text-decoration:none;font-size:13px;">BBC Sport</a>
+          <a href="https://www.flashscore.fr/football/algerie/" target="_blank" style="background:rgba(255,193,7,0.1);border:1px solid #FFC107;color:#FFC107;padding:8px 16px;border-radius:20px;text-decoration:none;font-size:13px;">Flashscore</a>
+        </div>
+      </div>`;
+    }
+
+    chargerFoot();
     document.getElementById("menuBtn").addEventListener("click", function () {
       document.getElementById("menuDropdown").classList.toggle("open");
     });
