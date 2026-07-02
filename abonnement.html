@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Publier une annonce immobiliere — DZ Diaspora</title>
+  <meta name="description" content="Publiez vos annonces immobilieres en Algerie sur DZ Diaspora.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .plans-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-bottom: 32px; }
+    .plan-card { background: #1C2333; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 24px; position: relative; transition: transform 0.2s; }
+    .plan-card:hover { transform: translateY(-4px); }
+    .plan-card.popular { border-color: #4DD0E1; }
+    .plan-card.best { border-color: #A8E063; }
+    .plan-badge { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 800; padding: 4px 14px; border-radius: 20px; white-space: nowrap; }
+    .plan-nom { font-size: 20px; font-weight: 800; color: white; margin-bottom: 6px; }
+    .plan-prix { font-size: 38px; font-weight: 900; margin: 14px 0 4px; }
+    .plan-prix span { font-size: 14px; color: rgba(255,255,255,0.45); font-weight: 400; }
+    .plan-desc { font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 20px; line-height: 1.6; }
+    .plan-features { list-style: none; padding: 0; margin-bottom: 20px; }
+    .plan-features li { font-size: 13px; color: rgba(255,255,255,0.75); padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; gap: 8px; }
+    .plan-features li::before { content: "✓"; color: #4DD0E1; font-weight: bold; flex-shrink: 0; }
+    .plan-features li.non::before { content: "✗"; color: rgba(255,255,255,0.2); }
+    .plan-features li.non { color: rgba(255,255,255,0.25); }
+    .plan-btn { display: block; width: 100%; padding: 13px; border-radius: 10px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; transition: opacity 0.2s; }
+    .plan-btn:hover { opacity: 0.85; }
+    .plan-btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.25); color: white; }
+    .faq-item { background: #1C2333; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; margin-bottom: 10px; cursor: pointer; }
+    .faq-question { font-size: 14px; font-weight: 600; color: white; display: flex; justify-content: space-between; align-items: center; }
+    .faq-reponse { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 10px; line-height: 1.6; display: none; }
+    .faq-item.open .faq-reponse { display: block; }
+    .faq-arrow { transition: transform 0.2s; display: inline-block; }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">DZ Diaspora</a>
+    <nav class="nav-desktop">
+      <a href="immobilier.html">Immobilier</a>
+      <a href="annonces.html">Annonces</a>
+      <a href="abonnement.html" class="active">Publier</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="lang-btns">
+      <button class="lang-btn active notranslate" data-lang="fr" onclick="changerLangueSite('fr')">FR</button>
+      <button class="lang-btn notranslate" data-lang="en" onclick="changerLangueSite('en')">EN</button>
+      <button class="lang-btn notranslate" data-lang="zh" onclick="changerLangueSite('zh')">中文</button>
+      <button class="lang-btn notranslate" data-lang="ar" onclick="changerLangueSite('ar')">عربي</button>
+    </div>
+    <div id="auth-btn-header" style="margin-left:6px"></div>
+    <button class="menu-btn" id="menuBtn">⋮</button>
+  </header>
+
+  <div class="menu-dropdown" id="menuDropdown">
+    <a href="securite.html">Securite</a>
+    <a href="sante.html">Sante</a>
+    <a href="finance.html">Finance</a>
+    <a href="justice.html">Justice</a>
+    <a href="immobilier.html">Immobilier</a>
+    <a href="administratif.html">Administratif</a>
+    <a href="wilayas.html">Wilayas</a>
+    <a href="transport.html">Transport</a>
+    <a href="annonces.html">Annonces</a>
+    <a href="abonnement.html">Publier une annonce</a>
+    <a href="contact.html">Contact</a>
+    <a href="cgu.html">CGU et mentions legales</a>
+  </div>
+
+  <main class="page-content">
+    <h1>🏠 Publiez vos annonces immobilieres</h1>
+    <p class="intro">Vente, location, colocation — touchez la diaspora algerienne en France et dans le monde. Commencez gratuitement, sans carte bancaire.</p>
+
+    <section class="bloc">
+      <h2>Choisissez votre formule</h2>
+      <div class="plans-grid">
+
+        <div class="plan-card">
+          <div class="plan-nom">Decouverte</div>
+          <div class="plan-prix" style="color:#4DD0E1">0€ <span>/ inscription</span></div>
+          <div class="plan-desc">4 annonces offertes des votre inscription pour tester la plateforme. Sans carte bancaire.</div>
+          <ul class="plan-features">
+            <li>4 annonces gratuites a l inscription</li>
+            <li>Photos incluses</li>
+            <li>Visibilite standard</li>
+            <li>Valable sans limite de temps</li>
+            <li class="non">Annonces mises en avant</li>
+            <li class="non">Annonces illimitees</li>
+            <li class="non">Badge vendeur verifie</li>
+          </ul>
+          <a href="connexion.html" class="plan-btn plan-btn-outline">Commencer gratuitement</a>
+        </div>
+
+        <div class="plan-card popular">
+          <div class="plan-badge" style="background:#4DD0E1;color:#0D1117">Acces rapide</div>
+          <div class="plan-nom">Starter</div>
+          <div class="plan-prix" style="color:#4DD0E1">14€ <span>/ 7 jours</span></div>
+          <div class="plan-desc">1 annonce par jour pendant 7 jours. Ideal pour une vente ponctuelle.</div>
+          <ul class="plan-features">
+            <li>7 annonces sur 7 jours</li>
+            <li>1 annonce publiee par jour</li>
+            <li>Photos illimitees par annonce</li>
+            <li>Statistiques de base</li>
+            <li>Visibilite standard</li>
+            <li class="non">Annonces illimitees</li>
+            <li class="non">Badge vendeur verifie</li>
+          </ul>
+          <a href="connexion.html" class="plan-btn" style="background:#4DD0E1;color:#0D1117">Choisir Starter — 14€</a>
+        </div>
+
+        <div class="plan-card best">
+          <div class="plan-badge" style="background:#A8E063;color:#0D1117">Meilleur rapport</div>
+          <div class="plan-nom">Pro Illimite</div>
+          <div class="plan-prix" style="color:#A8E063">60€ <span>/ mois</span></div>
+          <div class="plan-desc">Annonces immobilieres illimitees. Pour les agences, promoteurs et particuliers actifs.</div>
+          <ul class="plan-features">
+            <li>Annonces illimitees</li>
+            <li>Mise en avant des annonces</li>
+            <li>Badge vendeur verifie</li>
+            <li>Statistiques completes</li>
+            <li>Photos illimitees par annonce</li>
+            <li>Support prioritaire sous 24h</li>
+            <li>Annulation a tout moment</li>
+          </ul>
+          <a href="connexion.html" class="plan-btn" style="background:#A8E063;color:#0D1117">Passer Pro — 60€/mois</a>
+        </div>
+
+      </div>
+      <p style="text-align:center;font-size:12px;color:rgba(255,255,255,0.3);">Paiement securise par Stripe • Annulation en 1 clic • TVA incluse</p>
+    </section>
+
+    <section class="bloc">
+      <h2>Questions frequentes</h2>
+
+      <div class="faq-item" onclick="this.classList.toggle('open')">
+        <div class="faq-question">Comment fonctionnent les 4 annonces gratuites ? <span class="faq-arrow">▼</span></div>
+        <div class="faq-reponse">Des votre inscription sur DZ Diaspora, vous recevez automatiquement 4 credits d annonces. Vous pouvez les utiliser quand vous voulez, sans limite de temps et sans carte bancaire.</div>
+      </div>
+
+      <div class="faq-item" onclick="this.classList.toggle('open')">
+        <div class="faq-question">Le plan Starter : 1 annonce par jour, comment ca marche ? <span class="faq-arrow">▼</span></div>
+        <div class="faq-reponse">Avec le Starter a 14 euros, vous pouvez publier 1 nouvelle annonce par jour pendant 7 jours, soit 7 annonces au total. Chaque annonce reste visible jusqu a ce qu elle soit vendue ou que vous la supprimiez.</div>
+      </div>
+
+      <div class="faq-item" onclick="this.classList.toggle('open')">
+        <div class="faq-question">Quels types de biens puis-je publier ? <span class="faq-arrow">▼</span></div>
+        <div class="faq-reponse">Actuellement DZ Diaspora accepte les annonces immobilieres uniquement : vente d appartements, villas, terrains, locaux commerciaux, ainsi que les locations longue duree.</div>
+      </div>
+
+      <div class="faq-item" onclick="this.classList.toggle('open')">
+        <div class="faq-question">Puis-je annuler l abonnement Pro a tout moment ? <span class="faq-arrow">▼</span></div>
+        <div class="faq-reponse">Oui, sans frais ni justification. L annulation prend effet a la fin du mois en cours. Vos annonces restent visibles jusqu a la fin de la periode payee.</div>
+      </div>
+
+      <div class="faq-item" onclick="this.classList.toggle('open')">
+        <div class="faq-question">Je suis agence immobiliere — avez-vous des tarifs specifiques ? <span class="faq-arrow">▼</span></div>
+        <div class="faq-reponse">Oui ! Les agences et promoteurs immobiliers beneficient de tarifs negocies et d une page de profil dediee. Contactez-nous via la page Contact pour obtenir un devis personnalise.</div>
+      </div>
+
+    </section>
+
+    <section class="bloc">
+      <div class="carte" style="text-align:center;padding:32px;">
+        <div style="font-size:40px;margin-bottom:12px;">🏠</div>
+        <h2 style="color:white;margin-bottom:8px;">Pret a publier votre bien ?</h2>
+        <p style="color:rgba(255,255,255,0.55);font-size:14px;margin-bottom:20px;">Commencez gratuitement avec 4 annonces offertes — aucune carte bancaire requise.</p>
+        <a href="connexion.html" class="btn-telecharger" style="font-size:15px;padding:12px 28px;">Commencer gratuitement</a>
+        <a href="contact.html" style="color:rgba(255,255,255,0.4);font-size:13px;display:block;margin-top:12px;">Vous etes une agence ? Contactez-nous</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>DZ Diaspora — Tous droits reserves</p>
+    <p><a href="cgu.html">CGU</a> · <a href="contact.html">Contact</a></p>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ",
+      appId: "1:223003656315:web:100de190b8b5e74ddae2de",
+      messagingSenderId: "223003656315",
+      projectId: "dzdiaspora-7260a",
+      authDomain: "dzdiaspora-7260a.firebaseapp.com",
+      storageBucket: "dzdiaspora-7260a.firebasestorage.app"
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    onAuthStateChanged(auth, (user) => {
+      const btn = document.getElementById('auth-btn-header');
+      if (!btn) return;
+      if (user) {
+        btn.innerHTML = '<button onclick="signOutUser()" style="background:rgba(214,16,52,0.15);border:1px solid #D61034;color:#ff6b6b;padding:5px 12px;border-radius:14px;font-size:12px;cursor:pointer;font-weight:bold;">🚪 ' + user.email.split('@')[0] + '</button>';
+      } else {
+        btn.innerHTML = '<a href="connexion.html" style="background:rgba(77,208,225,0.15);border:1px solid #4DD0E1;color:#4DD0E1;padding:5px 12px;border-radius:14px;font-size:12px;font-weight:bold;text-decoration:none;">👤 Connexion</a>';
+      }
+    });
+    window.signOutUser = async function() { await signOut(auth); window.location.href = 'connexion.html'; };
+  </script>
+  <script src="script.js"></script>
+  <script src="traduction.js"></script>
+</body>
+</html>
