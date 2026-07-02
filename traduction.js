@@ -11,6 +11,9 @@ function googleTranslateElementInit() {
 }
 
 function changerLangueSite(codeLangue) {
+  // RTL automatique pour l arabe
+  document.documentElement.dir = (codeLangue === 'ar') ? 'rtl' : 'ltr';
+  document.documentElement.lang = (codeLangue === 'zh') ? 'zh-CN' : codeLangue;
   document.querySelectorAll(".lang-btn").forEach(function (bouton) {
     bouton.classList.remove("active");
   });
