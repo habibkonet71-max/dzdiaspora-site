@@ -221,14 +221,27 @@
         snap.forEach((doc) => {
           const data = doc.data();
           const vols = data.vols || [];
+          const liensCompagnies = {
+            'Air Algerie': 'https://www.airalgerie.dz',
+            'Air France': 'https://www.airfrance.fr',
+            'Transavia': 'https://www.transavia.com',
+            'Vueling': 'https://www.vueling.com',
+            'Turkish Airlines': 'https://www.turkishairlines.com',
+            'Tassili Airlines': 'https://www.tassiliairlines.dz',
+            'Corsair': 'https://www.corsair.fr',
+            'Tunisair': 'https://www.tunisair.com',
+            'Royal Air Maroc': 'https://www.royalairmaroc.com',
+          };
           vols.slice(0, 4).forEach((vol) => {
+            const nomCompagnie = vol.airline?.name || doc.id;
+            const lienCompagnie = Object.entries(liensCompagnies).find(([k]) => nomCompagnie.includes(k))?.[1] || 'https://www.airalgerie.dz';
             html += `
-              <div class="carte">
-                <h3>${vol.airline?.name || doc.id} ${vol.flight?.iata || ""}</h3>
+              <a href="${lienCompagnie}" target="_blank" class="carte carte-lien" style="text-decoration:none;">
+                <h3>${nomCompagnie} ${vol.flight?.iata || ""} ↗</h3>
                 <p>${vol.departure?.airport || "?"} → ${vol.arrival?.airport || "?"}</p>
-                <p class="detail">Depart prevu: ${vol.departure?.scheduled?.substring(11,16) || "?"} — Arrivee prevue: ${vol.arrival?.scheduled?.substring(11,16) || "?"}</p>
+                <p class="detail">Depart: ${vol.departure?.scheduled?.substring(11,16) || "?"} — Arrivee: ${vol.arrival?.scheduled?.substring(11,16) || "?"}</p>
                 <p class="detail">Statut: ${vol.flight_status || "inconnu"}</p>
-              </div>
+              </a>
             `;
           });
         });
