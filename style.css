@@ -190,7 +190,7 @@ footer a { color: rgba(255,255,255,0.4); }
 }
 
 /* Anti-CLS — eviter les decalages de mise en page */
-img { width: 100%; height: auto; display: block; }
+img { height: auto; display: block; max-width: 100%; }
 .bandeau-devises-anime { min-height: 36px; }
 .grid-cartes { min-height: 100px; }
 header { min-height: 60px; }
