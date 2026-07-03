@@ -401,6 +401,87 @@
       document.getElementById("menuDropdown").classList.toggle("open");
     });
 
+
+    // BANDEAU 69 WILAYAS CLIQUABLE
+    const wilayas69 = [
+      {n:1,fr:'Adrar',lat:27.87,lon:-0.29},{n:2,fr:'Chlef',lat:36.16,lon:1.33},
+      {n:3,fr:'Laghouat',lat:33.80,lon:2.86},{n:4,fr:'Oum El Bouaghi',lat:35.87,lon:7.11},
+      {n:5,fr:'Batna',lat:35.55,lon:6.17},{n:6,fr:'Bejaia',lat:36.75,lon:5.07},
+      {n:7,fr:'Biskra',lat:34.85,lon:5.73},{n:8,fr:'Bechar',lat:31.62,lon:-2.22},
+      {n:9,fr:'Blida',lat:36.47,lon:2.83},{n:10,fr:'Bouira',lat:36.37,lon:3.90},
+      {n:11,fr:'Tamanrasset',lat:22.79,lon:5.52},{n:12,fr:'Tebessa',lat:35.40,lon:8.12},
+      {n:13,fr:'Tlemcen',lat:34.88,lon:-1.32},{n:14,fr:'Tiaret',lat:35.37,lon:1.32},
+      {n:15,fr:'Tizi Ouzou',lat:36.72,lon:4.05},{n:16,fr:'Alger',lat:36.74,lon:3.06},
+      {n:17,fr:'Djelfa',lat:34.67,lon:3.25},{n:18,fr:'Jijel',lat:36.82,lon:5.77},
+      {n:19,fr:'Setif',lat:36.19,lon:5.41},{n:20,fr:'Saida',lat:34.84,lon:0.15},
+      {n:21,fr:'Skikda',lat:36.88,lon:6.91},{n:22,fr:'Sidi Bel Abbes',lat:35.19,lon:-0.63},
+      {n:23,fr:'Annaba',lat:36.90,lon:7.77},{n:24,fr:'Guelma',lat:36.46,lon:7.43},
+      {n:25,fr:'Constantine',lat:36.37,lon:6.61},{n:26,fr:'Medea',lat:36.27,lon:2.75},
+      {n:27,fr:'Mostaganem',lat:35.93,lon:0.09},{n:28,fr:'MSila',lat:35.70,lon:4.54},
+      {n:29,fr:'Mascara',lat:35.40,lon:0.14},{n:30,fr:'Ouargla',lat:31.95,lon:5.33},
+      {n:31,fr:'Oran',lat:35.70,lon:-0.63},{n:32,fr:'El Bayadh',lat:33.68,lon:1.02},
+      {n:33,fr:'Illizi',lat:26.48,lon:8.48},{n:34,fr:'Bordj Bou Arreridj',lat:36.07,lon:4.76},
+      {n:35,fr:'Boumerdes',lat:36.76,lon:3.48},{n:36,fr:'El Tarf',lat:36.77,lon:8.31},
+      {n:37,fr:'Tindouf',lat:27.67,lon:-8.15},{n:38,fr:'Tissemsilt',lat:35.60,lon:1.81},
+      {n:39,fr:'El Oued',lat:33.37,lon:6.86},{n:40,fr:'Khenchela',lat:35.43,lon:7.14},
+      {n:41,fr:'Souk Ahras',lat:36.29,lon:7.95},{n:42,fr:'Tipaza',lat:36.59,lon:2.45},
+      {n:43,fr:'Mila',lat:36.45,lon:6.26},{n:44,fr:'Ain Defla',lat:36.26,lon:1.97},
+      {n:45,fr:'Naama',lat:33.27,lon:-0.31},{n:46,fr:'Ain Temouchent',lat:35.30,lon:-1.14},
+      {n:47,fr:'Ghardaia',lat:32.49,lon:3.67},{n:48,fr:'Relizane',lat:35.74,lon:0.56},
+      {n:49,fr:'Timimoun',lat:29.26,lon:0.24},{n:50,fr:'Bordj Badji Mokhtar',lat:21.33,lon:0.95},
+      {n:51,fr:'Ouled Djellal',lat:34.42,lon:5.07},{n:52,fr:'Beni Abbes',lat:30.13,lon:-2.17},
+      {n:53,fr:'In Salah',lat:27.20,lon:2.47},{n:54,fr:'In Guezzam',lat:19.57,lon:5.77},
+      {n:55,fr:'Touggourt',lat:33.10,lon:6.07},{n:56,fr:'Djanet',lat:24.55,lon:9.48},
+      {n:57,fr:'El MGhair',lat:33.95,lon:5.93},{n:58,fr:'El Meniaa',lat:30.59,lon:2.88},
+      {n:59,fr:'Aflou',lat:34.12,lon:2.10,new:true},{n:60,fr:'Barika',lat:35.39,lon:5.37,new:true},
+      {n:61,fr:'El Kantara',lat:35.22,lon:5.70,new:true},{n:62,fr:'Bir El Ater',lat:34.75,lon:7.93,new:true},
+      {n:63,fr:'El Aricha',lat:34.22,lon:-1.26,new:true},{n:64,fr:'Ksar Chellala',lat:35.18,lon:2.32,new:true},
+      {n:65,fr:'Ain Oussara',lat:35.45,lon:2.91,new:true},{n:66,fr:'Messaad',lat:34.16,lon:3.50,new:true},
+      {n:67,fr:'Ksar El Boukhari',lat:35.88,lon:2.75,new:true},{n:68,fr:'Bou Saada',lat:35.21,lon:4.18,new:true},
+      {n:69,fr:'El Abiodh Sidi Cheikh',lat:32.89,lon:0.53,new:true},
+    ];
+
+    const bandeauContainer = document.getElementById('bandeauWilayasContainer');
+    if (bandeauContainer) {
+      bandeauContainer.innerHTML = wilayas69.map(w => `
+        <button onclick="chargerHorairesWilaya(${w.lat}, ${w.lon}, '${w.fr}')"
+          style="white-space:nowrap;padding:5px 12px;border-radius:20px;border:1px solid ${w.new ? 'rgba(255,193,7,0.5)' : 'rgba(255,255,255,0.1)'};background:${w.new ? 'rgba(255,193,7,0.08)' : 'rgba(255,255,255,0.04)'};color:${w.new ? '#FFC107' : 'rgba(255,255,255,0.7)'};font-size:11px;cursor:pointer;">
+          <span style="color:${w.new ? '#FFC107' : '#4DD0E1'};font-weight:bold;">${String(w.n).padStart(2,'0')}</span> ${w.fr}
+        </button>
+      `).join('');
+    }
+
+    async function chargerHorairesWilaya(lat, lon, nom) {
+      const panel = document.getElementById('horaireWilayaPanel');
+      const contenu = document.getElementById('horaireWilayaContenu');
+      panel.style.display = 'block';
+      contenu.innerHTML = '<p style="color:rgba(255,255,255,0.4);font-size:13px;">Chargement horaires ' + nom + '...</p>';
+      try {
+        const now = new Date();
+        const url = `https://api.aladhan.com/v1/timings/${now.getDate()}-${now.getMonth()+1}-${now.getFullYear()}?latitude=${lat}&longitude=${lon}&method=5`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const t = data.data.timings;
+        contenu.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="color:#4DD0E1;font-weight:bold;font-size:14px;">🕌 ${nom}</span>
+            <button onclick="document.getElementById('horaireWilayaPanel').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:16px;">✕</button>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            ${[['🌙','Fajr',t.Fajr],['☀️','Dhuhr',t.Dhuhr],['🌤','Asr',t.Asr],['🌅','Maghrib',t.Maghrib],['🌃','Isha',t.Isha]].map(([e,n,h])=>`
+              <div style="text-align:center;min-width:55px;">
+                <div style="font-size:18px;">${e}</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:10px;">${n}</div>
+                <div style="color:#A8E063;font-weight:bold;font-size:13px;">${h}</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } catch(e) {
+        contenu.innerHTML = '<p style="color:red;font-size:12px;">Erreur chargement horaires</p>';
+      }
+    }
+
     document.getElementById("btnUrgences").addEventListener("click", function () {
       alert("Police: 17\nPompiers: 18\nSAMU: 1548\nGendarmerie: 1055");
     });
