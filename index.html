@@ -231,105 +231,124 @@
       <div class="bandeau" id="bandeauDevises"><span>Chargement devises...</span></div>
     </div>
 
-    <!-- DRAPEAU HERO -->
-    <section style="padding:0;margin:0;position:relative;overflow:hidden;">
-      <svg width="100%" viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg">
-
-        <!-- FOND DRAPEAU -->
-        <rect x="0" y="0" width="340" height="300" fill="#006233"/>
-        <rect x="340" y="0" width="340" height="300" fill="#FFFFFF"/>
-
-        <!-- REPUBLIQUE en haut - blanc sur vert a gauche, vert sur blanc a droite -->
-        <text x="170" y="22" text-anchor="middle" font-family="serif" font-size="9" fill="#FFFFFF" letter-spacing="1">REPUBLIQUE ALGERIENNE</text>
-        <text x="510" y="22" text-anchor="middle" font-family="serif" font-size="9" fill="#006233" letter-spacing="1">DEMOCRATIQUE ET POPULAIRE</text>
-
-        <!-- CROISSANT ET ETOILE -->
-        <g transform="translate(340,150)">
-          <circle cx="-16" cy="0" r="75" fill="#D21034"/>
-          <circle cx="18" cy="0" r="60" fill="#006233"/>
-          <circle cx="18" cy="0" r="60" fill="#FFFFFF" opacity="0"/>
-          <polygon transform="translate(2,0)"
-            points="0,-23 5.4,-7.1 22.4,-7.1 8.9,2.7 13.7,18.4 0,8.4 -13.7,18.4 -8.9,2.7 -22.4,-7.1 -5.4,-7.1"
-            fill="#D21034"/>
-        </g>
-
-        <!-- DZ DIASPORA - blanc sur vert a gauche -->
-        <text x="170" y="145" text-anchor="middle" font-family="sans-serif" font-size="22" font-weight="900" fill="#FFFFFF">DZ Diaspora</text>
-        <text x="170" y="168" text-anchor="middle" font-family="sans-serif" font-size="10" fill="rgba(255,255,255,0.8)">Portail de la diaspora algerienne</text>
-
-        <!-- BOUTONS -->
-        <a href="annonces.html">
-          <rect x="80" y="180" width="90" height="28" rx="14" fill="#FFFFFF" opacity="0.9"/>
-          <text x="125" y="199" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#006233">📢 Annonces</text>
-        </a>
-        <a href="installer-app.html">
-          <rect x="180" y="180" width="90" height="28" rx="14" fill="none" stroke="#FFFFFF" stroke-width="1.5"/>
-          <text x="225" y="199" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#FFFFFF">📱 App</text>
-        </a>
-
-        <!-- BANDEAU DEVISE EN BAS -->
-        <rect x="0" y="250" width="680" height="50" fill="#006233"/>
-        <text x="340" y="280" text-anchor="middle" font-family="serif" font-size="14" font-weight="700" fill="#FFFFFF" letter-spacing="2">بِالشَّعْبِ وَلِلشَّعْبِ — Par le peuple et pour le peuple</text>
-
-      </svg>
-    </section>
-
-    <!-- BANDEAU WILAYAS CLIQUABLE -->
-    <section style="padding:0 0 8px;">
-      <div id="bandeauWilayasContainer" style="overflow-x:auto;display:flex;gap:8px;padding:8px 12px;background:#0D1117;">
-        <div style="color:rgba(255,255,255,0.3);font-size:12px;">Chargement wilayas...</div>
-      </div>
-      <div id="horaireWilayaPanel" style="display:none;padding:12px 16px;background:#1C2333;border-top:1px solid rgba(77,208,225,0.3);">
-        <div id="horaireWilayaContenu"></div>
+    <!-- HERO -->
+    <section style="text-align:center;padding:32px 16px 24px;">
+      <div style="font-size:48px;margin-bottom:12px;">🇩🇿</div>
+      <h1 style="color:white;font-size:26px;font-weight:900;margin-bottom:8px;">DZ Diaspora</h1>
+      <p style="color:rgba(255,255,255,0.55);font-size:14px;max-width:400px;margin:0 auto 20px;line-height:1.6;">
+        Le portail de reference de la diaspora algerienne — informations, services, annonces et actualites.
+      </p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        <a href="annonces.html" style="background:#4DD0E1;color:#0D1117;padding:10px 20px;border-radius:25px;font-weight:700;text-decoration:none;font-size:14px;">📢 Publier une annonce</a>
+        <a href="installer-app.html" style="background:rgba(77,208,225,0.15);border:1px solid #4DD0E1;color:#4DD0E1;padding:10px 20px;border-radius:25px;font-weight:700;text-decoration:none;font-size:14px;">📱 Telecharger l app</a>
       </div>
     </section>
 
-    <!-- URGENCES + MOSQUEES -->
-    <section style="padding:0 16px 16px;">
-      <button id="btnUrgences" style="width:100%;padding:12px;border-radius:10px;border:none;background:rgba(214,16,52,0.15);border:1px solid rgba(214,16,52,0.4);color:#ff6b6b;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:12px;">
-        🚨 Urgences — Police 17 · Pompiers 18 · SAMU 1548 · Gendarmerie 1055
+    <!-- RECHERCHE -->
+    <div style="padding:0 16px 20px;">
+      <div class="search-box">
+        <input type="text" id="rechercheInput" placeholder="🔍 Rechercher : sante, transport, wilaya, passeport...">
+      </div>
+    </div>
+
+    <!-- URGENCES -->
+    <div style="padding:0 16px 20px;">
+      <button class="tuile tuile-urgence" id="btnUrgences" style="width:100%;padding:14px;border-radius:12px;border:none;background:rgba(214,16,52,0.15);border:1px solid rgba(214,16,52,0.4);color:#ff6b6b;font-size:15px;font-weight:700;cursor:pointer;">
+        🚨 Numeros d urgence — Police 17 · Pompiers 18 · SAMU 1548
       </button>
-      <h3 style="color:white;font-size:15px;font-weight:700;margin-bottom:10px;">🕌 Mosquees & Horaires de priere</h3>
-      <div class="mosquees" id="mosqueesContainer">
-        <div class="carte-mosquee">Chargement...</div>
-      </div>
-    </section>
-
-    <!-- SPORT -->
-    <section style="padding:0 16px 16px;">
-      <h3 style="color:white;font-size:15px;font-weight:700;margin-bottom:10px;">⚽ Football — EN Algerie</h3>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
-        <a href="https://www.faf.dz" target="_blank" style="background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;padding:8px 16px;border-radius:20px;text-decoration:none;font-size:13px;">⚽ faf.dz</a>
-        <a href="https://www.flashscore.fr/football/algerie/" target="_blank" style="background:rgba(255,193,7,0.1);border:1px solid #FFC107;color:#FFC107;padding:8px 16px;border-radius:20px;text-decoration:none;font-size:13px;">📊 Flashscore</a>
-        <a href="https://www.bbc.com/sport/football/african" target="_blank" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:20px;text-decoration:none;font-size:13px;">🌍 BBC Sport</a>
-        <a href="https://www.lebuteur.com" target="_blank" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:8px 16px;border-radius:20px;text-decoration:none;font-size:13px;">🟢 Le Buteur</a>
-      </div>
-    </section>
-
-    <!-- PRESSE -->
-    <section style="padding:0 16px 24px;" id="presse">
-      <h3 style="color:white;font-size:15px;font-weight:700;margin-bottom:12px;">📰 Actualites Algerie</h3>
-      <div class="presse-grid" id="presseContainer">
-        <div class="chargement">Chargement des actualites...</div>
-      </div>
-    </section>
+    </div>
 
     <!-- CATEGORIES -->
     <section style="padding:0 16px 24px;">
-      <h3 style="color:white;font-size:15px;font-weight:700;margin-bottom:12px;">Nos services</h3>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;">
-        <a href="securite.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">🚨</div><div style="color:white;font-size:12px;font-weight:600;">Securite</div></a>
-        <a href="sante.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">🏥</div><div style="color:white;font-size:12px;font-weight:600;">Sante</div></a>
-        <a href="finance.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">💰</div><div style="color:white;font-size:12px;font-weight:600;">Finance</div></a>
-        <a href="justice.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">⚖️</div><div style="color:white;font-size:12px;font-weight:600;">Justice</div></a>
-        <a href="immobilier.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">🏠</div><div style="color:white;font-size:12px;font-weight:600;">Immobilier</div></a>
-        <a href="administratif.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">📄</div><div style="color:white;font-size:12px;font-weight:600;">Administratif</div></a>
-        <a href="wilayas.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">🗺️</div><div style="color:white;font-size:12px;font-weight:600;">Wilayas</div></a>
-        <a href="transport.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">✈️</div><div style="color:white;font-size:12px;font-weight:600;">Transport</div></a>
-        <a href="annonces.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">📢</div><div style="color:white;font-size:12px;font-weight:600;">Annonces</div></a>
-        <a href="objets-trouves.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">🔍</div><div style="color:white;font-size:12px;font-weight:600;">Objets Trouves</div></a>
-        <a href="arnaques.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">⚠️</div><div style="color:white;font-size:12px;font-weight:600;">Anti-Arnaques</div></a>
-        <a href="tourisme.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">🏛️</div><div style="color:white;font-size:12px;font-weight:600;">Tourisme</div></a>
+      <h2 style="color:white;font-size:18px;font-weight:700;margin-bottom:16px;">Nos services</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;">
+        <a href="securite.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">🚨</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Securite</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Urgences & ambassades</div>
+        </a>
+        <a href="sante.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">🏥</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Sante</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">CNAS, medecins, pharmacies</div>
+        </a>
+        <a href="finance.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">💰</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Finance</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Banques & devises</div>
+        </a>
+        <a href="justice.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">⚖️</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Justice</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Avocats & tribunaux</div>
+        </a>
+        <a href="immobilier.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">🏠</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Immobilier</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">AADL, LPA, arnaques</div>
+        </a>
+        <a href="administratif.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">📄</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Administratif</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Passeport, CCR 2026</div>
+        </a>
+        <a href="wilayas.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">🗺️</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Wilayas</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">69 wilayas officielles</div>
+        </a>
+        <a href="transport.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">✈️</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Transport</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Vols, ferries, aeroports</div>
+        </a>
+        <a href="annonces.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">📢</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Annonces</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Immobilier, services</div>
+        </a>
+        <a href="tourisme.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">🏛️</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Tourisme</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Sites UNESCO & plages</div>
+        </a>
+        <a href="arnaques.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">⚠️</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Anti-Arnaques</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Protegez-vous</div>
+        </a>
+        <a href="objets-trouves.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
+          <div style="font-size:28px;margin-bottom:6px;">🔍</div>
+          <div style="color:white;font-weight:600;font-size:13px;">Objets Trouves</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;">CNI, sac, cles...</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- MOSQUEES -->
+    <section style="padding:0 16px 24px;">
+      <h2 style="color:white;font-size:18px;font-weight:700;margin-bottom:12px;">🕌 Mosquees & Horaires de priere</h2>
+      <div class="mosquees" id="mosqueesContainer">
+        <div class="carte-mosquee">Chargement mosquees...</div>
+      </div>
+    </section>
+
+    <!-- RESULTATS FOOT -->
+    <section style="padding:0 16px 24px;">
+      <h2 style="color:white;font-size:18px;font-weight:700;margin-bottom:12px;">⚽ Football — EN Algerie</h2>
+      <div id="footContainer" style="background:#1C2333;border-radius:12px;padding:14px;">
+        <div id="footResultats" style="color:rgba(255,255,255,0.4);text-align:center;padding:10px;">Chargement des resultats...</div>
+      </div>
+      <div style="margin-top:10px;text-align:right;">
+        <a href="https://www.faf.dz" target="_blank" style="color:#4DD0E1;font-size:12px;">Voir sur faf.dz →</a>
+      </div>
+    </section>
+
+    <!-- PRESSE / ACTUALITES -->
+    <section style="padding:0 16px 24px;" id="presse">
+      <h2 style="color:white;font-size:18px;font-weight:700;margin-bottom:12px;">📰 Actualites Algerie</h2>
+      <div class="presse-grid" id="presseContainer">
+        <div class="chargement">Chargement des actualites...</div>
       </div>
     </section>
 
@@ -415,87 +434,6 @@
     document.getElementById("menuBtn").addEventListener("click", function () {
       document.getElementById("menuDropdown").classList.toggle("open");
     });
-
-
-    // BANDEAU 69 WILAYAS CLIQUABLE
-    const wilayas69 = [
-      {n:1,fr:'Adrar',lat:27.87,lon:-0.29},{n:2,fr:'Chlef',lat:36.16,lon:1.33},
-      {n:3,fr:'Laghouat',lat:33.80,lon:2.86},{n:4,fr:'Oum El Bouaghi',lat:35.87,lon:7.11},
-      {n:5,fr:'Batna',lat:35.55,lon:6.17},{n:6,fr:'Bejaia',lat:36.75,lon:5.07},
-      {n:7,fr:'Biskra',lat:34.85,lon:5.73},{n:8,fr:'Bechar',lat:31.62,lon:-2.22},
-      {n:9,fr:'Blida',lat:36.47,lon:2.83},{n:10,fr:'Bouira',lat:36.37,lon:3.90},
-      {n:11,fr:'Tamanrasset',lat:22.79,lon:5.52},{n:12,fr:'Tebessa',lat:35.40,lon:8.12},
-      {n:13,fr:'Tlemcen',lat:34.88,lon:-1.32},{n:14,fr:'Tiaret',lat:35.37,lon:1.32},
-      {n:15,fr:'Tizi Ouzou',lat:36.72,lon:4.05},{n:16,fr:'Alger',lat:36.74,lon:3.06},
-      {n:17,fr:'Djelfa',lat:34.67,lon:3.25},{n:18,fr:'Jijel',lat:36.82,lon:5.77},
-      {n:19,fr:'Setif',lat:36.19,lon:5.41},{n:20,fr:'Saida',lat:34.84,lon:0.15},
-      {n:21,fr:'Skikda',lat:36.88,lon:6.91},{n:22,fr:'Sidi Bel Abbes',lat:35.19,lon:-0.63},
-      {n:23,fr:'Annaba',lat:36.90,lon:7.77},{n:24,fr:'Guelma',lat:36.46,lon:7.43},
-      {n:25,fr:'Constantine',lat:36.37,lon:6.61},{n:26,fr:'Medea',lat:36.27,lon:2.75},
-      {n:27,fr:'Mostaganem',lat:35.93,lon:0.09},{n:28,fr:'MSila',lat:35.70,lon:4.54},
-      {n:29,fr:'Mascara',lat:35.40,lon:0.14},{n:30,fr:'Ouargla',lat:31.95,lon:5.33},
-      {n:31,fr:'Oran',lat:35.70,lon:-0.63},{n:32,fr:'El Bayadh',lat:33.68,lon:1.02},
-      {n:33,fr:'Illizi',lat:26.48,lon:8.48},{n:34,fr:'Bordj Bou Arreridj',lat:36.07,lon:4.76},
-      {n:35,fr:'Boumerdes',lat:36.76,lon:3.48},{n:36,fr:'El Tarf',lat:36.77,lon:8.31},
-      {n:37,fr:'Tindouf',lat:27.67,lon:-8.15},{n:38,fr:'Tissemsilt',lat:35.60,lon:1.81},
-      {n:39,fr:'El Oued',lat:33.37,lon:6.86},{n:40,fr:'Khenchela',lat:35.43,lon:7.14},
-      {n:41,fr:'Souk Ahras',lat:36.29,lon:7.95},{n:42,fr:'Tipaza',lat:36.59,lon:2.45},
-      {n:43,fr:'Mila',lat:36.45,lon:6.26},{n:44,fr:'Ain Defla',lat:36.26,lon:1.97},
-      {n:45,fr:'Naama',lat:33.27,lon:-0.31},{n:46,fr:'Ain Temouchent',lat:35.30,lon:-1.14},
-      {n:47,fr:'Ghardaia',lat:32.49,lon:3.67},{n:48,fr:'Relizane',lat:35.74,lon:0.56},
-      {n:49,fr:'Timimoun',lat:29.26,lon:0.24},{n:50,fr:'Bordj Badji Mokhtar',lat:21.33,lon:0.95},
-      {n:51,fr:'Ouled Djellal',lat:34.42,lon:5.07},{n:52,fr:'Beni Abbes',lat:30.13,lon:-2.17},
-      {n:53,fr:'In Salah',lat:27.20,lon:2.47},{n:54,fr:'In Guezzam',lat:19.57,lon:5.77},
-      {n:55,fr:'Touggourt',lat:33.10,lon:6.07},{n:56,fr:'Djanet',lat:24.55,lon:9.48},
-      {n:57,fr:'El MGhair',lat:33.95,lon:5.93},{n:58,fr:'El Meniaa',lat:30.59,lon:2.88},
-      {n:59,fr:'Aflou',lat:34.12,lon:2.10,new:true},{n:60,fr:'Barika',lat:35.39,lon:5.37,new:true},
-      {n:61,fr:'El Kantara',lat:35.22,lon:5.70,new:true},{n:62,fr:'Bir El Ater',lat:34.75,lon:7.93,new:true},
-      {n:63,fr:'El Aricha',lat:34.22,lon:-1.26,new:true},{n:64,fr:'Ksar Chellala',lat:35.18,lon:2.32,new:true},
-      {n:65,fr:'Ain Oussara',lat:35.45,lon:2.91,new:true},{n:66,fr:'Messaad',lat:34.16,lon:3.50,new:true},
-      {n:67,fr:'Ksar El Boukhari',lat:35.88,lon:2.75,new:true},{n:68,fr:'Bou Saada',lat:35.21,lon:4.18,new:true},
-      {n:69,fr:'El Abiodh Sidi Cheikh',lat:32.89,lon:0.53,new:true},
-    ];
-
-    const bandeauContainer = document.getElementById('bandeauWilayasContainer');
-    if (bandeauContainer) {
-      bandeauContainer.innerHTML = wilayas69.map(w => `
-        <button onclick="chargerHorairesWilaya(${w.lat}, ${w.lon}, '${w.fr}')"
-          style="white-space:nowrap;padding:5px 12px;border-radius:20px;border:1px solid ${w.new ? 'rgba(255,193,7,0.5)' : 'rgba(255,255,255,0.1)'};background:${w.new ? 'rgba(255,193,7,0.08)' : 'rgba(255,255,255,0.04)'};color:${w.new ? '#FFC107' : 'rgba(255,255,255,0.7)'};font-size:11px;cursor:pointer;">
-          <span style="color:${w.new ? '#FFC107' : '#4DD0E1'};font-weight:bold;">${String(w.n).padStart(2,'0')}</span> ${w.fr}
-        </button>
-      `).join('');
-    }
-
-    async function chargerHorairesWilaya(lat, lon, nom) {
-      const panel = document.getElementById('horaireWilayaPanel');
-      const contenu = document.getElementById('horaireWilayaContenu');
-      panel.style.display = 'block';
-      contenu.innerHTML = '<p style="color:rgba(255,255,255,0.4);font-size:13px;">Chargement horaires ' + nom + '...</p>';
-      try {
-        const now = new Date();
-        const url = `https://api.aladhan.com/v1/timings/${now.getDate()}-${now.getMonth()+1}-${now.getFullYear()}?latitude=${lat}&longitude=${lon}&method=5`;
-        const res = await fetch(url);
-        const data = await res.json();
-        const t = data.data.timings;
-        contenu.innerHTML = `
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-            <span style="color:#4DD0E1;font-weight:bold;font-size:14px;">🕌 ${nom}</span>
-            <button onclick="document.getElementById('horaireWilayaPanel').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:16px;">✕</button>
-          </div>
-          <div style="display:flex;gap:12px;flex-wrap:wrap;">
-            ${[['🌙','Fajr',t.Fajr],['☀️','Dhuhr',t.Dhuhr],['🌤','Asr',t.Asr],['🌅','Maghrib',t.Maghrib],['🌃','Isha',t.Isha]].map(([e,n,h])=>`
-              <div style="text-align:center;min-width:55px;">
-                <div style="font-size:18px;">${e}</div>
-                <div style="color:rgba(255,255,255,0.5);font-size:10px;">${n}</div>
-                <div style="color:#A8E063;font-weight:bold;font-size:13px;">${h}</div>
-              </div>
-            `).join('')}
-          </div>
-        `;
-      } catch(e) {
-        contenu.innerHTML = '<p style="color:red;font-size:12px;">Erreur chargement horaires</p>';
-      }
-    }
 
     document.getElementById("btnUrgences").addEventListener("click", function () {
       alert("Police: 17\nPompiers: 18\nSAMU: 1548\nGendarmerie: 1055");
