@@ -259,111 +259,62 @@
       </svg>
     </section>
 
-    <!-- RECHERCHE -->
-    <div style="padding:0 16px 20px;">
-      <div class="search-box">
-        <input type="text" id="rechercheInput" placeholder="🔍 Rechercher : sante, transport, wilaya, passeport...">
+    <!-- BANDEAU WILAYAS CLIQUABLE -->
+    <section style="padding:0 0 8px;">
+      <div id="bandeauWilayasContainer" style="overflow-x:auto;display:flex;gap:8px;padding:8px 12px;background:#0D1117;">
+        <div style="color:rgba(255,255,255,0.3);font-size:12px;">Chargement wilayas...</div>
       </div>
-    </div>
+      <div id="horaireWilayaPanel" style="display:none;padding:12px 16px;background:#1C2333;border-top:1px solid rgba(77,208,225,0.3);">
+        <div id="horaireWilayaContenu"></div>
+      </div>
+    </section>
 
-    <!-- URGENCES -->
-    <div style="padding:0 16px 20px;">
-      <button class="tuile tuile-urgence" id="btnUrgences" style="width:100%;padding:14px;border-radius:12px;border:none;background:rgba(214,16,52,0.15);border:1px solid rgba(214,16,52,0.4);color:#ff6b6b;font-size:15px;font-weight:700;cursor:pointer;">
-        🚨 Numeros d urgence — Police 17 · Pompiers 18 · SAMU 1548
+    <!-- URGENCES + MOSQUEES -->
+    <section style="padding:0 16px 16px;">
+      <button id="btnUrgences" style="width:100%;padding:12px;border-radius:10px;border:none;background:rgba(214,16,52,0.15);border:1px solid rgba(214,16,52,0.4);color:#ff6b6b;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:12px;">
+        🚨 Urgences — Police 17 · Pompiers 18 · SAMU 1548 · Gendarmerie 1055
       </button>
-    </div>
+      <h3 style="color:white;font-size:15px;font-weight:700;margin-bottom:10px;">🕌 Mosquees & Horaires de priere</h3>
+      <div class="mosquees" id="mosqueesContainer">
+        <div class="carte-mosquee">Chargement...</div>
+      </div>
+    </section>
+
+    <!-- SPORT -->
+    <section style="padding:0 16px 16px;">
+      <h3 style="color:white;font-size:15px;font-weight:700;margin-bottom:10px;">⚽ Football — EN Algerie</h3>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
+        <a href="https://www.faf.dz" target="_blank" style="background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;padding:8px 16px;border-radius:20px;text-decoration:none;font-size:13px;">⚽ faf.dz</a>
+        <a href="https://www.flashscore.fr/football/algerie/" target="_blank" style="background:rgba(255,193,7,0.1);border:1px solid #FFC107;color:#FFC107;padding:8px 16px;border-radius:20px;text-decoration:none;font-size:13px;">📊 Flashscore</a>
+        <a href="https://www.bbc.com/sport/football/african" target="_blank" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:20px;text-decoration:none;font-size:13px;">🌍 BBC Sport</a>
+        <a href="https://www.lebuteur.com" target="_blank" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:8px 16px;border-radius:20px;text-decoration:none;font-size:13px;">🟢 Le Buteur</a>
+      </div>
+    </section>
+
+    <!-- PRESSE -->
+    <section style="padding:0 16px 24px;" id="presse">
+      <h3 style="color:white;font-size:15px;font-weight:700;margin-bottom:12px;">📰 Actualites Algerie</h3>
+      <div class="presse-grid" id="presseContainer">
+        <div class="chargement">Chargement des actualites...</div>
+      </div>
+    </section>
 
     <!-- CATEGORIES -->
     <section style="padding:0 16px 24px;">
-      <h2 style="color:white;font-size:18px;font-weight:700;margin-bottom:16px;">Nos services</h2>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;">
-        <a href="securite.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
-          <div style="font-size:28px;margin-bottom:6px;">🚨</div>
-          <div style="color:white;font-weight:600;font-size:13px;">Securite</div>
-          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Urgences & ambassades</div>
-        </a>
-        <a href="sante.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
-          <div style="font-size:28px;margin-bottom:6px;">🏥</div>
-          <div style="color:white;font-weight:600;font-size:13px;">Sante</div>
-          <div style="color:rgba(255,255,255,0.4);font-size:11px;">CNAS, medecins, pharmacies</div>
-        </a>
-        <a href="finance.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
-          <div style="font-size:28px;margin-bottom:6px;">💰</div>
-          <div style="color:white;font-weight:600;font-size:13px;">Finance</div>
-          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Banques & devises</div>
-        </a>
-        <a href="justice.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
-          <div style="font-size:28px;margin-bottom:6px;">⚖️</div>
-          <div style="color:white;font-weight:600;font-size:13px;">Justice</div>
-          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Avocats & tribunaux</div>
-        </a>
-        <a href="immobilier.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
-          <div style="font-size:28px;margin-bottom:6px;">🏠</div>
-          <div style="color:white;font-weight:600;font-size:13px;">Immobilier</div>
-          <div style="color:rgba(255,255,255,0.4);font-size:11px;">AADL, LPA, arnaques</div>
-        </a>
-        <a href="administratif.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
-          <div style="font-size:28px;margin-bottom:6px;">📄</div>
-          <div style="color:white;font-weight:600;font-size:13px;">Administratif</div>
-          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Passeport, CCR 2026</div>
-        </a>
-        <a href="wilayas.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
-          <div style="font-size:28px;margin-bottom:6px;">🗺️</div>
-          <div style="color:white;font-weight:600;font-size:13px;">Wilayas</div>
-          <div style="color:rgba(255,255,255,0.4);font-size:11px;">69 wilayas officielles</div>
-        </a>
-        <a href="transport.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
-          <div style="font-size:28px;margin-bottom:6px;">✈️</div>
-          <div style="color:white;font-weight:600;font-size:13px;">Transport</div>
-          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Vols, ferries, aeroports</div>
-        </a>
-        <a href="annonces.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
-          <div style="font-size:28px;margin-bottom:6px;">📢</div>
-          <div style="color:white;font-weight:600;font-size:13px;">Annonces</div>
-          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Immobilier, services</div>
-        </a>
-        <a href="tourisme.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
-          <div style="font-size:28px;margin-bottom:6px;">🏛️</div>
-          <div style="color:white;font-weight:600;font-size:13px;">Tourisme</div>
-          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Sites UNESCO & plages</div>
-        </a>
-        <a href="arnaques.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
-          <div style="font-size:28px;margin-bottom:6px;">⚠️</div>
-          <div style="color:white;font-weight:600;font-size:13px;">Anti-Arnaques</div>
-          <div style="color:rgba(255,255,255,0.4);font-size:11px;">Protegez-vous</div>
-        </a>
-        <a href="objets-trouves.html" class="carte carte-lien" style="text-align:center;padding:18px 10px;">
-          <div style="font-size:28px;margin-bottom:6px;">🔍</div>
-          <div style="color:white;font-weight:600;font-size:13px;">Objets Trouves</div>
-          <div style="color:rgba(255,255,255,0.4);font-size:11px;">CNI, sac, cles...</div>
-        </a>
-      </div>
-    </section>
-
-    <!-- MOSQUEES -->
-    <section style="padding:0 16px 24px;">
-      <h2 style="color:white;font-size:18px;font-weight:700;margin-bottom:12px;">🕌 Mosquees & Horaires de priere</h2>
-      <div class="mosquees" id="mosqueesContainer">
-        <div class="carte-mosquee">Chargement mosquees...</div>
-      </div>
-    </section>
-
-    <!-- RESULTATS FOOT -->
-    <section style="padding:0 16px 24px;">
-      <h2 style="color:white;font-size:18px;font-weight:700;margin-bottom:12px;">⚽ Football — EN Algerie</h2>
-      <div id="footContainer" style="background:#1C2333;border-radius:12px;padding:14px;">
-        <div id="footResultats" style="color:rgba(255,255,255,0.4);text-align:center;padding:10px;">Chargement des resultats...</div>
-      </div>
-      <div style="margin-top:10px;text-align:right;">
-        <a href="https://www.faf.dz" target="_blank" style="color:#4DD0E1;font-size:12px;">Voir sur faf.dz →</a>
-      </div>
-    </section>
-
-    <!-- PRESSE / ACTUALITES -->
-    <section style="padding:0 16px 24px;" id="presse">
-      <h2 style="color:white;font-size:18px;font-weight:700;margin-bottom:12px;">📰 Actualites Algerie</h2>
-      <div class="presse-grid" id="presseContainer">
-        <div class="chargement">Chargement des actualites...</div>
+      <h3 style="color:white;font-size:15px;font-weight:700;margin-bottom:12px;">Nos services</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;">
+        <a href="securite.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">🚨</div><div style="color:white;font-size:12px;font-weight:600;">Securite</div></a>
+        <a href="sante.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">🏥</div><div style="color:white;font-size:12px;font-weight:600;">Sante</div></a>
+        <a href="finance.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">💰</div><div style="color:white;font-size:12px;font-weight:600;">Finance</div></a>
+        <a href="justice.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">⚖️</div><div style="color:white;font-size:12px;font-weight:600;">Justice</div></a>
+        <a href="immobilier.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">🏠</div><div style="color:white;font-size:12px;font-weight:600;">Immobilier</div></a>
+        <a href="administratif.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">📄</div><div style="color:white;font-size:12px;font-weight:600;">Administratif</div></a>
+        <a href="wilayas.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">🗺️</div><div style="color:white;font-size:12px;font-weight:600;">Wilayas</div></a>
+        <a href="transport.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">✈️</div><div style="color:white;font-size:12px;font-weight:600;">Transport</div></a>
+        <a href="annonces.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">📢</div><div style="color:white;font-size:12px;font-weight:600;">Annonces</div></a>
+        <a href="objets-trouves.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">🔍</div><div style="color:white;font-size:12px;font-weight:600;">Objets Trouves</div></a>
+        <a href="arnaques.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">⚠️</div><div style="color:white;font-size:12px;font-weight:600;">Anti-Arnaques</div></a>
+        <a href="tourisme.html" class="carte carte-lien" style="text-align:center;padding:14px 8px;"><div style="font-size:24px;">🏛️</div><div style="color:white;font-size:12px;font-weight:600;">Tourisme</div></a>
       </div>
     </section>
 
