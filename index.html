@@ -601,7 +601,6 @@
 
 
     // WILAYAS CLIQUABLES
-    document.addEventListener("DOMContentLoaded", function() {
     const wilayas69 = [
       {n:1,fr:'Adrar',lat:27.87,lon:-0.29},{n:2,fr:'Chlef',lat:36.16,lon:1.33},
       {n:3,fr:'Laghouat',lat:33.80,lon:2.86},{n:4,fr:'Oum El Bouaghi',lat:35.87,lon:7.11},
@@ -645,7 +644,7 @@
         `<button onclick="horaireWilaya(${w.lat},${w.lon},'${w.fr}')" style="white-space:nowrap;padding:4px 10px;border-radius:16px;border:1px solid ${w.nv?'rgba(255,193,7,0.4)':'rgba(255,255,255,0.1)'};background:${w.nv?'rgba(255,193,7,0.06)':'rgba(255,255,255,0.03)'};color:${w.nv?'#FFC107':'rgba(255,255,255,0.65)'};font-size:11px;cursor:pointer;"><span style="color:${w.nv?'#FFC107':'#4DD0E1'};font-weight:bold;">${String(w.n).padStart(2,'0')}</span> ${w.fr}</button>`
       ).join('');
     }
-    async function horaireWilaya(lat, lon, nom) {
+    window.horaireWilaya = async function(lat, lon, nom) {
       const panel = document.getElementById('horairePanel');
       const contenu = document.getElementById('horaireContenu');
       panel.style.display = 'block';
