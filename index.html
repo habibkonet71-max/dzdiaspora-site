@@ -420,52 +420,7 @@
       utilisateurConnecte = !!(user && user.emailVerified);
     });
 
-    // RESULTATS FOOT EN Algerie
-    async function chargerFoot() {
-      const container = document.getElementById('footResultats');
-      try {
-        // API-Football via RapidAPI alternative gratuite
-        const res = await fetch('https://api.football-data.org/v4/teams/7459/matches?status=FINISHED&limit=5', {
-          headers: { 'X-Auth-Token': 'demo' }
-        });
-        if (!res.ok) throw new Error('API indisponible');
-        const data = await res.json();
-        const matches = data.matches || [];
-        if (matches.length === 0) {
-          container.innerHTML = chargerFootFallback();
-          return;
-        }
-        let html = '';
-        matches.forEach(m => {
-          const date = new Date(m.utcDate).toLocaleDateString('fr-FR');
-          const home = m.homeTeam?.shortName || m.homeTeam?.name || '?';
-          const away = m.awayTeam?.shortName || m.awayTeam?.name || '?';
-          const scoreHome = m.score?.fullTime?.home ?? '-';
-          const scoreAway = m.score?.fullTime?.away ?? '-';
-          html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
-            <span style="color:rgba(255,255,255,0.7);font-size:13px;flex:1;text-align:right;">${home}</span>
-            <span style="color:#4DD0E1;font-weight:900;font-size:16px;padding:0 12px;">${scoreHome} - ${scoreAway}</span>
-            <span style="color:rgba(255,255,255,0.7);font-size:13px;flex:1;">${away}</span>
-          </div>`;
-        });
-        container.innerHTML = html || chargerFootFallback();
-      } catch(e) {
-        container.innerHTML = chargerFootFallback();
-      }
-    }
-
-    function chargerFootFallback() {
-      return `<div style="text-align:center;padding:10px;">
-        <p style="color:rgba(255,255,255,0.5);font-size:13px;">Resultats disponibles sur</p>
-        <div style="display:flex;gap:10px;justify-content:center;margin-top:10px;">
-          <a href="https://www.faf.dz" target="_blank" style="background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;padding:8px 16px;border-radius:20px;text-decoration:none;font-size:13px;">faf.dz</a>
-          <a href="https://www.bbc.com/sport/football/african" target="_blank" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:20px;text-decoration:none;font-size:13px;">BBC Sport</a>
-          <a href="https://www.flashscore.fr/football/algerie/" target="_blank" style="background:rgba(255,193,7,0.1);border:1px solid #FFC107;color:#FFC107;padding:8px 16px;border-radius:20px;text-decoration:none;font-size:13px;">Flashscore</a>
-        </div>
-      </div>`;
-    }
-
-    chargerFoot();
+    // Resultats foot disponibles sur les liens ci-dessous
     document.getElementById("menuBtn").addEventListener("click", function () {
       document.getElementById("menuDropdown").classList.toggle("open");
     });
