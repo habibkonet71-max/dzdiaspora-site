@@ -21,6 +21,19 @@
   </style>
 </head>
 <body>
+  <!-- ECRAN PIN -->
+  <div id="ecran-pin" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#0D1117;z-index:9999;display:flex;align-items:center;justify-content:center;">
+    <div style="text-align:center;padding:40px;background:#1C2333;border-radius:16px;border:1px solid rgba(77,208,225,0.3);max-width:320px;width:90%;">
+      <div style="font-size:48px;margin-bottom:16px;">🔐</div>
+      <h2 style="color:white;margin-bottom:8px;">Code PIN Admin</h2>
+      <p style="color:rgba(255,255,255,0.4);font-size:13px;margin-bottom:20px;">Entrez votre code administrateur</p>
+      <input type="password" id="pin-input" maxlength="6" placeholder="••••••"
+        style="width:100%;padding:14px;text-align:center;font-size:24px;letter-spacing:8px;background:#0D1117;border:1px solid rgba(77,208,225,0.4);border-radius:10px;color:white;box-sizing:border-box;"
+        onkeydown="if(event.key==='Enter') validerPin()">
+      <p id="pin-erreur" style="color:#ff6b6b;font-size:12px;margin-top:8px;display:none;">Code incorrect. Reessayez.</p>
+      <button onclick="validerPin()" style="width:100%;margin-top:16px;padding:13px;background:#4DD0E1;color:#0D1117;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;">Valider</button>
+    </div>
+  </div>
   <header>
     <a href="index.html" class="logo">DZ Diaspora</a>
     <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
@@ -183,6 +196,7 @@
         document.getElementById('acces-refuse').style.display = 'block';
         return;
       }
+      window._showPinAfterAuth();
       document.getElementById('contenu-admin').style.display = 'block';
       document.getElementById('user-info').textContent = '👤 ' + user.email;
       document.getElementById('btn-logout').style.display = 'block';
@@ -239,6 +253,24 @@
         if (el) el.value = '';
       });
       document.getElementById('a-specGroup').style.display = 'none';
+    };
+  </script>
+
+  <script>
+    const PIN_ADMIN = '719601';
+    function validerPin() {
+      const saisi = document.getElementById('pin-input').value;
+      if (saisi === PIN_ADMIN) {
+        document.getElementById('ecran-pin').style.display = 'none';
+      } else {
+        document.getElementById('pin-erreur').style.display = 'block';
+        document.getElementById('pin-input').value = '';
+      }
+    }
+    // Afficher ecran PIN apres connexion Firebase
+    window._showPinAfterAuth = function() {
+      document.getElementById('ecran-pin').style.display = 'flex';
+      setTimeout(() => document.getElementById('pin-input').focus(), 100);
     };
   </script>
 </body>
