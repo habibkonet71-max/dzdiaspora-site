@@ -221,6 +221,7 @@
     <a href="abonnement.html">Devenir Pro</a>
     <a href="contact.html">Contact</a>
     <a href="installer-app.html">📱 Telecharger l app</a>
+    <a href="admin-pro.html" id="lien-admin" style="display:none;color:#A8E063;">🔐 Admin Pro</a>
   </div>
   </div>
 
@@ -657,6 +658,14 @@
       }
     }
 
+
+    // Afficher lien admin si admin connecte
+    onAuthStateChanged(auth, (user) => {
+      const lienAdmin = document.getElementById('lien-admin');
+      if (lienAdmin && user && user.email === 'kourrak.habib@hotmail.com') {
+        lienAdmin.style.display = 'block';
+      }
+    });
     chargerMeteo();
     chargerDevises();
     chargerMosquees();
