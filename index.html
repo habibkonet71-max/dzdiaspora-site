@@ -422,6 +422,8 @@
     let utilisateurConnecte = false;
     onAuthStateChanged(auth, (user) => {
       utilisateurConnecte = !!(user && user.emailVerified);
+      const lienAdmin = document.getElementById('lien-admin');
+      if (lienAdmin) lienAdmin.style.display = (user && user.email === 'kourrak.habib@hotmail.com') ? 'block' : 'none';
     });
 
     // Resultats foot disponibles sur les liens ci-dessous
@@ -659,13 +661,6 @@
     }
 
 
-    // Afficher lien admin si admin connecte
-    onAuthStateChanged(auth, (user) => {
-      const lienAdmin = document.getElementById('lien-admin');
-      if (lienAdmin && user && user.email === 'kourrak.habib@hotmail.com') {
-        lienAdmin.style.display = 'block';
-      }
-    });
     chargerMeteo();
     chargerDevises();
     chargerMosquees();
