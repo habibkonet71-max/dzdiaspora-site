@@ -424,7 +424,10 @@
     onAuthStateChanged(auth, (user) => {
       utilisateurConnecte = !!(user && user.emailVerified);
       const lienAdmin = document.getElementById('lien-admin');
-      if (lienAdmin) lienAdmin.style.display = (user && user.email === 'kourrak.habib@hotmail.com') ? 'block' : 'none';
+      const lienAdminMenu = document.getElementById('lien-admin-menu');
+      const isAdmin = user && user.email === 'kourrak.habib@hotmail.com';
+      if (lienAdmin) lienAdmin.style.display = isAdmin ? 'block' : 'none';
+      if (lienAdminMenu) lienAdminMenu.style.display = isAdmin ? 'block' : 'none';
     });
 
     // Resultats foot disponibles sur les liens ci-dessous
