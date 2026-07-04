@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Fiche Professionnel</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; color: rgba(255,255,255,0.7); font-size: 13px; margin-bottom: 5px; font-weight: 600; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px; border-radius: 10px; background: #1C2333; color: white; border: 1px solid rgba(255,255,255,0.15); font-size: 14px; font-family: inherit; box-sizing: border-box; }
+    .form-group textarea { min-height: 70px; resize: vertical; }
+    .btn-publier { width: 100%; padding: 14px; background: #A8E063; color: #0D1117; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 10px; }
+    .btn-firebase { width: 100%; padding: 12px; background: #FF6B35; color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; display: block; text-align: center; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+    .acces-refuse { text-align: center; padding: 60px 20px; }
+    .badge-admin { background: rgba(214,16,52,0.15); border: 1px solid #D61034; color: #ff6b6b; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; margin-bottom: 16px; }
+    .succes { background: rgba(168,224,99,0.1); border: 1px solid rgba(168,224,99,0.4); border-radius: 10px; padding: 14px; text-align: center; color: #A8E063; display: none; margin-bottom: 16px; }
+    #contenu-admin { display: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">DZ Diaspora</a>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+      <span id="user-info" style="color:rgba(255,255,255,0.5);font-size:12px;"></span>
+      <button id="btn-logout" onclick="deconnexion()" style="display:none;background:rgba(214,16,52,0.2);border:1px solid #D61034;color:#ff6b6b;padding:5px 12px;border-radius:14px;font-size:12px;cursor:pointer;">🚪 Deconnexion</button>
+    </div>
+  </header>
+
+  <!-- ACCES REFUSE -->
+  <div id="acces-refuse" class="acces-refuse" style="display:none;">
+    <div style="font-size:48px;margin-bottom:16px;">🔒</div>
+    <h2 style="color:#ff6b6b;">Acces refuse</h2>
+    <p style="color:rgba(255,255,255,0.5);">Cette page est reservee a l administrateur DZ Diaspora.</p>
+    <a href="index.html" class="btn-telecharger" style="display:inline-block;margin-top:16px;">Retour accueil</a>
+  </div>
+
+  <!-- CONTENU ADMIN -->
+  <div id="contenu-admin">
+    <main class="page-content">
+      <div class="badge-admin">🔐 Page Admin — Acces restreint</div>
+      <h1>📋 Ajouter un Professionnel</h1>
+      <p style="color:rgba(255,255,255,0.5);font-size:13px;margin-bottom:20px;">Remplissez cette fiche sur place avec le professionnel. Publication immediate apres enregistrement.</p>
+
+      <div class="succes" id="msgSucces">✅ Professionnel publie avec succes dans l annuaire !</div>
+
+      <!-- LIEN FIREBASE CONSOLE -->
+      <a href="https://console.firebase.google.com/project/dzdiaspora-7260a/firestore/data/~2Fprofessionnels" target="_blank" class="btn-firebase" style="margin-bottom:20px;">
+        🔥 Ouvrir Firebase Console — Valider les demandes en ligne
+      </a>
+
+      <section class="bloc">
+        <h2>Nouvelle fiche professionnel</h2>
+
+        <div class="form-group">
+          <label>Profession *</label>
+          <select id="a-profession">
+            <option value="">-- Selectionnez --</option>
+            <option value="avocat">⚖️ Avocat</option>
+            <option value="medecin">🏥 Medecin generaliste</option>
+            <option value="medecin_spec">🏥 Medecin specialiste</option>
+            <option value="notaire">📜 Notaire</option>
+            <option value="pharmacien">💊 Pharmacien</option>
+            <option value="dentiste">🦷 Dentiste</option>
+            <option value="psychologue">🧠 Psychologue</option>
+            <option value="comptable">💼 Expert comptable</option>
+            <option value="autre">📋 Autre</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="a-specGroup" style="display:none;">
+          <label>Specialite</label>
+          <input type="text" id="a-specialite" placeholder="Ex: Cardiologue, Droit de la famille...">
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Nom *</label>
+            <input type="text" id="a-nom" placeholder="Nom">
+          </div>
+          <div class="form-group">
+            <label>Prenom *</label>
+            <input type="text" id="a-prenom" placeholder="Prenom">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Wilaya *</label>
+          <select id="a-wilaya">
+            <option value="">-- Wilaya --</option>
+            <option>Alger</option><option>Oran</option><option>Constantine</option>
+            <option>Annaba</option><option>Blida</option><option>Bejaia</option>
+            <option>Tizi Ouzou</option><option>Setif</option><option>Batna</option>
+            <option>Tlemcen</option><option>Mostaganem</option><option>Sidi Bel Abbes</option>
+            <option>Skikda</option><option>Guelma</option><option>Medea</option>
+            <option>Mascara</option><option>Ghardaia</option><option>Ouargla</option>
+            <option>Tamanrasset</option><option>Adrar</option><option>Tipaza</option>
+            <option>Boumerdes</option><option>Relizane</option><option>Autre</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Adresse cabinet / clinique *</label>
+          <input type="text" id="a-adresse" placeholder="Rue, quartier, ville">
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Telephone *</label>
+            <input type="tel" id="a-telephone" placeholder="+213 7 XX XX XX XX">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="a-email" placeholder="pro@email.com">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Langues parlees</label>
+          <input type="text" id="a-langues" placeholder="Arabe, Francais, Kabyle...">
+        </div>
+
+        <div class="form-group">
+          <label>Numero d ordre professionnel</label>
+          <input type="text" id="a-ordre" placeholder="Barreau Alger N° 12345">
+        </div>
+
+        <div class="form-group">
+          <label>Presentation / Services</label>
+          <textarea id="a-presentation" placeholder="Services, experience, honoraires..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Abonnement</label>
+          <select id="a-abonnement">
+            <option value="mensuel_eur">Mensuel — 20€/mois</option>
+            <option value="annuel_eur">Annuel — 240€/an</option>
+            <option value="mensuel_dzd">Mensuel — ~3 040 DZD/mois</option>
+            <option value="annuel_dzd">Annuel — ~36 475 DZD/an</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Mode de paiement</label>
+          <select id="a-paiement">
+            <option value="stripe">Carte bancaire (Stripe)</option>
+            <option value="virement_dzd">Virement bancaire DZD</option>
+            <option value="especes">Especes (sur place)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Notes internes (non visibles par le public)</label>
+          <textarea id="a-notes" placeholder="Notes sur le contact, date de visite, remarques..."></textarea>
+        </div>
+
+        <button class="btn-publier" onclick="publierPro()">✅ Publier dans l annuaire</button>
+        <button onclick="viderFormulaire()" style="width:100%;padding:10px;background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);border-radius:10px;cursor:pointer;font-size:13px;">🗑️ Vider le formulaire</button>
+      </section>
+    </main>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const cfg = { apiKey:"AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ", appId:"1:223003656315:web:100de190b8b5e74ddae2de", messagingSenderId:"223003656315", projectId:"dzdiaspora-7260a", authDomain:"dzdiaspora-7260a.firebaseapp.com", storageBucket:"dzdiaspora-7260a.firebasestorage.app" };
+    const app = initializeApp(cfg);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const ADMIN_EMAIL = 'kourrak.habib@hotmail.com';
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = 'connexion.html?redirect=admin-pro.html';
+        return;
+      }
+      if (user.email !== ADMIN_EMAIL) {
+        document.getElementById('acces-refuse').style.display = 'block';
+        return;
+      }
+      document.getElementById('contenu-admin').style.display = 'block';
+      document.getElementById('user-info').textContent = '👤 ' + user.email;
+      document.getElementById('btn-logout').style.display = 'block';
+    });
+
+    window.deconnexion = async () => { await signOut(auth); window.location.href = 'index.html'; };
+
+    document.getElementById('a-profession').addEventListener('change', function() {
+      document.getElementById('a-specGroup').style.display = ['medecin_spec','avocat','autre'].includes(this.value) ? 'block' : 'none';
+    });
+
+    window.publierPro = async function() {
+      const champs = ['a-profession','a-nom','a-prenom','a-wilaya','a-adresse','a-telephone'];
+      for (const c of champs) {
+        if (!document.getElementById(c).value.trim()) {
+          alert('Remplissez tous les champs obligatoires (*)');
+          return;
+        }
+      }
+      try {
+        await addDoc(collection(db, 'professionnels'), {
+          profession: document.getElementById('a-profession').value,
+          specialite: document.getElementById('a-specialite').value.trim(),
+          nom: document.getElementById('a-nom').value.trim(),
+          prenom: document.getElementById('a-prenom').value.trim(),
+          wilaya: document.getElementById('a-wilaya').value,
+          adresse: document.getElementById('a-adresse').value.trim(),
+          telephone: document.getElementById('a-telephone').value.trim(),
+          email: document.getElementById('a-email').value.trim(),
+          langues: document.getElementById('a-langues').value.trim(),
+          ordre: document.getElementById('a-ordre').value.trim(),
+          presentation: document.getElementById('a-presentation').value.trim(),
+          abonnement: document.getElementById('a-abonnement').value,
+          paiement: document.getElementById('a-paiement').value,
+          notes_internes: document.getElementById('a-notes').value.trim(),
+          statut: 'valide',
+          date_inscription: Timestamp.now(),
+          ajoute_par: 'admin',
+          verifie: true,
+        });
+        document.getElementById('msgSucces').style.display = 'block';
+        window.scrollTo(0, 0);
+        setTimeout(() => document.getElementById('msgSucces').style.display = 'none', 5000);
+        window.viderFormulaire();
+      } catch(e) {
+        alert('Erreur Firebase. Reessayez.');
+        console.error(e);
+      }
+    };
+
+    window.viderFormulaire = function() {
+      ['a-profession','a-specialite','a-nom','a-prenom','a-wilaya','a-adresse','a-telephone','a-email','a-langues','a-ordre','a-presentation','a-notes'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      document.getElementById('a-specGroup').style.display = 'none';
+    };
+  </script>
+</body>
+</html>
