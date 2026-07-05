@@ -233,6 +233,12 @@
           ordre: document.getElementById('ordre').value.trim(),
           presentation: document.getElementById('presentation').value.trim(),
           abonnement: document.getElementById('abonnement').value,
+          notifications: {
+            email: document.getElementById('notif-email').checked,
+            push: document.getElementById('notif-push').checked,
+            whatsapp: document.getElementById('notif-whatsapp').checked,
+            sms: document.getElementById('notif-sms').checked,
+          },
           statut: 'en_attente',
           date: Timestamp.now()
         });
