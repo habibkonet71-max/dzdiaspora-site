@@ -206,6 +206,12 @@
         <button onclick="publierAlerte()" style="width:100%;padding:13px;background:#FFC107;color:#0D1117;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">📢 Publier l alerte</button>
       </section>
   
+
+      <!-- SECTION DEMANDES PROS EN ATTENTE -->
+      <section class="bloc" style="border-color:rgba(255,193,7,0.4);">
+        <h2 style="color:#FFC107;">📋 Demandes d'inscription pro en attente</h2>
+        <div id="liste-demandes-attente"></div>
+      </section>
       <!-- SECTION AVIS A VALIDER -->
       <section class="bloc" style="border-color:rgba(255,193,7,0.4);">
         <h2 style="color:#FFC107;">⭐ Avis clients à valider</h2>
@@ -346,6 +352,71 @@
           });
         }
         chargerAvisAttente();
+
+    // Charger demandes pros en attente
+    async function chargerDemandesPros() {
+      const container = document.getElementById('liste-demandes-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(
+          collection(db, 'professionnels_demandes'),
+          where('statut','==','en_attente'),
+          orderBy('date','desc')
+        ));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune demande en attente</p>';
+          return;
+        }
+        const profLabels = {
+          'avocat':'⚖️ Avocat','medecin':'🏥 Medecin','medecin_spec':'🏥 Medecin specialiste',
+          'notaire':'📜 Notaire','pharmacien':'💊 Pharmacien','dentiste':'🦷 Dentiste',
+          'psychologue':'🧠 Psychologue','comptable':'💼 Expert comptable','autre':'📋 Autre'
+        };
+        container.innerHTML = snap.docs.map(d => {
+          const p = d.data();
+          const date = p.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          return `<div style="background:#0D1117;border-radius:10px;padding:14px;margin-bottom:12px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+              <div>
+                <div style="color:#FFC107;font-size:13px;font-weight:700;">${profLabels[p.profession]||p.profession||'—'} ${p.specialite?'— '+p.specialite:''}</div>
+                <div style="color:white;font-size:15px;font-weight:700;">${p.prenom||''} ${p.nom||''}</div>
+                <div style="color:#4DD0E1;font-size:12px;">📍 ${p.wilaya||''} — ${p.adresse||''}</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:12px;">📞 ${p.telephone||''} | ✉️ ${p.email||''}</div>
+                ${p.langues ? '<div style="color:rgba(255,255,255,0.5);font-size:12px;">🗣️ '+p.langues+'</div>' : ''}
+                ${p.presentation ? '<div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px;font-style:italic;">"'+p.presentation.substring(0,100)+'"</div>' : ''}
+                <div style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:4px;">Abonnement: ${p.abonnement||'—'} | Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="validerDemandePro('${d.id}')" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Valider et publier</button>
+              <button onclick="refuserDemandePro('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Refuser</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error('Erreur demandes pros:', e); }
+    }
+
+    window.validerDemandePro = async function(id) {
+      try {
+        const docSnap = await getDocs(query(collection(db, 'professionnels_demandes'), where('__name__', '==', id)));
+        const demandeDoc = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m => m.getDoc(m.doc(db, 'professionnels_demandes', id)));
+        const data = demandeDoc.data();
+        // Copier dans professionnels
+        await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
+        // Mettre a jour statut demande
+        await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'valide' });
+        alert('✅ Professionnel publié dans l annuaire !');
+        chargerDemandesPros();
+      } catch(e) { console.error(e); alert('Erreur validation: ' + e.message); }
+    };
+
+    window.refuserDemandePro = async function(id) {
+      if (!confirm('Refuser cette demande ?')) return;
+      await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'refuse' });
+      chargerDemandesPros();
+    };
+
+    chargerDemandesPros();
       } catch(e) { alert('Erreur validation'); }
     };
 
@@ -353,9 +424,139 @@
       if (!confirm('Supprimer cet avis ?')) return;
       await deleteDoc(doc(db, 'avis_clients', id));
       chargerAvisAttente();
+
+    // Charger demandes pros en attente
+    async function chargerDemandesPros() {
+      const container = document.getElementById('liste-demandes-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(
+          collection(db, 'professionnels_demandes'),
+          where('statut','==','en_attente'),
+          orderBy('date','desc')
+        ));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune demande en attente</p>';
+          return;
+        }
+        const profLabels = {
+          'avocat':'⚖️ Avocat','medecin':'🏥 Medecin','medecin_spec':'🏥 Medecin specialiste',
+          'notaire':'📜 Notaire','pharmacien':'💊 Pharmacien','dentiste':'🦷 Dentiste',
+          'psychologue':'🧠 Psychologue','comptable':'💼 Expert comptable','autre':'📋 Autre'
+        };
+        container.innerHTML = snap.docs.map(d => {
+          const p = d.data();
+          const date = p.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          return `<div style="background:#0D1117;border-radius:10px;padding:14px;margin-bottom:12px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+              <div>
+                <div style="color:#FFC107;font-size:13px;font-weight:700;">${profLabels[p.profession]||p.profession||'—'} ${p.specialite?'— '+p.specialite:''}</div>
+                <div style="color:white;font-size:15px;font-weight:700;">${p.prenom||''} ${p.nom||''}</div>
+                <div style="color:#4DD0E1;font-size:12px;">📍 ${p.wilaya||''} — ${p.adresse||''}</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:12px;">📞 ${p.telephone||''} | ✉️ ${p.email||''}</div>
+                ${p.langues ? '<div style="color:rgba(255,255,255,0.5);font-size:12px;">🗣️ '+p.langues+'</div>' : ''}
+                ${p.presentation ? '<div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px;font-style:italic;">"'+p.presentation.substring(0,100)+'"</div>' : ''}
+                <div style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:4px;">Abonnement: ${p.abonnement||'—'} | Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="validerDemandePro('${d.id}')" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Valider et publier</button>
+              <button onclick="refuserDemandePro('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Refuser</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error('Erreur demandes pros:', e); }
+    }
+
+    window.validerDemandePro = async function(id) {
+      try {
+        const docSnap = await getDocs(query(collection(db, 'professionnels_demandes'), where('__name__', '==', id)));
+        const demandeDoc = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m => m.getDoc(m.doc(db, 'professionnels_demandes', id)));
+        const data = demandeDoc.data();
+        // Copier dans professionnels
+        await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
+        // Mettre a jour statut demande
+        await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'valide' });
+        alert('✅ Professionnel publié dans l annuaire !');
+        chargerDemandesPros();
+      } catch(e) { console.error(e); alert('Erreur validation: ' + e.message); }
+    };
+
+    window.refuserDemandePro = async function(id) {
+      if (!confirm('Refuser cette demande ?')) return;
+      await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'refuse' });
+      chargerDemandesPros();
+    };
+
+    chargerDemandesPros();
     };
 
     chargerAvisAttente();
+
+    // Charger demandes pros en attente
+    async function chargerDemandesPros() {
+      const container = document.getElementById('liste-demandes-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(
+          collection(db, 'professionnels_demandes'),
+          where('statut','==','en_attente'),
+          orderBy('date','desc')
+        ));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune demande en attente</p>';
+          return;
+        }
+        const profLabels = {
+          'avocat':'⚖️ Avocat','medecin':'🏥 Medecin','medecin_spec':'🏥 Medecin specialiste',
+          'notaire':'📜 Notaire','pharmacien':'💊 Pharmacien','dentiste':'🦷 Dentiste',
+          'psychologue':'🧠 Psychologue','comptable':'💼 Expert comptable','autre':'📋 Autre'
+        };
+        container.innerHTML = snap.docs.map(d => {
+          const p = d.data();
+          const date = p.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          return `<div style="background:#0D1117;border-radius:10px;padding:14px;margin-bottom:12px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+              <div>
+                <div style="color:#FFC107;font-size:13px;font-weight:700;">${profLabels[p.profession]||p.profession||'—'} ${p.specialite?'— '+p.specialite:''}</div>
+                <div style="color:white;font-size:15px;font-weight:700;">${p.prenom||''} ${p.nom||''}</div>
+                <div style="color:#4DD0E1;font-size:12px;">📍 ${p.wilaya||''} — ${p.adresse||''}</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:12px;">📞 ${p.telephone||''} | ✉️ ${p.email||''}</div>
+                ${p.langues ? '<div style="color:rgba(255,255,255,0.5);font-size:12px;">🗣️ '+p.langues+'</div>' : ''}
+                ${p.presentation ? '<div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px;font-style:italic;">"'+p.presentation.substring(0,100)+'"</div>' : ''}
+                <div style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:4px;">Abonnement: ${p.abonnement||'—'} | Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="validerDemandePro('${d.id}')" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Valider et publier</button>
+              <button onclick="refuserDemandePro('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Refuser</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error('Erreur demandes pros:', e); }
+    }
+
+    window.validerDemandePro = async function(id) {
+      try {
+        const docSnap = await getDocs(query(collection(db, 'professionnels_demandes'), where('__name__', '==', id)));
+        const demandeDoc = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m => m.getDoc(m.doc(db, 'professionnels_demandes', id)));
+        const data = demandeDoc.data();
+        // Copier dans professionnels
+        await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
+        // Mettre a jour statut demande
+        await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'valide' });
+        alert('✅ Professionnel publié dans l annuaire !');
+        chargerDemandesPros();
+      } catch(e) { console.error(e); alert('Erreur validation: ' + e.message); }
+    };
+
+    window.refuserDemandePro = async function(id) {
+      if (!confirm('Refuser cette demande ?')) return;
+      await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'refuse' });
+      chargerDemandesPros();
+    };
+
+    chargerDemandesPros();
       } catch(e) { alert('Erreur. Reessayez.'); }
     };
 
@@ -440,6 +641,71 @@
           });
         }
         chargerAvisAttente();
+
+    // Charger demandes pros en attente
+    async function chargerDemandesPros() {
+      const container = document.getElementById('liste-demandes-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(
+          collection(db, 'professionnels_demandes'),
+          where('statut','==','en_attente'),
+          orderBy('date','desc')
+        ));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune demande en attente</p>';
+          return;
+        }
+        const profLabels = {
+          'avocat':'⚖️ Avocat','medecin':'🏥 Medecin','medecin_spec':'🏥 Medecin specialiste',
+          'notaire':'📜 Notaire','pharmacien':'💊 Pharmacien','dentiste':'🦷 Dentiste',
+          'psychologue':'🧠 Psychologue','comptable':'💼 Expert comptable','autre':'📋 Autre'
+        };
+        container.innerHTML = snap.docs.map(d => {
+          const p = d.data();
+          const date = p.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          return `<div style="background:#0D1117;border-radius:10px;padding:14px;margin-bottom:12px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+              <div>
+                <div style="color:#FFC107;font-size:13px;font-weight:700;">${profLabels[p.profession]||p.profession||'—'} ${p.specialite?'— '+p.specialite:''}</div>
+                <div style="color:white;font-size:15px;font-weight:700;">${p.prenom||''} ${p.nom||''}</div>
+                <div style="color:#4DD0E1;font-size:12px;">📍 ${p.wilaya||''} — ${p.adresse||''}</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:12px;">📞 ${p.telephone||''} | ✉️ ${p.email||''}</div>
+                ${p.langues ? '<div style="color:rgba(255,255,255,0.5);font-size:12px;">🗣️ '+p.langues+'</div>' : ''}
+                ${p.presentation ? '<div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px;font-style:italic;">"'+p.presentation.substring(0,100)+'"</div>' : ''}
+                <div style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:4px;">Abonnement: ${p.abonnement||'—'} | Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="validerDemandePro('${d.id}')" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Valider et publier</button>
+              <button onclick="refuserDemandePro('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Refuser</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error('Erreur demandes pros:', e); }
+    }
+
+    window.validerDemandePro = async function(id) {
+      try {
+        const docSnap = await getDocs(query(collection(db, 'professionnels_demandes'), where('__name__', '==', id)));
+        const demandeDoc = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m => m.getDoc(m.doc(db, 'professionnels_demandes', id)));
+        const data = demandeDoc.data();
+        // Copier dans professionnels
+        await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
+        // Mettre a jour statut demande
+        await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'valide' });
+        alert('✅ Professionnel publié dans l annuaire !');
+        chargerDemandesPros();
+      } catch(e) { console.error(e); alert('Erreur validation: ' + e.message); }
+    };
+
+    window.refuserDemandePro = async function(id) {
+      if (!confirm('Refuser cette demande ?')) return;
+      await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'refuse' });
+      chargerDemandesPros();
+    };
+
+    chargerDemandesPros();
       } catch(e) { alert('Erreur validation'); }
     };
 
@@ -447,9 +713,139 @@
       if (!confirm('Supprimer cet avis ?')) return;
       await deleteDoc(doc(db, 'avis_clients', id));
       chargerAvisAttente();
+
+    // Charger demandes pros en attente
+    async function chargerDemandesPros() {
+      const container = document.getElementById('liste-demandes-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(
+          collection(db, 'professionnels_demandes'),
+          where('statut','==','en_attente'),
+          orderBy('date','desc')
+        ));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune demande en attente</p>';
+          return;
+        }
+        const profLabels = {
+          'avocat':'⚖️ Avocat','medecin':'🏥 Medecin','medecin_spec':'🏥 Medecin specialiste',
+          'notaire':'📜 Notaire','pharmacien':'💊 Pharmacien','dentiste':'🦷 Dentiste',
+          'psychologue':'🧠 Psychologue','comptable':'💼 Expert comptable','autre':'📋 Autre'
+        };
+        container.innerHTML = snap.docs.map(d => {
+          const p = d.data();
+          const date = p.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          return `<div style="background:#0D1117;border-radius:10px;padding:14px;margin-bottom:12px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+              <div>
+                <div style="color:#FFC107;font-size:13px;font-weight:700;">${profLabels[p.profession]||p.profession||'—'} ${p.specialite?'— '+p.specialite:''}</div>
+                <div style="color:white;font-size:15px;font-weight:700;">${p.prenom||''} ${p.nom||''}</div>
+                <div style="color:#4DD0E1;font-size:12px;">📍 ${p.wilaya||''} — ${p.adresse||''}</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:12px;">📞 ${p.telephone||''} | ✉️ ${p.email||''}</div>
+                ${p.langues ? '<div style="color:rgba(255,255,255,0.5);font-size:12px;">🗣️ '+p.langues+'</div>' : ''}
+                ${p.presentation ? '<div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px;font-style:italic;">"'+p.presentation.substring(0,100)+'"</div>' : ''}
+                <div style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:4px;">Abonnement: ${p.abonnement||'—'} | Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="validerDemandePro('${d.id}')" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Valider et publier</button>
+              <button onclick="refuserDemandePro('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Refuser</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error('Erreur demandes pros:', e); }
+    }
+
+    window.validerDemandePro = async function(id) {
+      try {
+        const docSnap = await getDocs(query(collection(db, 'professionnels_demandes'), where('__name__', '==', id)));
+        const demandeDoc = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m => m.getDoc(m.doc(db, 'professionnels_demandes', id)));
+        const data = demandeDoc.data();
+        // Copier dans professionnels
+        await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
+        // Mettre a jour statut demande
+        await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'valide' });
+        alert('✅ Professionnel publié dans l annuaire !');
+        chargerDemandesPros();
+      } catch(e) { console.error(e); alert('Erreur validation: ' + e.message); }
+    };
+
+    window.refuserDemandePro = async function(id) {
+      if (!confirm('Refuser cette demande ?')) return;
+      await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'refuse' });
+      chargerDemandesPros();
+    };
+
+    chargerDemandesPros();
     };
 
     chargerAvisAttente();
+
+    // Charger demandes pros en attente
+    async function chargerDemandesPros() {
+      const container = document.getElementById('liste-demandes-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(
+          collection(db, 'professionnels_demandes'),
+          where('statut','==','en_attente'),
+          orderBy('date','desc')
+        ));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune demande en attente</p>';
+          return;
+        }
+        const profLabels = {
+          'avocat':'⚖️ Avocat','medecin':'🏥 Medecin','medecin_spec':'🏥 Medecin specialiste',
+          'notaire':'📜 Notaire','pharmacien':'💊 Pharmacien','dentiste':'🦷 Dentiste',
+          'psychologue':'🧠 Psychologue','comptable':'💼 Expert comptable','autre':'📋 Autre'
+        };
+        container.innerHTML = snap.docs.map(d => {
+          const p = d.data();
+          const date = p.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          return `<div style="background:#0D1117;border-radius:10px;padding:14px;margin-bottom:12px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+              <div>
+                <div style="color:#FFC107;font-size:13px;font-weight:700;">${profLabels[p.profession]||p.profession||'—'} ${p.specialite?'— '+p.specialite:''}</div>
+                <div style="color:white;font-size:15px;font-weight:700;">${p.prenom||''} ${p.nom||''}</div>
+                <div style="color:#4DD0E1;font-size:12px;">📍 ${p.wilaya||''} — ${p.adresse||''}</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:12px;">📞 ${p.telephone||''} | ✉️ ${p.email||''}</div>
+                ${p.langues ? '<div style="color:rgba(255,255,255,0.5);font-size:12px;">🗣️ '+p.langues+'</div>' : ''}
+                ${p.presentation ? '<div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px;font-style:italic;">"'+p.presentation.substring(0,100)+'"</div>' : ''}
+                <div style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:4px;">Abonnement: ${p.abonnement||'—'} | Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="validerDemandePro('${d.id}')" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Valider et publier</button>
+              <button onclick="refuserDemandePro('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Refuser</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error('Erreur demandes pros:', e); }
+    }
+
+    window.validerDemandePro = async function(id) {
+      try {
+        const docSnap = await getDocs(query(collection(db, 'professionnels_demandes'), where('__name__', '==', id)));
+        const demandeDoc = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m => m.getDoc(m.doc(db, 'professionnels_demandes', id)));
+        const data = demandeDoc.data();
+        // Copier dans professionnels
+        await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
+        // Mettre a jour statut demande
+        await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'valide' });
+        alert('✅ Professionnel publié dans l annuaire !');
+        chargerDemandesPros();
+      } catch(e) { console.error(e); alert('Erreur validation: ' + e.message); }
+    };
+
+    window.refuserDemandePro = async function(id) {
+      if (!confirm('Refuser cette demande ?')) return;
+      await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'refuse' });
+      chargerDemandesPros();
+    };
+
+    chargerDemandesPros();
       } catch(e) { alert('Erreur suppression'); }
     };
 
@@ -502,6 +898,71 @@
           });
         }
         chargerAvisAttente();
+
+    // Charger demandes pros en attente
+    async function chargerDemandesPros() {
+      const container = document.getElementById('liste-demandes-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(
+          collection(db, 'professionnels_demandes'),
+          where('statut','==','en_attente'),
+          orderBy('date','desc')
+        ));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune demande en attente</p>';
+          return;
+        }
+        const profLabels = {
+          'avocat':'⚖️ Avocat','medecin':'🏥 Medecin','medecin_spec':'🏥 Medecin specialiste',
+          'notaire':'📜 Notaire','pharmacien':'💊 Pharmacien','dentiste':'🦷 Dentiste',
+          'psychologue':'🧠 Psychologue','comptable':'💼 Expert comptable','autre':'📋 Autre'
+        };
+        container.innerHTML = snap.docs.map(d => {
+          const p = d.data();
+          const date = p.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          return `<div style="background:#0D1117;border-radius:10px;padding:14px;margin-bottom:12px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+              <div>
+                <div style="color:#FFC107;font-size:13px;font-weight:700;">${profLabels[p.profession]||p.profession||'—'} ${p.specialite?'— '+p.specialite:''}</div>
+                <div style="color:white;font-size:15px;font-weight:700;">${p.prenom||''} ${p.nom||''}</div>
+                <div style="color:#4DD0E1;font-size:12px;">📍 ${p.wilaya||''} — ${p.adresse||''}</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:12px;">📞 ${p.telephone||''} | ✉️ ${p.email||''}</div>
+                ${p.langues ? '<div style="color:rgba(255,255,255,0.5);font-size:12px;">🗣️ '+p.langues+'</div>' : ''}
+                ${p.presentation ? '<div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px;font-style:italic;">"'+p.presentation.substring(0,100)+'"</div>' : ''}
+                <div style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:4px;">Abonnement: ${p.abonnement||'—'} | Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="validerDemandePro('${d.id}')" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Valider et publier</button>
+              <button onclick="refuserDemandePro('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Refuser</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error('Erreur demandes pros:', e); }
+    }
+
+    window.validerDemandePro = async function(id) {
+      try {
+        const docSnap = await getDocs(query(collection(db, 'professionnels_demandes'), where('__name__', '==', id)));
+        const demandeDoc = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m => m.getDoc(m.doc(db, 'professionnels_demandes', id)));
+        const data = demandeDoc.data();
+        // Copier dans professionnels
+        await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
+        // Mettre a jour statut demande
+        await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'valide' });
+        alert('✅ Professionnel publié dans l annuaire !');
+        chargerDemandesPros();
+      } catch(e) { console.error(e); alert('Erreur validation: ' + e.message); }
+    };
+
+    window.refuserDemandePro = async function(id) {
+      if (!confirm('Refuser cette demande ?')) return;
+      await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'refuse' });
+      chargerDemandesPros();
+    };
+
+    chargerDemandesPros();
       } catch(e) { alert('Erreur validation'); }
     };
 
@@ -509,9 +970,139 @@
       if (!confirm('Supprimer cet avis ?')) return;
       await deleteDoc(doc(db, 'avis_clients', id));
       chargerAvisAttente();
+
+    // Charger demandes pros en attente
+    async function chargerDemandesPros() {
+      const container = document.getElementById('liste-demandes-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(
+          collection(db, 'professionnels_demandes'),
+          where('statut','==','en_attente'),
+          orderBy('date','desc')
+        ));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune demande en attente</p>';
+          return;
+        }
+        const profLabels = {
+          'avocat':'⚖️ Avocat','medecin':'🏥 Medecin','medecin_spec':'🏥 Medecin specialiste',
+          'notaire':'📜 Notaire','pharmacien':'💊 Pharmacien','dentiste':'🦷 Dentiste',
+          'psychologue':'🧠 Psychologue','comptable':'💼 Expert comptable','autre':'📋 Autre'
+        };
+        container.innerHTML = snap.docs.map(d => {
+          const p = d.data();
+          const date = p.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          return `<div style="background:#0D1117;border-radius:10px;padding:14px;margin-bottom:12px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+              <div>
+                <div style="color:#FFC107;font-size:13px;font-weight:700;">${profLabels[p.profession]||p.profession||'—'} ${p.specialite?'— '+p.specialite:''}</div>
+                <div style="color:white;font-size:15px;font-weight:700;">${p.prenom||''} ${p.nom||''}</div>
+                <div style="color:#4DD0E1;font-size:12px;">📍 ${p.wilaya||''} — ${p.adresse||''}</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:12px;">📞 ${p.telephone||''} | ✉️ ${p.email||''}</div>
+                ${p.langues ? '<div style="color:rgba(255,255,255,0.5);font-size:12px;">🗣️ '+p.langues+'</div>' : ''}
+                ${p.presentation ? '<div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px;font-style:italic;">"'+p.presentation.substring(0,100)+'"</div>' : ''}
+                <div style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:4px;">Abonnement: ${p.abonnement||'—'} | Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="validerDemandePro('${d.id}')" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Valider et publier</button>
+              <button onclick="refuserDemandePro('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Refuser</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error('Erreur demandes pros:', e); }
+    }
+
+    window.validerDemandePro = async function(id) {
+      try {
+        const docSnap = await getDocs(query(collection(db, 'professionnels_demandes'), where('__name__', '==', id)));
+        const demandeDoc = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m => m.getDoc(m.doc(db, 'professionnels_demandes', id)));
+        const data = demandeDoc.data();
+        // Copier dans professionnels
+        await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
+        // Mettre a jour statut demande
+        await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'valide' });
+        alert('✅ Professionnel publié dans l annuaire !');
+        chargerDemandesPros();
+      } catch(e) { console.error(e); alert('Erreur validation: ' + e.message); }
+    };
+
+    window.refuserDemandePro = async function(id) {
+      if (!confirm('Refuser cette demande ?')) return;
+      await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'refuse' });
+      chargerDemandesPros();
+    };
+
+    chargerDemandesPros();
     };
 
     chargerAvisAttente();
+
+    // Charger demandes pros en attente
+    async function chargerDemandesPros() {
+      const container = document.getElementById('liste-demandes-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(
+          collection(db, 'professionnels_demandes'),
+          where('statut','==','en_attente'),
+          orderBy('date','desc')
+        ));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune demande en attente</p>';
+          return;
+        }
+        const profLabels = {
+          'avocat':'⚖️ Avocat','medecin':'🏥 Medecin','medecin_spec':'🏥 Medecin specialiste',
+          'notaire':'📜 Notaire','pharmacien':'💊 Pharmacien','dentiste':'🦷 Dentiste',
+          'psychologue':'🧠 Psychologue','comptable':'💼 Expert comptable','autre':'📋 Autre'
+        };
+        container.innerHTML = snap.docs.map(d => {
+          const p = d.data();
+          const date = p.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          return `<div style="background:#0D1117;border-radius:10px;padding:14px;margin-bottom:12px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+              <div>
+                <div style="color:#FFC107;font-size:13px;font-weight:700;">${profLabels[p.profession]||p.profession||'—'} ${p.specialite?'— '+p.specialite:''}</div>
+                <div style="color:white;font-size:15px;font-weight:700;">${p.prenom||''} ${p.nom||''}</div>
+                <div style="color:#4DD0E1;font-size:12px;">📍 ${p.wilaya||''} — ${p.adresse||''}</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:12px;">📞 ${p.telephone||''} | ✉️ ${p.email||''}</div>
+                ${p.langues ? '<div style="color:rgba(255,255,255,0.5);font-size:12px;">🗣️ '+p.langues+'</div>' : ''}
+                ${p.presentation ? '<div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px;font-style:italic;">"'+p.presentation.substring(0,100)+'"</div>' : ''}
+                <div style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:4px;">Abonnement: ${p.abonnement||'—'} | Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="validerDemandePro('${d.id}')" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Valider et publier</button>
+              <button onclick="refuserDemandePro('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Refuser</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error('Erreur demandes pros:', e); }
+    }
+
+    window.validerDemandePro = async function(id) {
+      try {
+        const docSnap = await getDocs(query(collection(db, 'professionnels_demandes'), where('__name__', '==', id)));
+        const demandeDoc = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m => m.getDoc(m.doc(db, 'professionnels_demandes', id)));
+        const data = demandeDoc.data();
+        // Copier dans professionnels
+        await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
+        // Mettre a jour statut demande
+        await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'valide' });
+        alert('✅ Professionnel publié dans l annuaire !');
+        chargerDemandesPros();
+      } catch(e) { console.error(e); alert('Erreur validation: ' + e.message); }
+    };
+
+    window.refuserDemandePro = async function(id) {
+      if (!confirm('Refuser cette demande ?')) return;
+      await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'refuse' });
+      chargerDemandesPros();
+    };
+
+    chargerDemandesPros();
     window.viderFormulaire();
       } catch(e) {
         alert('Erreur Firebase. Reessayez.');
@@ -586,6 +1177,71 @@
           });
         }
         chargerAvisAttente();
+
+    // Charger demandes pros en attente
+    async function chargerDemandesPros() {
+      const container = document.getElementById('liste-demandes-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(
+          collection(db, 'professionnels_demandes'),
+          where('statut','==','en_attente'),
+          orderBy('date','desc')
+        ));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune demande en attente</p>';
+          return;
+        }
+        const profLabels = {
+          'avocat':'⚖️ Avocat','medecin':'🏥 Medecin','medecin_spec':'🏥 Medecin specialiste',
+          'notaire':'📜 Notaire','pharmacien':'💊 Pharmacien','dentiste':'🦷 Dentiste',
+          'psychologue':'🧠 Psychologue','comptable':'💼 Expert comptable','autre':'📋 Autre'
+        };
+        container.innerHTML = snap.docs.map(d => {
+          const p = d.data();
+          const date = p.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          return `<div style="background:#0D1117;border-radius:10px;padding:14px;margin-bottom:12px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+              <div>
+                <div style="color:#FFC107;font-size:13px;font-weight:700;">${profLabels[p.profession]||p.profession||'—'} ${p.specialite?'— '+p.specialite:''}</div>
+                <div style="color:white;font-size:15px;font-weight:700;">${p.prenom||''} ${p.nom||''}</div>
+                <div style="color:#4DD0E1;font-size:12px;">📍 ${p.wilaya||''} — ${p.adresse||''}</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:12px;">📞 ${p.telephone||''} | ✉️ ${p.email||''}</div>
+                ${p.langues ? '<div style="color:rgba(255,255,255,0.5);font-size:12px;">🗣️ '+p.langues+'</div>' : ''}
+                ${p.presentation ? '<div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px;font-style:italic;">"'+p.presentation.substring(0,100)+'"</div>' : ''}
+                <div style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:4px;">Abonnement: ${p.abonnement||'—'} | Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="validerDemandePro('${d.id}')" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Valider et publier</button>
+              <button onclick="refuserDemandePro('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Refuser</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error('Erreur demandes pros:', e); }
+    }
+
+    window.validerDemandePro = async function(id) {
+      try {
+        const docSnap = await getDocs(query(collection(db, 'professionnels_demandes'), where('__name__', '==', id)));
+        const demandeDoc = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m => m.getDoc(m.doc(db, 'professionnels_demandes', id)));
+        const data = demandeDoc.data();
+        // Copier dans professionnels
+        await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
+        // Mettre a jour statut demande
+        await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'valide' });
+        alert('✅ Professionnel publié dans l annuaire !');
+        chargerDemandesPros();
+      } catch(e) { console.error(e); alert('Erreur validation: ' + e.message); }
+    };
+
+    window.refuserDemandePro = async function(id) {
+      if (!confirm('Refuser cette demande ?')) return;
+      await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'refuse' });
+      chargerDemandesPros();
+    };
+
+    chargerDemandesPros();
       } catch(e) { alert('Erreur validation'); }
     };
 
@@ -593,9 +1249,139 @@
       if (!confirm('Supprimer cet avis ?')) return;
       await deleteDoc(doc(db, 'avis_clients', id));
       chargerAvisAttente();
+
+    // Charger demandes pros en attente
+    async function chargerDemandesPros() {
+      const container = document.getElementById('liste-demandes-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(
+          collection(db, 'professionnels_demandes'),
+          where('statut','==','en_attente'),
+          orderBy('date','desc')
+        ));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune demande en attente</p>';
+          return;
+        }
+        const profLabels = {
+          'avocat':'⚖️ Avocat','medecin':'🏥 Medecin','medecin_spec':'🏥 Medecin specialiste',
+          'notaire':'📜 Notaire','pharmacien':'💊 Pharmacien','dentiste':'🦷 Dentiste',
+          'psychologue':'🧠 Psychologue','comptable':'💼 Expert comptable','autre':'📋 Autre'
+        };
+        container.innerHTML = snap.docs.map(d => {
+          const p = d.data();
+          const date = p.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          return `<div style="background:#0D1117;border-radius:10px;padding:14px;margin-bottom:12px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+              <div>
+                <div style="color:#FFC107;font-size:13px;font-weight:700;">${profLabels[p.profession]||p.profession||'—'} ${p.specialite?'— '+p.specialite:''}</div>
+                <div style="color:white;font-size:15px;font-weight:700;">${p.prenom||''} ${p.nom||''}</div>
+                <div style="color:#4DD0E1;font-size:12px;">📍 ${p.wilaya||''} — ${p.adresse||''}</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:12px;">📞 ${p.telephone||''} | ✉️ ${p.email||''}</div>
+                ${p.langues ? '<div style="color:rgba(255,255,255,0.5);font-size:12px;">🗣️ '+p.langues+'</div>' : ''}
+                ${p.presentation ? '<div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px;font-style:italic;">"'+p.presentation.substring(0,100)+'"</div>' : ''}
+                <div style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:4px;">Abonnement: ${p.abonnement||'—'} | Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="validerDemandePro('${d.id}')" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Valider et publier</button>
+              <button onclick="refuserDemandePro('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Refuser</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error('Erreur demandes pros:', e); }
+    }
+
+    window.validerDemandePro = async function(id) {
+      try {
+        const docSnap = await getDocs(query(collection(db, 'professionnels_demandes'), where('__name__', '==', id)));
+        const demandeDoc = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m => m.getDoc(m.doc(db, 'professionnels_demandes', id)));
+        const data = demandeDoc.data();
+        // Copier dans professionnels
+        await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
+        // Mettre a jour statut demande
+        await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'valide' });
+        alert('✅ Professionnel publié dans l annuaire !');
+        chargerDemandesPros();
+      } catch(e) { console.error(e); alert('Erreur validation: ' + e.message); }
+    };
+
+    window.refuserDemandePro = async function(id) {
+      if (!confirm('Refuser cette demande ?')) return;
+      await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'refuse' });
+      chargerDemandesPros();
+    };
+
+    chargerDemandesPros();
     };
 
     chargerAvisAttente();
+
+    // Charger demandes pros en attente
+    async function chargerDemandesPros() {
+      const container = document.getElementById('liste-demandes-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(
+          collection(db, 'professionnels_demandes'),
+          where('statut','==','en_attente'),
+          orderBy('date','desc')
+        ));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune demande en attente</p>';
+          return;
+        }
+        const profLabels = {
+          'avocat':'⚖️ Avocat','medecin':'🏥 Medecin','medecin_spec':'🏥 Medecin specialiste',
+          'notaire':'📜 Notaire','pharmacien':'💊 Pharmacien','dentiste':'🦷 Dentiste',
+          'psychologue':'🧠 Psychologue','comptable':'💼 Expert comptable','autre':'📋 Autre'
+        };
+        container.innerHTML = snap.docs.map(d => {
+          const p = d.data();
+          const date = p.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          return `<div style="background:#0D1117;border-radius:10px;padding:14px;margin-bottom:12px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+              <div>
+                <div style="color:#FFC107;font-size:13px;font-weight:700;">${profLabels[p.profession]||p.profession||'—'} ${p.specialite?'— '+p.specialite:''}</div>
+                <div style="color:white;font-size:15px;font-weight:700;">${p.prenom||''} ${p.nom||''}</div>
+                <div style="color:#4DD0E1;font-size:12px;">📍 ${p.wilaya||''} — ${p.adresse||''}</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:12px;">📞 ${p.telephone||''} | ✉️ ${p.email||''}</div>
+                ${p.langues ? '<div style="color:rgba(255,255,255,0.5);font-size:12px;">🗣️ '+p.langues+'</div>' : ''}
+                ${p.presentation ? '<div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px;font-style:italic;">"'+p.presentation.substring(0,100)+'"</div>' : ''}
+                <div style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:4px;">Abonnement: ${p.abonnement||'—'} | Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="validerDemandePro('${d.id}')" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Valider et publier</button>
+              <button onclick="refuserDemandePro('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Refuser</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error('Erreur demandes pros:', e); }
+    }
+
+    window.validerDemandePro = async function(id) {
+      try {
+        const docSnap = await getDocs(query(collection(db, 'professionnels_demandes'), where('__name__', '==', id)));
+        const demandeDoc = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m => m.getDoc(m.doc(db, 'professionnels_demandes', id)));
+        const data = demandeDoc.data();
+        // Copier dans professionnels
+        await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
+        // Mettre a jour statut demande
+        await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'valide' });
+        alert('✅ Professionnel publié dans l annuaire !');
+        chargerDemandesPros();
+      } catch(e) { console.error(e); alert('Erreur validation: ' + e.message); }
+    };
+
+    window.refuserDemandePro = async function(id) {
+      if (!confirm('Refuser cette demande ?')) return;
+      await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'refuse' });
+      chargerDemandesPros();
+    };
+
+    chargerDemandesPros();
       } catch(e) { alert('Erreur. Reessayez.'); }
     };
 
@@ -680,6 +1466,71 @@
           });
         }
         chargerAvisAttente();
+
+    // Charger demandes pros en attente
+    async function chargerDemandesPros() {
+      const container = document.getElementById('liste-demandes-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(
+          collection(db, 'professionnels_demandes'),
+          where('statut','==','en_attente'),
+          orderBy('date','desc')
+        ));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune demande en attente</p>';
+          return;
+        }
+        const profLabels = {
+          'avocat':'⚖️ Avocat','medecin':'🏥 Medecin','medecin_spec':'🏥 Medecin specialiste',
+          'notaire':'📜 Notaire','pharmacien':'💊 Pharmacien','dentiste':'🦷 Dentiste',
+          'psychologue':'🧠 Psychologue','comptable':'💼 Expert comptable','autre':'📋 Autre'
+        };
+        container.innerHTML = snap.docs.map(d => {
+          const p = d.data();
+          const date = p.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          return `<div style="background:#0D1117;border-radius:10px;padding:14px;margin-bottom:12px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+              <div>
+                <div style="color:#FFC107;font-size:13px;font-weight:700;">${profLabels[p.profession]||p.profession||'—'} ${p.specialite?'— '+p.specialite:''}</div>
+                <div style="color:white;font-size:15px;font-weight:700;">${p.prenom||''} ${p.nom||''}</div>
+                <div style="color:#4DD0E1;font-size:12px;">📍 ${p.wilaya||''} — ${p.adresse||''}</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:12px;">📞 ${p.telephone||''} | ✉️ ${p.email||''}</div>
+                ${p.langues ? '<div style="color:rgba(255,255,255,0.5);font-size:12px;">🗣️ '+p.langues+'</div>' : ''}
+                ${p.presentation ? '<div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px;font-style:italic;">"'+p.presentation.substring(0,100)+'"</div>' : ''}
+                <div style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:4px;">Abonnement: ${p.abonnement||'—'} | Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="validerDemandePro('${d.id}')" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Valider et publier</button>
+              <button onclick="refuserDemandePro('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Refuser</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error('Erreur demandes pros:', e); }
+    }
+
+    window.validerDemandePro = async function(id) {
+      try {
+        const docSnap = await getDocs(query(collection(db, 'professionnels_demandes'), where('__name__', '==', id)));
+        const demandeDoc = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m => m.getDoc(m.doc(db, 'professionnels_demandes', id)));
+        const data = demandeDoc.data();
+        // Copier dans professionnels
+        await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
+        // Mettre a jour statut demande
+        await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'valide' });
+        alert('✅ Professionnel publié dans l annuaire !');
+        chargerDemandesPros();
+      } catch(e) { console.error(e); alert('Erreur validation: ' + e.message); }
+    };
+
+    window.refuserDemandePro = async function(id) {
+      if (!confirm('Refuser cette demande ?')) return;
+      await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'refuse' });
+      chargerDemandesPros();
+    };
+
+    chargerDemandesPros();
       } catch(e) { alert('Erreur validation'); }
     };
 
@@ -687,9 +1538,139 @@
       if (!confirm('Supprimer cet avis ?')) return;
       await deleteDoc(doc(db, 'avis_clients', id));
       chargerAvisAttente();
+
+    // Charger demandes pros en attente
+    async function chargerDemandesPros() {
+      const container = document.getElementById('liste-demandes-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(
+          collection(db, 'professionnels_demandes'),
+          where('statut','==','en_attente'),
+          orderBy('date','desc')
+        ));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune demande en attente</p>';
+          return;
+        }
+        const profLabels = {
+          'avocat':'⚖️ Avocat','medecin':'🏥 Medecin','medecin_spec':'🏥 Medecin specialiste',
+          'notaire':'📜 Notaire','pharmacien':'💊 Pharmacien','dentiste':'🦷 Dentiste',
+          'psychologue':'🧠 Psychologue','comptable':'💼 Expert comptable','autre':'📋 Autre'
+        };
+        container.innerHTML = snap.docs.map(d => {
+          const p = d.data();
+          const date = p.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          return `<div style="background:#0D1117;border-radius:10px;padding:14px;margin-bottom:12px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+              <div>
+                <div style="color:#FFC107;font-size:13px;font-weight:700;">${profLabels[p.profession]||p.profession||'—'} ${p.specialite?'— '+p.specialite:''}</div>
+                <div style="color:white;font-size:15px;font-weight:700;">${p.prenom||''} ${p.nom||''}</div>
+                <div style="color:#4DD0E1;font-size:12px;">📍 ${p.wilaya||''} — ${p.adresse||''}</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:12px;">📞 ${p.telephone||''} | ✉️ ${p.email||''}</div>
+                ${p.langues ? '<div style="color:rgba(255,255,255,0.5);font-size:12px;">🗣️ '+p.langues+'</div>' : ''}
+                ${p.presentation ? '<div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px;font-style:italic;">"'+p.presentation.substring(0,100)+'"</div>' : ''}
+                <div style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:4px;">Abonnement: ${p.abonnement||'—'} | Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="validerDemandePro('${d.id}')" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Valider et publier</button>
+              <button onclick="refuserDemandePro('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Refuser</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error('Erreur demandes pros:', e); }
+    }
+
+    window.validerDemandePro = async function(id) {
+      try {
+        const docSnap = await getDocs(query(collection(db, 'professionnels_demandes'), where('__name__', '==', id)));
+        const demandeDoc = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m => m.getDoc(m.doc(db, 'professionnels_demandes', id)));
+        const data = demandeDoc.data();
+        // Copier dans professionnels
+        await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
+        // Mettre a jour statut demande
+        await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'valide' });
+        alert('✅ Professionnel publié dans l annuaire !');
+        chargerDemandesPros();
+      } catch(e) { console.error(e); alert('Erreur validation: ' + e.message); }
+    };
+
+    window.refuserDemandePro = async function(id) {
+      if (!confirm('Refuser cette demande ?')) return;
+      await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'refuse' });
+      chargerDemandesPros();
+    };
+
+    chargerDemandesPros();
     };
 
     chargerAvisAttente();
+
+    // Charger demandes pros en attente
+    async function chargerDemandesPros() {
+      const container = document.getElementById('liste-demandes-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(
+          collection(db, 'professionnels_demandes'),
+          where('statut','==','en_attente'),
+          orderBy('date','desc')
+        ));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune demande en attente</p>';
+          return;
+        }
+        const profLabels = {
+          'avocat':'⚖️ Avocat','medecin':'🏥 Medecin','medecin_spec':'🏥 Medecin specialiste',
+          'notaire':'📜 Notaire','pharmacien':'💊 Pharmacien','dentiste':'🦷 Dentiste',
+          'psychologue':'🧠 Psychologue','comptable':'💼 Expert comptable','autre':'📋 Autre'
+        };
+        container.innerHTML = snap.docs.map(d => {
+          const p = d.data();
+          const date = p.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          return `<div style="background:#0D1117;border-radius:10px;padding:14px;margin-bottom:12px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+              <div>
+                <div style="color:#FFC107;font-size:13px;font-weight:700;">${profLabels[p.profession]||p.profession||'—'} ${p.specialite?'— '+p.specialite:''}</div>
+                <div style="color:white;font-size:15px;font-weight:700;">${p.prenom||''} ${p.nom||''}</div>
+                <div style="color:#4DD0E1;font-size:12px;">📍 ${p.wilaya||''} — ${p.adresse||''}</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:12px;">📞 ${p.telephone||''} | ✉️ ${p.email||''}</div>
+                ${p.langues ? '<div style="color:rgba(255,255,255,0.5);font-size:12px;">🗣️ '+p.langues+'</div>' : ''}
+                ${p.presentation ? '<div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px;font-style:italic;">"'+p.presentation.substring(0,100)+'"</div>' : ''}
+                <div style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:4px;">Abonnement: ${p.abonnement||'—'} | Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="validerDemandePro('${d.id}')" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Valider et publier</button>
+              <button onclick="refuserDemandePro('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Refuser</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error('Erreur demandes pros:', e); }
+    }
+
+    window.validerDemandePro = async function(id) {
+      try {
+        const docSnap = await getDocs(query(collection(db, 'professionnels_demandes'), where('__name__', '==', id)));
+        const demandeDoc = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m => m.getDoc(m.doc(db, 'professionnels_demandes', id)));
+        const data = demandeDoc.data();
+        // Copier dans professionnels
+        await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
+        // Mettre a jour statut demande
+        await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'valide' });
+        alert('✅ Professionnel publié dans l annuaire !');
+        chargerDemandesPros();
+      } catch(e) { console.error(e); alert('Erreur validation: ' + e.message); }
+    };
+
+    window.refuserDemandePro = async function(id) {
+      if (!confirm('Refuser cette demande ?')) return;
+      await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'refuse' });
+      chargerDemandesPros();
+    };
+
+    chargerDemandesPros();
       } catch(e) { alert('Erreur suppression'); }
     };
 
@@ -742,6 +1723,71 @@
           });
         }
         chargerAvisAttente();
+
+    // Charger demandes pros en attente
+    async function chargerDemandesPros() {
+      const container = document.getElementById('liste-demandes-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(
+          collection(db, 'professionnels_demandes'),
+          where('statut','==','en_attente'),
+          orderBy('date','desc')
+        ));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune demande en attente</p>';
+          return;
+        }
+        const profLabels = {
+          'avocat':'⚖️ Avocat','medecin':'🏥 Medecin','medecin_spec':'🏥 Medecin specialiste',
+          'notaire':'📜 Notaire','pharmacien':'💊 Pharmacien','dentiste':'🦷 Dentiste',
+          'psychologue':'🧠 Psychologue','comptable':'💼 Expert comptable','autre':'📋 Autre'
+        };
+        container.innerHTML = snap.docs.map(d => {
+          const p = d.data();
+          const date = p.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          return `<div style="background:#0D1117;border-radius:10px;padding:14px;margin-bottom:12px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+              <div>
+                <div style="color:#FFC107;font-size:13px;font-weight:700;">${profLabels[p.profession]||p.profession||'—'} ${p.specialite?'— '+p.specialite:''}</div>
+                <div style="color:white;font-size:15px;font-weight:700;">${p.prenom||''} ${p.nom||''}</div>
+                <div style="color:#4DD0E1;font-size:12px;">📍 ${p.wilaya||''} — ${p.adresse||''}</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:12px;">📞 ${p.telephone||''} | ✉️ ${p.email||''}</div>
+                ${p.langues ? '<div style="color:rgba(255,255,255,0.5);font-size:12px;">🗣️ '+p.langues+'</div>' : ''}
+                ${p.presentation ? '<div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px;font-style:italic;">"'+p.presentation.substring(0,100)+'"</div>' : ''}
+                <div style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:4px;">Abonnement: ${p.abonnement||'—'} | Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="validerDemandePro('${d.id}')" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Valider et publier</button>
+              <button onclick="refuserDemandePro('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Refuser</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error('Erreur demandes pros:', e); }
+    }
+
+    window.validerDemandePro = async function(id) {
+      try {
+        const docSnap = await getDocs(query(collection(db, 'professionnels_demandes'), where('__name__', '==', id)));
+        const demandeDoc = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m => m.getDoc(m.doc(db, 'professionnels_demandes', id)));
+        const data = demandeDoc.data();
+        // Copier dans professionnels
+        await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
+        // Mettre a jour statut demande
+        await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'valide' });
+        alert('✅ Professionnel publié dans l annuaire !');
+        chargerDemandesPros();
+      } catch(e) { console.error(e); alert('Erreur validation: ' + e.message); }
+    };
+
+    window.refuserDemandePro = async function(id) {
+      if (!confirm('Refuser cette demande ?')) return;
+      await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'refuse' });
+      chargerDemandesPros();
+    };
+
+    chargerDemandesPros();
       } catch(e) { alert('Erreur validation'); }
     };
 
@@ -749,9 +1795,139 @@
       if (!confirm('Supprimer cet avis ?')) return;
       await deleteDoc(doc(db, 'avis_clients', id));
       chargerAvisAttente();
+
+    // Charger demandes pros en attente
+    async function chargerDemandesPros() {
+      const container = document.getElementById('liste-demandes-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(
+          collection(db, 'professionnels_demandes'),
+          where('statut','==','en_attente'),
+          orderBy('date','desc')
+        ));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune demande en attente</p>';
+          return;
+        }
+        const profLabels = {
+          'avocat':'⚖️ Avocat','medecin':'🏥 Medecin','medecin_spec':'🏥 Medecin specialiste',
+          'notaire':'📜 Notaire','pharmacien':'💊 Pharmacien','dentiste':'🦷 Dentiste',
+          'psychologue':'🧠 Psychologue','comptable':'💼 Expert comptable','autre':'📋 Autre'
+        };
+        container.innerHTML = snap.docs.map(d => {
+          const p = d.data();
+          const date = p.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          return `<div style="background:#0D1117;border-radius:10px;padding:14px;margin-bottom:12px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+              <div>
+                <div style="color:#FFC107;font-size:13px;font-weight:700;">${profLabels[p.profession]||p.profession||'—'} ${p.specialite?'— '+p.specialite:''}</div>
+                <div style="color:white;font-size:15px;font-weight:700;">${p.prenom||''} ${p.nom||''}</div>
+                <div style="color:#4DD0E1;font-size:12px;">📍 ${p.wilaya||''} — ${p.adresse||''}</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:12px;">📞 ${p.telephone||''} | ✉️ ${p.email||''}</div>
+                ${p.langues ? '<div style="color:rgba(255,255,255,0.5);font-size:12px;">🗣️ '+p.langues+'</div>' : ''}
+                ${p.presentation ? '<div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px;font-style:italic;">"'+p.presentation.substring(0,100)+'"</div>' : ''}
+                <div style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:4px;">Abonnement: ${p.abonnement||'—'} | Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="validerDemandePro('${d.id}')" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Valider et publier</button>
+              <button onclick="refuserDemandePro('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Refuser</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error('Erreur demandes pros:', e); }
+    }
+
+    window.validerDemandePro = async function(id) {
+      try {
+        const docSnap = await getDocs(query(collection(db, 'professionnels_demandes'), where('__name__', '==', id)));
+        const demandeDoc = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m => m.getDoc(m.doc(db, 'professionnels_demandes', id)));
+        const data = demandeDoc.data();
+        // Copier dans professionnels
+        await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
+        // Mettre a jour statut demande
+        await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'valide' });
+        alert('✅ Professionnel publié dans l annuaire !');
+        chargerDemandesPros();
+      } catch(e) { console.error(e); alert('Erreur validation: ' + e.message); }
+    };
+
+    window.refuserDemandePro = async function(id) {
+      if (!confirm('Refuser cette demande ?')) return;
+      await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'refuse' });
+      chargerDemandesPros();
+    };
+
+    chargerDemandesPros();
     };
 
     chargerAvisAttente();
+
+    // Charger demandes pros en attente
+    async function chargerDemandesPros() {
+      const container = document.getElementById('liste-demandes-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(
+          collection(db, 'professionnels_demandes'),
+          where('statut','==','en_attente'),
+          orderBy('date','desc')
+        ));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune demande en attente</p>';
+          return;
+        }
+        const profLabels = {
+          'avocat':'⚖️ Avocat','medecin':'🏥 Medecin','medecin_spec':'🏥 Medecin specialiste',
+          'notaire':'📜 Notaire','pharmacien':'💊 Pharmacien','dentiste':'🦷 Dentiste',
+          'psychologue':'🧠 Psychologue','comptable':'💼 Expert comptable','autre':'📋 Autre'
+        };
+        container.innerHTML = snap.docs.map(d => {
+          const p = d.data();
+          const date = p.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          return `<div style="background:#0D1117;border-radius:10px;padding:14px;margin-bottom:12px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+              <div>
+                <div style="color:#FFC107;font-size:13px;font-weight:700;">${profLabels[p.profession]||p.profession||'—'} ${p.specialite?'— '+p.specialite:''}</div>
+                <div style="color:white;font-size:15px;font-weight:700;">${p.prenom||''} ${p.nom||''}</div>
+                <div style="color:#4DD0E1;font-size:12px;">📍 ${p.wilaya||''} — ${p.adresse||''}</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:12px;">📞 ${p.telephone||''} | ✉️ ${p.email||''}</div>
+                ${p.langues ? '<div style="color:rgba(255,255,255,0.5);font-size:12px;">🗣️ '+p.langues+'</div>' : ''}
+                ${p.presentation ? '<div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px;font-style:italic;">"'+p.presentation.substring(0,100)+'"</div>' : ''}
+                <div style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:4px;">Abonnement: ${p.abonnement||'—'} | Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="validerDemandePro('${d.id}')" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Valider et publier</button>
+              <button onclick="refuserDemandePro('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Refuser</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error('Erreur demandes pros:', e); }
+    }
+
+    window.validerDemandePro = async function(id) {
+      try {
+        const docSnap = await getDocs(query(collection(db, 'professionnels_demandes'), where('__name__', '==', id)));
+        const demandeDoc = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m => m.getDoc(m.doc(db, 'professionnels_demandes', id)));
+        const data = demandeDoc.data();
+        // Copier dans professionnels
+        await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
+        // Mettre a jour statut demande
+        await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'valide' });
+        alert('✅ Professionnel publié dans l annuaire !');
+        chargerDemandesPros();
+      } catch(e) { console.error(e); alert('Erreur validation: ' + e.message); }
+    };
+
+    window.refuserDemandePro = async function(id) {
+      if (!confirm('Refuser cette demande ?')) return;
+      await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'refuse' });
+      chargerDemandesPros();
+    };
+
+    chargerDemandesPros();
     window.viderFormulaire = function() {
       ['a-profession','a-specialite','a-nom','a-prenom','a-wilaya','a-adresse','a-telephone','a-email','a-langues','a-ordre','a-presentation','a-notes'].forEach(id => {
         const el = document.getElementById(id);
