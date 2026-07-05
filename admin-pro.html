@@ -172,14 +172,17 @@
     const ADMIN = 'kourrak.habib@hotmail.com';
     const PIN = '719601';
 
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       const btn = document.getElementById('auth-btn-header');
       if (!user || user.email !== ADMIN) {
         document.getElementById('ecran-pin').style.display = 'none';
         document.getElementById('acces-refuse').style.display = 'block';
         return;
       }
+      // Utilisateur connecté avec bon email — afficher le PIN
+      document.getElementById('ecran-pin').style.display = 'flex';
       if (btn) btn.innerHTML = '<button onclick="window.signOutUser()" style="background:rgba(214,16,52,0.15);border:1px solid #D61034;color:#ff6b6b;padding:5px 12px;border-radius:14px;font-size:12px;cursor:pointer;">🚪 Admin</button>';
+      setTimeout(() => document.getElementById('pin-input').focus(), 100);
     });
     window.signOutUser = async () => { await signOut(auth); location.reload(); };
     document.getElementById('menuBtn')?.addEventListener('click', () => document.getElementById('menuDropdown')?.classList.toggle('open'));
