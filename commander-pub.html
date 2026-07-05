@@ -257,6 +257,11 @@
       </div>
     </div>
 
+    
+      <!-- HONEYPOT anti-bot (invisible pour les humains) -->
+      <div style="display:none;position:absolute;left:-9999px;">
+        <input type="text" id="honeypot_field" name="website" tabindex="-1" autocomplete="off">
+      </div>
     <button class="btn-commander" onclick="envoyerCommande()">📣 Envoyer ma demande</button>
 
     <!-- ALGERIE -->
@@ -297,6 +302,12 @@
       const nom = document.getElementById('p-nom').value.trim();
       const email = document.getElementById('p-email').value.trim();
       const message = document.getElementById('p-message').value.trim();
+
+      // Anti-bot honeypot check
+      if (document.getElementById('honeypot_field')?.value) {
+        console.log('Bot detecte !');
+        return;
+      }
       if (!nom || !email || !message) { alert('Veuillez remplir les champs obligatoires (*)'); return; }
       if (!window._selections.format) { alert('Veuillez choisir un format publicitaire'); return; }
       if (!window._selections.duree) { alert('Veuillez choisir une durée'); return; }

@@ -190,6 +190,11 @@
           </label>
         </div>
       </div>
+        
+      <!-- HONEYPOT anti-bot (invisible pour les humains) -->
+      <div style="display:none;position:absolute;left:-9999px;">
+        <input type="text" id="honeypot_field" name="website" tabindex="-1" autocomplete="off">
+      </div>
         <button class="btn-submit" id="btn-envoyer" onclick="envoyerDemande()">📋 Envoyer ma demande</button>
       <p style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:10px;text-align:center;">
         Validation et paiement sous 48h. Vos coordonnees seront visibles apres validation uniquement.

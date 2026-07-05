@@ -285,7 +285,12 @@
           <span style="color:rgba(255,255,255,0.7);">Rendre ma demande visible aux professionnels (recommandé)</span>
         </label>
       </div>
-      <button class="btn-deposer" onclick="envoyerDemande()">📋 Publier ma demande</button>
+      
+      <!-- HONEYPOT anti-bot (invisible pour les humains) -->
+      <div style="display:none;position:absolute;left:-9999px;">
+        <input type="text" id="honeypot_field" name="website" tabindex="-1" autocomplete="off">
+      </div>
+    <button class="btn-deposer" onclick="envoyerDemande()">📋 Publier ma demande</button>
       <p style="color:rgba(255,255,255,0.3);font-size:11px;text-align:center;margin-top:8px;">Gratuit et sans engagement. Les pros vous contactent directement.</p>
     </div>
 
@@ -339,6 +344,12 @@
       if (!await verifierIPBloquee()) return;
       const nom = document.getElementById('c-nom').value.trim();
       const email = document.getElementById('c-email').value.trim();
+
+      // Anti-bot honeypot check
+      if (document.getElementById('honeypot_field')?.value) {
+        console.log('Bot detecte !');
+        return;
+      }
       if (!nom || !email || !window._secteur) { alert('Remplissez tous les champs obligatoires'); return; }
 
       let data = {
