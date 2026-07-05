@@ -78,11 +78,17 @@
         <label>Pays</label>
         <select id="p-pays">
           <option value="france">🇫🇷 France</option>
-          <option value="algerie">🇩🇿 Algérie (paiement DZD)</option>
+          <option value="algerie">🇩🇿 Algérie (virement bancaire DZD)</option>
           <option value="belgique">🇧🇪 Belgique</option>
           <option value="canada">🇨🇦 Canada</option>
           <option value="autre">Autre pays</option>
         </select>
+
+      <div id="bloc-virement" style="display:none;background:rgba(0,98,51,0.08);border:1px solid rgba(168,224,99,0.3);border-radius:10px;padding:14px;margin-top:10px;">
+        <p style="color:#A8E063;font-weight:700;margin-bottom:8px;">🇩🇿 Paiement par virement bancaire DZD</p>
+        <p style="color:rgba(255,255,255,0.6);font-size:12px;margin-bottom:10px;">Envoyez votre demande — notre commercial vous contactera sous 24h avec le RIB et le montant exact en DZD.</p>
+        <a href="tel:+213799872890" style="display:block;text-align:center;background:#A8E063;color:#0D1117;padding:10px;border-radius:8px;font-weight:700;text-decoration:none;font-size:14px;">📞 Appeler le commercial : +213 (7) 99 87 28 90</a>
+      </div>
       </div>
     </div>
 
@@ -304,6 +310,9 @@
   </script>
 
   <script>
+    document.getElementById('p-pays').addEventListener('change', function() {
+      document.getElementById('bloc-virement').style.display = this.value === 'algerie' ? 'block' : 'none';
+    });
     window._selections = {};
     window._pagesChoisies = [];
 
