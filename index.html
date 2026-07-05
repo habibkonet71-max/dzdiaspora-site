@@ -667,6 +667,42 @@
     }
 
 
+
+    // ALERTES TRANSPORT
+    async function chargerAlertes() {
+      try {
+        const { getFirestore, collection, query, where, orderBy, getDocs, Timestamp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+        const db2 = getFirestore(appFirebase);
+        const il_y_a_24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
+        const q = query(
+          collection(db2, 'alertes_transport'),
+          where('actif', '==', true)
+        );
+        const snap = await getDocs(q);
+        const alertes = [];
+        snap.forEach(doc => {
+          const data = doc.data();
+          const date = data.date?.toDate?.() || new Date(0);
+          if (date > il_y_a_24h) alertes.push(data);
+        });
+        if (alertes.length > 0) {
+          document.getElementById('bandeauAlertes').style.display = 'block';
+          document.getElementById('bandeauAlertesTexte').textContent = '🚨 ' + alertes.length + ' alerte(s) transport — ' + alertes[0].titre;
+          document.getElementById('listeAlertes').innerHTML = alertes.map(a => `
+            <div style="border-left:3px solid #D21034;padding:8px 12px;margin-bottom:10px;">
+              <div style="color:#FFC107;font-size:12px;font-weight:700;">${a.type === 'ferry' ? '⛴️' : a.type === 'vol' ? '✈️' : '⚠️'} ${a.type.toUpperCase()}</div>
+              <div style="color:white;font-weight:bold;margin:4px 0;">${a.titre}</div>
+              ${a.details ? '<div style="color:rgba(255,255,255,0.6);font-size:12px;">'+a.details+'</div>' : ''}
+              ${a.source ? '<div style="color:#4DD0E1;font-size:11px;margin-top:4px;">Source: '+a.source+'</div>' : ''}
+            </div>`).join('');
+        }
+      } catch(e) { console.log('Alertes non disponibles'); }
+    }
+    window.voirAlertes = function() {
+      const panel = document.getElementById('panelAlertes');
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    };
+    chargerAlertes();
     chargerMeteo();
     chargerDevises();
     chargerMosquees();
