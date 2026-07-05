@@ -126,6 +126,13 @@
           ${p.langues ? `<div class="info">🗣️ ${p.langues}</div>` : ''}
           ${p.presentation ? `<div class="info" style="margin-top:8px;font-style:italic;">"${p.presentation.substring(0,120)}${p.presentation.length>120?'...':''}"</div>` : ''}
           ${p.telephone ? `<div style="margin-top:10px;"><a href="tel:${p.telephone}" class="btn-appeler">📞 ${p.telephone}</a></div>` : ''}
+              ${p.note_moyenne ? `<div style="margin-top:8px;color:#FFC107;font-size:13px;">
+                ${'⭐'.repeat(Math.round(p.note_moyenne))} <span style="color:rgba(255,255,255,0.5);font-size:11px;">${p.note_moyenne.toFixed(1)}/5 (${p.nb_avis||0} avis)</span>
+              </div>` : ''}
+              <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+                <a href="prendre-rdv.html?pro=${doc.id}" style="display:inline-block;padding:8px 16px;background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;">📅 Prendre RDV</a>
+                <a href="laisser-avis.html?pro=${doc.id}&nom=${encodeURIComponent((p.prenom||'')+' '+(p.nom||''))}" style="display:inline-block;padding:8px 16px;background:rgba(255,193,7,0.1);border:1px solid #FFC107;color:#FFC107;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;">⭐ Laisser un avis</a>
+              </div>
         </div>
       `).join('');
     }

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laisser un avis — DZ Diaspora</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .etoiles { display:flex; gap:8px; margin:12px 0; }
+    .etoile { font-size:36px; cursor:pointer; opacity:0.3; transition:opacity 0.2s; }
+    .etoile.actif { opacity:1; }
+    .etoile:hover { opacity:0.8; }
+    .form-group { margin-bottom:14px; }
+    .form-group label { display:block; color:rgba(255,255,255,0.7); font-size:12px; margin-bottom:6px; font-weight:600; }
+    .form-group input, .form-group textarea { width:100%; padding:11px; border-radius:10px; background:#1C2333; color:white; border:1px solid rgba(255,255,255,0.12); font-size:13px; font-family:inherit; box-sizing:border-box; }
+    .form-group textarea { min-height:100px; resize:vertical; }
+    .btn-envoyer { width:100%; padding:14px; background:#FFC107; color:#0D1117; border:none; border-radius:12px; font-size:15px; font-weight:700; cursor:pointer; }
+    .succes { display:none; background:rgba(168,224,99,0.1); border:1px solid rgba(168,224,99,0.4); border-radius:12px; padding:20px; text-align:center; color:#A8E063; }
+    .pro-card { background:#1C2333; border-radius:12px; padding:14px; margin-bottom:20px; border:1px solid rgba(77,208,225,0.2); }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">🇩🇿 DZ Diaspora</a>
+    <div id="auth-btn-header" style="margin-left:6px"></div>
+    <button class="menu-btn" id="menuBtn">⋮</button>
+  </header>
+
+  <main class="page-content">
+    <h1>⭐ Laisser un avis</h1>
+    <p class="intro">Partagez votre expérience avec ce professionnel pour aider la communauté.</p>
+
+    <div class="pro-card" id="ficheProAvis">
+      <div id="proNomAvis" style="color:white;font-weight:700;font-size:16px;">Chargement...</div>
+    </div>
+
+    <div class="succes" id="msgSucces">
+      ⭐ Merci pour votre avis !<br>
+      <span style="font-size:13px;color:rgba(255,255,255,0.6);">Il sera publié après validation sous 24h.</span>
+    </div>
+
+    <section class="bloc">
+      <h2>Votre note *</h2>
+      <div class="etoiles" id="etoilesContainer">
+        <span class="etoile" onclick="noterPro(1)" id="e1">⭐</span>
+        <span class="etoile" onclick="noterPro(2)" id="e2">⭐</span>
+        <span class="etoile" onclick="noterPro(3)" id="e3">⭐</span>
+        <span class="etoile" onclick="noterPro(4)" id="e4">⭐</span>
+        <span class="etoile" onclick="noterPro(5)" id="e5">⭐</span>
+      </div>
+      <div id="note-label" style="color:rgba(255,255,255,0.5);font-size:13px;">Cliquez sur une étoile</div>
+
+      <div class="form-group" style="margin-top:16px;">
+        <label>Votre avis *</label>
+        <textarea id="avis-texte" placeholder="Décrivez votre expérience avec ce professionnel..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Votre nom *</label>
+        <input type="text" id="avis-nom" placeholder="Prénom et nom">
+      </div>
+
+      <div class="form-group">
+        <label>Email (non publié)</label>
+        <input type="email" id="avis-email" placeholder="votre@email.com">
+      </div>
+
+      <div class="form-group">
+        <label>Pays de résidence</label>
+        <select id="avis-pays">
+          <option value="france">🇫🇷 France</option>
+          <option value="algerie">🇩🇿 Algérie</option>
+          <option value="belgique">🇧🇪 Belgique</option>
+          <option value="canada">🇨🇦 Canada</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+
+      <button class="btn-envoyer" onclick="envoyerAvis()">⭐ Publier mon avis</button>
+      <p style="color:rgba(255,255,255,0.3);font-size:11px;text-align:center;margin-top:8px;">Votre avis sera vérifié avant publication.</p>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, doc, getDoc, updateDoc, increment, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const cfg = { apiKey:"AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ", appId:"1:223003656315:web:100de190b8b5e74ddae2de", messagingSenderId:"223003656315", projectId:"dzdiaspora-7260a", authDomain:"dzdiaspora-7260a.firebaseapp.com", storageBucket:"dzdiaspora-7260a.firebasestorage.app" };
+    const app = initializeApp(cfg);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const params = new URLSearchParams(window.location.search);
+    const proId = params.get('pro');
+    const proNom = decodeURIComponent(params.get('nom') || 'Professionnel');
+
+    document.getElementById('proNomAvis').textContent = proNom;
+
+    onAuthStateChanged(auth, (user) => {
+      const btn = document.getElementById('auth-btn-header');
+      if (btn) btn.innerHTML = user
+        ? '<button onclick="window.signOutUser()" style="background:rgba(214,16,52,0.15);border:1px solid #D61034;color:#ff6b6b;padding:5px 12px;border-radius:14px;font-size:12px;cursor:pointer;">🚪 '+user.email.split('@')[0]+'</button>'
+        : '<a href="connexion.html" style="background:rgba(77,208,225,0.15);border:1px solid #4DD0E1;color:#4DD0E1;padding:5px 12px;border-radius:14px;font-size:12px;font-weight:bold;text-decoration:none;">👤 Connexion</a>';
+      if (user) {
+        document.getElementById('avis-email').value = user.email;
+      }
+    });
+    window.signOutUser = async () => { await signOut(auth); location.reload(); };
+
+    window.envoyerAvis = async function() {
+      const note = window._note || 0;
+      const texte = document.getElementById('avis-texte').value.trim();
+      const nom = document.getElementById('avis-nom').value.trim();
+      if (!note) { alert('Choisissez une note'); return; }
+      if (!texte) { alert('Rédigez votre avis'); return; }
+      if (!nom) { alert('Indiquez votre nom'); return; }
+      try {
+        await addDoc(collection(db, 'avis_clients'), {
+          pro_id: proId,
+          pro_nom: proNom,
+          note,
+          texte,
+          nom,
+          email: document.getElementById('avis-email').value.trim(),
+          pays: document.getElementById('avis-pays').value,
+          statut: 'en_attente',
+          date: Timestamp.now(),
+        });
+        document.getElementById('msgSucces').style.display = 'block';
+        window.scrollTo(0, 0);
+      } catch(e) { alert('Erreur. Réessayez.'); }
+    };
+
+    document.getElementById('menuBtn')?.addEventListener('click', () => document.getElementById('menuDropdown')?.classList.toggle('open'));
+  </script>
+
+  <script>
+    window._note = 0;
+    const labels = ['', 'Très mauvais', 'Mauvais', 'Correct', 'Bien', 'Excellent !'];
+    window.noterPro = function(n) {
+      window._note = n;
+      for (let i = 1; i <= 5; i++) {
+        document.getElementById('e'+i).classList.toggle('actif', i <= n);
+      }
+      document.getElementById('note-label').textContent = labels[n] + ' (' + n + '/5)';
+      document.getElementById('note-label').style.color = n >= 4 ? '#A8E063' : n >= 3 ? '#FFC107' : '#ff6b6b';
+    };
+  </script>
+</body>
+</html>
