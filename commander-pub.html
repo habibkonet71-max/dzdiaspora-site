@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Commander un espace publicitaire — DZ Diaspora</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .etape { background:#1C2333; border-radius:14px; padding:20px; margin-bottom:16px; border:1px solid rgba(255,255,255,0.08); }
+    .etape-titre { color:#4DD0E1; font-size:14px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+    .form-group { margin-bottom:14px; }
+    .form-group label { display:block; color:rgba(255,255,255,0.7); font-size:12px; margin-bottom:6px; font-weight:600; }
+    .form-group input, .form-group select, .form-group textarea { width:100%; padding:11px; border-radius:10px; background:#0D1117; color:white; border:1px solid rgba(255,255,255,0.12); font-size:13px; font-family:inherit; box-sizing:border-box; }
+    .form-group textarea { min-height:80px; resize:vertical; }
+    .choix-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:8px; }
+    .choix-btn { background:#0D1117; border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:12px 8px; text-align:center; cursor:pointer; transition:all 0.2s; }
+    .choix-btn:hover { border-color:#4DD0E1; }
+    .choix-btn.actif { background:rgba(77,208,225,0.1); border-color:#4DD0E1; }
+    .choix-btn .icon { font-size:24px; margin-bottom:4px; }
+    .choix-btn .label { color:rgba(255,255,255,0.8); font-size:11px; font-weight:600; }
+    .choix-btn .prix { color:#4DD0E1; font-size:10px; margin-top:2px; }
+    .upload-zone { border:2px dashed rgba(77,208,225,0.3); border-radius:10px; padding:24px; text-align:center; cursor:pointer; background:rgba(77,208,225,0.03); }
+    .upload-zone:hover { border-color:#4DD0E1; }
+    .upload-zone p { color:rgba(255,255,255,0.4); font-size:13px; margin:8px 0 0; }
+    .btn-commander { width:100%; padding:16px; background:#4DD0E1; color:#0D1117; border:none; border-radius:12px; font-size:16px; font-weight:700; cursor:pointer; margin-top:8px; }
+    .info-devis { background:rgba(255,193,7,0.08); border:1px solid rgba(255,193,7,0.3); border-radius:10px; padding:12px; font-size:12px; color:rgba(255,255,255,0.6); margin-top:12px; }
+    .succes { display:none; background:rgba(168,224,99,0.1); border:1px solid rgba(168,224,99,0.4); border-radius:12px; padding:20px; text-align:center; color:#A8E063; margin-bottom:16px; }
+    .page-choix { display:flex; flex-wrap:wrap; gap:6px; }
+    .page-tag { background:#0D1117; border:1px solid rgba(255,255,255,0.12); border-radius:20px; padding:5px 12px; font-size:11px; color:rgba(255,255,255,0.6); cursor:pointer; }
+    .page-tag.actif { background:rgba(77,208,225,0.1); border-color:#4DD0E1; color:#4DD0E1; }
+    .recap { background:#0D1117; border-radius:10px; padding:14px; margin-top:12px; }
+    .recap-ligne { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05); font-size:13px; }
+    .recap-ligne .val { color:#4DD0E1; font-weight:600; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">🇩🇿 DZ Diaspora</a>
+    <nav class="nav-desktop">
+      <a href="index.html">🏠 Accueil</a>
+      <a href="publicite.html">Espace pub</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div id="auth-btn-header" style="margin-left:6px"></div>
+    <button class="menu-btn" id="menuBtn">⋮</button>
+  </header>
+
+  <main class="page-content">
+    <h1>📣 Commander un espace publicitaire</h1>
+    <p class="intro">Remplissez ce formulaire pour réserver votre espace. Nous vous contactons sous 48h pour valider et finaliser votre commande.</p>
+
+    <div class="succes" id="msgSucces">
+      🎉 Votre demande a été envoyée avec succès !<br>
+      <span style="font-size:13px;color:rgba(255,255,255,0.6);">Notre équipe vous contacte sous 48h pour valider et vous communiquer le tarif.</span>
+    </div>
+
+    <!-- ETAPE 1 : COORDONNEES -->
+    <div class="etape">
+      <div class="etape-titre">
+        <span style="background:#4DD0E1;color:#0D1117;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">1</span>
+        Vos coordonnées
+      </div>
+      <div class="form-group">
+        <label>Nom / Entreprise *</label>
+        <input type="text" id="p-nom" placeholder="Votre nom ou raison sociale">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" id="p-email" placeholder="votre@email.com">
+        </div>
+        <div class="form-group">
+          <label>Téléphone / WhatsApp</label>
+          <input type="tel" id="p-tel" placeholder="+33 6 XX XX XX XX">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Pays</label>
+        <select id="p-pays">
+          <option value="france">🇫🇷 France</option>
+          <option value="algerie">🇩🇿 Algérie (paiement DZD)</option>
+          <option value="belgique">🇧🇪 Belgique</option>
+          <option value="canada">🇨🇦 Canada</option>
+          <option value="autre">Autre pays</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ETAPE 2 : FORMAT -->
+    <div class="etape">
+      <div class="etape-titre">
+        <span style="background:#4DD0E1;color:#0D1117;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">2</span>
+        Format publicitaire
+      </div>
+      <div class="choix-grid" id="formats">
+        <div class="choix-btn" onclick="choisir('format','banniere',this)">
+          <div class="icon">🖼️</div>
+          <div class="label">Bannière Display</div>
+          <div class="prix">Image / GIF</div>
+        </div>
+        <div class="choix-btn" onclick="choisir('format','article',this)">
+          <div class="icon">📰</div>
+          <div class="label">Article Sponsorisé</div>
+          <div class="prix">Texte + photo</div>
+        </div>
+        <div class="choix-btn" onclick="choisir('format','video',this)">
+          <div class="icon">🎬</div>
+          <div class="label">Vidéo Sponsorisée</div>
+          <div class="prix">15 à 60 sec</div>
+        </div>
+        <div class="choix-btn" onclick="choisir('format','fiche',this)">
+          <div class="icon">⭐</div>
+          <div class="label">Fiche Mise en Avant</div>
+          <div class="prix">Annuaire pro</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ETAPE 3 : FREQUENCE -->
+    <div class="etape">
+      <div class="etape-titre">
+        <span style="background:#4DD0E1;color:#0D1117;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">3</span>
+        Fréquence d'affichage
+      </div>
+      <div class="choix-grid" id="frequences">
+        <div class="choix-btn" onclick="choisir('frequence','continu',this)">
+          <div class="icon">🔄</div>
+          <div class="label">Continu</div>
+          <div class="prix">Toujours affiché</div>
+        </div>
+        <div class="choix-btn" onclick="choisir('frequence','rotation',this)">
+          <div class="icon">🔀</div>
+          <div class="label">Rotation</div>
+          <div class="prix">Alterne avec d'autres</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ETAPE 4 : DUREE -->
+    <div class="etape">
+      <div class="etape-titre">
+        <span style="background:#4DD0E1;color:#0D1117;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">4</span>
+        Durée de la campagne
+      </div>
+      <div class="choix-grid" id="durees">
+        <div class="choix-btn" onclick="choisir('duree','7j',this)">
+          <div class="icon">📅</div>
+          <div class="label">7 jours</div>
+          <div class="prix">Court terme</div>
+        </div>
+        <div class="choix-btn" onclick="choisir('duree','30j',this)">
+          <div class="icon">📅</div>
+          <div class="label">30 jours</div>
+          <div class="prix">1 mois</div>
+        </div>
+        <div class="choix-btn" onclick="choisir('duree','6mois',this)">
+          <div class="icon">📅</div>
+          <div class="label">6 mois</div>
+          <div class="prix">Long terme</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ETAPE 5 : PAGES -->
+    <div class="etape">
+      <div class="etape-titre">
+        <span style="background:#4DD0E1;color:#0D1117;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">5</span>
+        Pages cibles (choix multiple)
+      </div>
+      <div class="page-choix" id="pages-choix">
+        <div class="page-tag" onclick="togglePage(this,'accueil')">🏠 Accueil</div>
+        <div class="page-tag" onclick="togglePage(this,'toutes')">🌐 Toutes les pages</div>
+        <div class="page-tag" onclick="togglePage(this,'transport')">✈️ Transport</div>
+        <div class="page-tag" onclick="togglePage(this,'immobilier')">🏠 Immobilier</div>
+        <div class="page-tag" onclick="togglePage(this,'sante')">🏥 Santé</div>
+        <div class="page-tag" onclick="togglePage(this,'justice')">⚖️ Justice</div>
+        <div class="page-tag" onclick="togglePage(this,'annonces')">📢 Annonces</div>
+        <div class="page-tag" onclick="togglePage(this,'presse')">📰 Presse/Actualités</div>
+        <div class="page-tag" onclick="togglePage(this,'wilayas')">🗺️ Wilayas</div>
+        <div class="page-tag" onclick="togglePage(this,'finance')">💰 Finance</div>
+      </div>
+    </div>
+
+    <!-- ETAPE 6 : CONTENU -->
+    <div class="etape">
+      <div class="etape-titre">
+        <span style="background:#4DD0E1;color:#0D1117;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">6</span>
+        Contenu publicitaire
+      </div>
+
+      <div class="form-group">
+        <label>Lien de destination (URL de votre site, WhatsApp, etc.)</label>
+        <input type="url" id="p-lien" placeholder="https://votre-site.com ou https://wa.me/...">
+      </div>
+
+      <div class="form-group">
+        <label>Description de votre activité / message publicitaire *</label>
+        <textarea id="p-message" placeholder="Décrivez votre activité, votre message publicitaire, vos objectifs..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Fichier publicitaire (photo, vidéo, logo)</label>
+        <div class="upload-zone" onclick="document.getElementById('p-fichier').click()">
+          <div style="font-size:32px;">📎</div>
+          <p>Cliquez pour uploader votre fichier</p>
+          <p style="font-size:11px;">JPG, PNG, GIF, MP4 — max 50MB</p>
+          <p id="fichier-nom" style="color:#4DD0E1;font-size:12px;margin-top:6px;"></p>
+        </div>
+        <input type="file" id="p-fichier" style="display:none" accept="image/*,video/*" onchange="afficherFichier(this)">
+        <div class="info-devis" style="margin-top:8px;">
+          ⚠️ Si vous avez une photo ou vidéo, le tarif sera établi sur devis après examen de votre contenu. Nous vous contacterons sous 48h.
+        </div>
+      </div>
+    </div>
+
+    <!-- RECAP -->
+    <div class="etape" id="recapSection" style="display:none;">
+      <div class="etape-titre">
+        <span style="background:#A8E063;color:#0D1117;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">✓</span>
+        Récapitulatif de votre commande
+      </div>
+      <div class="recap" id="recapContenu"></div>
+      <div class="info-devis" style="margin-top:12px;">
+        📩 Après envoi, notre équipe vous contacte sous 48h avec le tarif exact et les instructions de paiement (carte bancaire ou virement DZD).
+      </div>
+    </div>
+
+    <button class="btn-commander" onclick="envoyerCommande()">📣 Envoyer ma demande</button>
+
+    <!-- ALGERIE -->
+    <div style="margin-top:16px;background:rgba(0,98,51,0.08);border:1px solid rgba(168,224,99,0.3);border-radius:12px;padding:16px;text-align:center;">
+      <p style="color:#A8E063;font-weight:700;margin-bottom:4px;">🇩🇿 Annonceurs en Algérie</p>
+      <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-bottom:6px;">Paiement par virement bancaire DZD — Contactez directement :</p>
+      <a href="tel:+213799872890" style="color:#A8E063;font-size:18px;font-weight:900;text-decoration:none;">+213 (7) 99 87 28 90</a>
+    </div>
+  </main>
+
+  <footer>
+    <p>DZ Diaspora — Tous droits réservés</p>
+    <p><a href="cgu.html">CGU</a> · <a href="publicite.html">Espace pub</a></p>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+    const cfg = { apiKey:"AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ", appId:"1:223003656315:web:100de190b8b5e74ddae2de", messagingSenderId:"223003656315", projectId:"dzdiaspora-7260a", authDomain:"dzdiaspora-7260a.firebaseapp.com", storageBucket:"dzdiaspora-7260a.firebasestorage.app" };
+    const app = initializeApp(cfg);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const storage = getStorage(app);
+
+    onAuthStateChanged(auth, (user) => {
+      const btn = document.getElementById('auth-btn-header');
+      if (btn) btn.innerHTML = user
+        ? '<button onclick="window.signOutUser()" style="background:rgba(214,16,52,0.15);border:1px solid #D61034;color:#ff6b6b;padding:5px 12px;border-radius:14px;font-size:12px;cursor:pointer;font-weight:bold;">🚪 '+user.email.split('@')[0]+'</button>'
+        : '<a href="connexion.html" style="background:rgba(77,208,225,0.15);border:1px solid #4DD0E1;color:#4DD0E1;padding:5px 12px;border-radius:14px;font-size:12px;font-weight:bold;text-decoration:none;">👤 Connexion</a>';
+    });
+    window.signOutUser = async () => { await signOut(auth); location.reload(); };
+    document.getElementById('menuBtn')?.addEventListener('click', () => document.getElementById('menuDropdown')?.classList.toggle('open'));
+
+    window.envoyerCommande = async function() {
+      const nom = document.getElementById('p-nom').value.trim();
+      const email = document.getElementById('p-email').value.trim();
+      const message = document.getElementById('p-message').value.trim();
+      if (!nom || !email || !message) { alert('Veuillez remplir les champs obligatoires (*)'); return; }
+      if (!window._selections.format) { alert('Veuillez choisir un format publicitaire'); return; }
+      if (!window._selections.duree) { alert('Veuillez choisir une durée'); return; }
+      if (window._pagesChoisies.length === 0) { alert('Veuillez choisir au moins une page cible'); return; }
+
+      try {
+        let urlFichier = null;
+        const fichier = document.getElementById('p-fichier').files[0];
+        if (fichier) {
+          const storageRef = ref(storage, 'pubs/' + Date.now() + '_' + fichier.name);
+          await uploadBytes(storageRef, fichier);
+          urlFichier = await getDownloadURL(storageRef);
+        }
+
+        await addDoc(collection(db, 'commandes_pub'), {
+          nom, email,
+          tel: document.getElementById('p-tel').value.trim(),
+          pays: document.getElementById('p-pays').value,
+          format: window._selections.format,
+          frequence: window._selections.frequence || 'continu',
+          duree: window._selections.duree,
+          pages: window._pagesChoisies,
+          lien: document.getElementById('p-lien').value.trim(),
+          message,
+          fichier_url: urlFichier,
+          statut: 'en_attente_validation',
+          date: Timestamp.now(),
+        });
+
+        document.getElementById('msgSucces').style.display = 'block';
+        window.scrollTo(0, 0);
+      } catch(e) {
+        console.error(e);
+        alert('Erreur lors de l\'envoi. Réessayez.');
+      }
+    };
+  </script>
+
+  <script>
+    window._selections = {};
+    window._pagesChoisies = [];
+
+    window.choisir = function(type, valeur, el) {
+      document.querySelectorAll('#' + (type === 'format' ? 'formats' : type === 'frequence' ? 'frequences' : 'durees') + ' .choix-btn').forEach(b => b.classList.remove('actif'));
+      el.classList.add('actif');
+      window._selections[type] = valeur;
+      mettreAjourRecap();
+    };
+
+    window.togglePage = function(el, page) {
+      el.classList.toggle('actif');
+      if (el.classList.contains('actif')) {
+        if (!window._pagesChoisies.includes(page)) window._pagesChoisies.push(page);
+      } else {
+        window._pagesChoisies = window._pagesChoisies.filter(p => p !== page);
+      }
+      mettreAjourRecap();
+    };
+
+    window.afficherFichier = function(input) {
+      if (input.files[0]) {
+        document.getElementById('fichier-nom').textContent = '✅ ' + input.files[0].name;
+      }
+    };
+
+    function mettreAjourRecap() {
+      const s = window._selections;
+      if (!s.format && !s.duree) return;
+      document.getElementById('recapSection').style.display = 'block';
+      const labels = {
+        format: { banniere:'🖼️ Bannière Display', article:'📰 Article Sponsorisé', video:'🎬 Vidéo Sponsorisée', fiche:'⭐ Fiche Mise en Avant' },
+        frequence: { continu:'🔄 Continu', rotation:'🔀 Rotation' },
+        duree: { '7j':'7 jours', '30j':'30 jours', '6mois':'6 mois' },
+      };
+      document.getElementById('recapContenu').innerHTML = `
+        ${s.format ? '<div class="recap-ligne"><span>Format</span><span class="val">' + (labels.format[s.format]||s.format) + '</span></div>' : ''}
+        ${s.frequence ? '<div class="recap-ligne"><span>Fréquence</span><span class="val">' + (labels.frequence[s.frequence]||s.frequence) + '</span></div>' : ''}
+        ${s.duree ? '<div class="recap-ligne"><span>Durée</span><span class="val">' + (labels.duree[s.duree]||s.duree) + '</span></div>' : ''}
+        ${window._pagesChoisies.length > 0 ? '<div class="recap-ligne"><span>Pages</span><span class="val">' + window._pagesChoisies.join(', ') + '</span></div>' : ''}
+        <div class="recap-ligne" style="border:none;"><span>Tarif</span><span class="val">Sur devis — réponse sous 48h</span></div>
+      `;
+    }
+
+    document.getElementById('menuBtn')?.addEventListener('click', () => {
+      document.getElementById('menuDropdown')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>
