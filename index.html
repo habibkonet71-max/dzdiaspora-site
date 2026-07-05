@@ -513,55 +513,52 @@
       }
     }
 
+    
     async function chargerPresse() {
-      const container = document.getElementById("presseContainer");
       try {
-        const sources = [
-          { nom: "TSA", url: "https://www.tsa-algerie.com/feed/" },
-          { nom: "El Watan", url: "https://www.elwatan.com/feed" }
-        ];
-        const proxy = "https://api.rss2json.com/v1/api.json?rss_url=";
-        let articlesHtml = "";
-
-        for (const source of sources) {
-          try {
-            const reponse = await fetch(proxy + encodeURIComponent(source.url));
-            const data = await reponse.json();
-
-            if (data.status === "ok" && data.items) {
-              data.items.slice(0, 6).forEach((item) => {
-                const desc = (item.description || "").replace(/<[^>]*>/g, "").substring(0, 120);
-                articlesHtml += `
-                  <div class="presse-article" onclick="window.open('${item.link}', '_blank')">
-                    <div class="contenu">
-                      <span class="source">${source.nom}</span>
-                      <h3>${item.title}</h3>
-                      <p>${desc}...</p>
-                    </div>
-                  </div>
-                `;
-              });
-            }
-          } catch (e) {
-          }
+        const { getFirestore, collection, query, where, orderBy, limit, getDocs } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+        const db2 = getFirestore(appFirebase);
+        const q = query(collection(db2, 'flux_actualites'), where('actif', '==', true), orderBy('date', 'desc'), limit(20));
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+          const container = document.getElementById('presseContainer');
+          container.innerHTML = '';
+          snap.forEach(doc => {
+            const d = doc.data();
+            const date = d.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+            container.innerHTML += `
+              <a href="${d.lien}" target="_blank" class="carte carte-lien" style="text-decoration:none;">
+                ${d.image ? `<img src="${d.image}" style="width:100%;height:140px;object-fit:cover;border-radius:8px;margin-bottom:8px;" onerror="this.style.display='none'">` : ''}
+                <div style="color:#4DD0E1;font-size:11px;font-weight:700;margin-bottom:4px;">${d.source || ''} ${d.urgent ? '🚨' : ''}</div>
+                <div style="color:white;font-size:14px;font-weight:600;line-height:1.4;margin-bottom:6px;">${d.titre || ''}</div>
+                <div style="color:rgba(255,255,255,0.4);font-size:11px;">${date}</div>
+              </a>`;
+          });
+          return;
         }
-
-        container.innerHTML = articlesHtml || "<div class=\"chargement\">Aucun article disponible</div>";
-      } catch (e) {
-        container.innerHTML = "<div class=\"chargement\">Erreur de chargement</div>";
-      }
+      } catch(e) { console.log('Firestore presse:', e); }
+      // Fallback RSS via proxy
+      chargerPresseRSS();
     }
 
-    const indexRechercheAccueil = [
-      { motsCles: ["securite", "urgence", "police", "pompier", "samu", "danger"], page: "securite.html" },
-      { motsCles: ["sante", "medecin", "hopital", "pharmacie", "maladie", "vaccin"], page: "sante.html" },
-      { motsCles: ["finance", "banque", "argent", "change", "devise", "transfert"], page: "finance.html" },
-      { motsCles: ["administratif", "passeport", "consulat", "carte identite", "visa", "papier"], page: "administratif.html" },
-      { motsCles: ["wilaya", "wilayas", "region", "ville algerie"], page: "wilayas.html" },
-      { motsCles: ["annonce", "annonces", "immobilier", "covoiturage", "vehicule", "service", "vente", "location"], page: "annonces.html" },
-      { motsCles: ["justice", "tribunal", "avocat", "notaire", "plainte"], page: "justice.html" },
-      { motsCles: ["transport", "vol", "avion", "billet", "aeroport", "ferry"], page: "transport.html" }
-    ];
+    async function chargerPresseRSS() {
+      const container = document.getElementById('presseContainer');
+      container.innerHTML = '<div class="chargement">Chargement des actualites...</div>';
+      try {
+        const res = await fetch('https://rss2json.com/api.json?rss_url=https%3A%2F%2Fwww.tsa-algerie.com%2Ffeed%2F');
+        const data = await res.json();
+        if (data.items && data.items.length > 0) {
+          container.innerHTML = data.items.slice(0,10).map(item => `
+            <a href="${item.link}" target="_blank" class="carte carte-lien" style="text-decoration:none;">
+              ${item.thumbnail ? `<img src="${item.thumbnail}" style="width:100%;height:140px;object-fit:cover;border-radius:8px;margin-bottom:8px;" onerror="this.style.display='none'">` : ''}
+              <div style="color:#4DD0E1;font-size:11px;font-weight:700;margin-bottom:4px;">TSA Algerie</div>
+              <div style="color:white;font-size:14px;font-weight:600;line-height:1.4;">${item.title}</div>
+            </a>`).join('');
+        }
+      } catch(e) {
+        container.innerHTML = '<div class="chargement">Actualites temporairement indisponibles</div>';
+      }
+    }
 
     function normaliserAccueil(texte) {
       const avec = "àâäáãåèéêëìíîïòóôõöùúûüçñ";
