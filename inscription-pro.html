@@ -167,7 +167,30 @@
         </label>
       </div>
 
-      <button class="btn-submit" id="btn-envoyer" onclick="envoyerDemande()">📋 Envoyer ma demande</button>
+      
+      <div class="form-group">
+        <label>🔔 Préférences de notification *</label>
+        <p style="color:rgba(255,255,255,0.4);font-size:11px;margin-bottom:10px;">Comment voulez-vous être alerté quand un client cherche vos services ?</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;background:#0D1117;padding:10px;border-radius:8px;">
+            <input type="checkbox" id="notif-email" checked style="width:auto;cursor:pointer;">
+            <span>📧 <strong style="color:white;">Email</strong> <span style="color:rgba(255,255,255,0.4);font-size:11px;">(recommandé — toujours actif)</span></span>
+          </label>
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;background:#0D1117;padding:10px;border-radius:8px;">
+            <input type="checkbox" id="notif-push" style="width:auto;cursor:pointer;">
+            <span>📱 <strong style="color:white;">Notification push</strong> <span style="color:rgba(255,255,255,0.4);font-size:11px;">(app DZ Diaspora)</span></span>
+          </label>
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;background:#0D1117;padding:10px;border-radius:8px;">
+            <input type="checkbox" id="notif-whatsapp" style="width:auto;cursor:pointer;">
+            <span>💬 <strong style="color:white;">WhatsApp</strong> <span style="color:rgba(255,255,255,0.4);font-size:11px;">(via votre numéro)</span></span>
+          </label>
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;background:#0D1117;padding:10px;border-radius:8px;">
+            <input type="checkbox" id="notif-sms" style="width:auto;cursor:pointer;">
+            <span>📱 <strong style="color:white;">SMS</strong> <span style="color:rgba(255,255,255,0.4);font-size:11px;">(via votre numéro)</span></span>
+          </label>
+        </div>
+      </div>
+        <button class="btn-submit" id="btn-envoyer" onclick="envoyerDemande()">📋 Envoyer ma demande</button>
       <p style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:10px;text-align:center;">
         Validation et paiement sous 48h. Vos coordonnees seront visibles apres validation uniquement.
       </p>
@@ -240,6 +263,12 @@
             sms: document.getElementById('notif-sms').checked,
           },
           statut: 'en_attente',
+          notifications: {
+            email: document.getElementById('notif-email').checked,
+            push: document.getElementById('notif-push').checked,
+            whatsapp: document.getElementById('notif-whatsapp').checked,
+            sms: document.getElementById('notif-sms').checked,
+          },
           date: Timestamp.now()
         });
         document.getElementById('msgSucces').style.display = 'block';
