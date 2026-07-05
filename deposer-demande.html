@@ -316,7 +316,27 @@
     window.signOutUser = async () => { await signOut(auth); location.reload(); };
     document.getElementById('menuBtn')?.addEventListener('click', () => document.getElementById('menuDropdown')?.classList.toggle('open'));
 
+
+    // Verifier si IP bloquee avant envoi
+    async function verifierIPBloquee() {
+      try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const {ip} = await response.json();
+        const ipKey = ip.replace(/\./g, '_');
+        const ipDoc = await getDoc(doc(db, 'ips_bloquees', ipKey));
+        if (ipDoc.exists() && ipDoc.data().actif) {
+          alert('Acces temporairement bloque. Reessayez plus tard.');
+          return false;
+        }
+        // Logger la requete
+        await addDoc(collection(db, 'rate_limit_log'), {
+          ip, date: Timestamp.now(), page: 'deposer-demande'
+        });
+        return true;
+      } catch(e) { return true; }
+    }
     window.envoyerDemande = async function() {
+      if (!await verifierIPBloquee()) return;
       const nom = document.getElementById('c-nom').value.trim();
       const email = document.getElementById('c-email').value.trim();
       if (!nom || !email || !window._secteur) { alert('Remplissez tous les champs obligatoires'); return; }
