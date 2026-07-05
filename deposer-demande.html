@@ -26,6 +26,7 @@
     .tag { display:inline-block; padding:5px 12px; border-radius:20px; font-size:11px; cursor:pointer; border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.5); }
     .tag.actif { background:rgba(77,208,225,0.1); border-color:#4DD0E1; color:#4DD0E1; }
   </style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
   <header>
@@ -358,9 +359,39 @@
       }
 
       try {
-        await addDoc(collection(db, 'demandes_clients'), data);
+        const docRef = await addDoc(collection(db, 'demandes_clients'), data);
         document.getElementById('msgSucces').style.display = 'block';
         window.scrollTo(0, 0);
+
+        // Envoyer emails aux pros concernes
+        try {
+          emailjs.init('lj-ndl5zGAWGWkJqc');
+          const profession = data.secteur === 'juridique' ? 'avocat' : data.secteur === 'medical' ? data.specialite || 'medecin' : 'immobilier';
+          const qPros = query(
+            collection(db, 'professionnels'),
+            where('statut', '==', 'valide')
+          );
+          const snapPros = await getDocs(qPros);
+          const pros = snapPros.docs.map(d => d.data()).filter(p => {
+            if (data.secteur === 'juridique') return ['avocat','notaire'].includes(p.profession);
+            if (data.secteur === 'medical') return ['medecin','medecin_spec','dentiste','pharmacien','psychologue'].includes(p.profession);
+            if (data.secteur === 'immobilier') return true;
+            return false;
+          }).filter(p => !data.wilaya || !p.wilaya || p.wilaya === data.wilaya || data.wilaya === '' );
+
+          for (const pro of pros) {
+            if (pro.email && pro.notifications?.email !== false) {
+              await emailjs.send('service_pv5uh7i', 'template_e12y5yv', {
+                pro_nom: (pro.prenom || '') + ' ' + (pro.nom || ''),
+                pro_email: pro.email,
+                secteur: data.secteur,
+                wilaya: data.wilaya || 'Non precise',
+                urgent: data.urgent ? 'OUI — URGENT' : 'Non',
+                description: data.description || '',
+              });
+            }
+          }
+        } catch(emailErr) { console.log('Email non envoye:', emailErr); }
       } catch(e) { alert('Erreur. Réessayez.'); }
     };
   </script>
