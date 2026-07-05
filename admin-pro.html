@@ -172,7 +172,36 @@
         <button class="btn-publier" onclick="publierPro()">✅ Publier dans l annuaire</button>
         <button onclick="viderFormulaire()" style="width:100%;padding:10px;background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);border-radius:10px;cursor:pointer;font-size:13px;">🗑️ Vider le formulaire</button>
       </section>
-    </main>
+    
+      <!-- SECTION ALERTES -->
+      <section class="bloc" style="border-color:rgba(255,193,7,0.4);">
+        <h2 style="color:#FFC107;">📢 Publier une alerte transport</h2>
+        <div class="form-group">
+          <label>Type d alerte</label>
+          <select id="a-type-alerte" style="width:100%;padding:11px;border-radius:10px;background:#1C2333;color:white;border:1px solid rgba(255,255,255,0.15);">
+            <option value="ferry">⛴️ Ferry ENTMV</option>
+            <option value="vol">✈️ Vol Air Algerie</option>
+            <option value="bus">🚌 Bus international</option>
+            <option value="greve">⚠️ Greve / Perturbation</option>
+            <option value="info">ℹ️ Information generale</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Titre de l alerte *</label>
+          <input type="text" id="a-titre-alerte" placeholder="Ex: Ferry Alger-Marseille annule le 5 juillet" style="width:100%;padding:11px;border-radius:10px;background:#1C2333;color:white;border:1px solid rgba(255,255,255,0.15);box-sizing:border-box;">
+        </div>
+        <div class="form-group">
+          <label>Details</label>
+          <textarea id="a-details-alerte" placeholder="Informations complementaires, raison, solution alternative..." style="width:100%;padding:11px;border-radius:10px;background:#1C2333;color:white;border:1px solid rgba(255,255,255,0.15);min-height:80px;box-sizing:border-box;"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Source</label>
+          <input type="text" id="a-source-alerte" placeholder="Ex: entmv.dz, airalgerie.dz..." style="width:100%;padding:11px;border-radius:10px;background:#1C2333;color:white;border:1px solid rgba(255,255,255,0.15);box-sizing:border-box;">
+        </div>
+        <div id="alerte-succes" style="display:none;background:rgba(168,224,99,0.1);border:1px solid rgba(168,224,99,0.4);border-radius:10px;padding:12px;color:#A8E063;text-align:center;margin-bottom:12px;">✅ Alerte publiee !</div>
+        <button onclick="publierAlerte()" style="width:100%;padding:13px;background:#FFC107;color:#0D1117;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">📢 Publier l alerte</button>
+      </section>
+  </main>
   </div>
 
   <script type="module">
@@ -240,13 +269,53 @@
         document.getElementById('msgSucces').style.display = 'block';
         window.scrollTo(0, 0);
         setTimeout(() => document.getElementById('msgSucces').style.display = 'none', 5000);
-        window.viderFormulaire();
+        
+    window.publierAlerte = async function() {
+      const titre = document.getElementById('a-titre-alerte').value.trim();
+      if (!titre) { alert('Titre obligatoire'); return; }
+      try {
+        await addDoc(collection(db, 'alertes_transport'), {
+          type: document.getElementById('a-type-alerte').value,
+          titre: titre,
+          details: document.getElementById('a-details-alerte').value.trim(),
+          source: document.getElementById('a-source-alerte').value.trim(),
+          date: Timestamp.now(),
+          actif: true,
+        });
+        document.getElementById('alerte-succes').style.display = 'block';
+        document.getElementById('a-titre-alerte').value = '';
+        document.getElementById('a-details-alerte').value = '';
+        document.getElementById('a-source-alerte').value = '';
+        setTimeout(() => document.getElementById('alerte-succes').style.display = 'none', 3000);
+      } catch(e) { alert('Erreur. Reessayez.'); }
+    };
+    window.viderFormulaire();
       } catch(e) {
         alert('Erreur Firebase. Reessayez.');
         console.error(e);
       }
     };
 
+    
+    window.publierAlerte = async function() {
+      const titre = document.getElementById('a-titre-alerte').value.trim();
+      if (!titre) { alert('Titre obligatoire'); return; }
+      try {
+        await addDoc(collection(db, 'alertes_transport'), {
+          type: document.getElementById('a-type-alerte').value,
+          titre: titre,
+          details: document.getElementById('a-details-alerte').value.trim(),
+          source: document.getElementById('a-source-alerte').value.trim(),
+          date: Timestamp.now(),
+          actif: true,
+        });
+        document.getElementById('alerte-succes').style.display = 'block';
+        document.getElementById('a-titre-alerte').value = '';
+        document.getElementById('a-details-alerte').value = '';
+        document.getElementById('a-source-alerte').value = '';
+        setTimeout(() => document.getElementById('alerte-succes').style.display = 'none', 3000);
+      } catch(e) { alert('Erreur. Reessayez.'); }
+    };
     window.viderFormulaire = function() {
       ['a-profession','a-specialite','a-nom','a-prenom','a-wilaya','a-adresse','a-telephone','a-email','a-langues','a-ordre','a-presentation','a-notes'].forEach(id => {
         const el = document.getElementById(id);
