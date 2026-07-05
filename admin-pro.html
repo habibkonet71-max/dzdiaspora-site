@@ -205,13 +205,19 @@
       <div id="liste-alertes-actives" style="margin-top:16px;"></div>
         <button onclick="publierAlerte()" style="width:100%;padding:13px;background:#FFC107;color:#0D1117;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">📢 Publier l alerte</button>
       </section>
+  
+      <!-- SECTION AVIS A VALIDER -->
+      <section class="bloc" style="border-color:rgba(255,193,7,0.4);">
+        <h2 style="color:#FFC107;">⭐ Avis clients à valider</h2>
+        <div id="liste-avis-attente"></div>
+      </section>
   </main>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, deleteDoc, doc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, limit, deleteDoc, doc, updateDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const cfg = { apiKey:"AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ", appId:"1:223003656315:web:100de190b8b5e74ddae2de", messagingSenderId:"223003656315", projectId:"dzdiaspora-7260a", authDomain:"dzdiaspora-7260a.firebaseapp.com", storageBucket:"dzdiaspora-7260a.firebasestorage.app" };
     const app = initializeApp(cfg);
@@ -292,6 +298,64 @@
         document.getElementById('a-source-alerte').value = '';
         setTimeout(() => document.getElementById('alerte-succes').style.display = 'none', 3000);
         chargerAlertes();
+
+    // Charger avis en attente
+    async function chargerAvisAttente() {
+      const container = document.getElementById('liste-avis-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(collection(db, 'avis_clients'), where('statut','==','en_attente'), orderBy('date','desc')));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucun avis en attente</p>';
+          return;
+        }
+        container.innerHTML = snap.docs.map(d => {
+          const a = d.data();
+          const date = a.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          const etoiles = '⭐'.repeat(a.note||0);
+          return `<div style="background:#0D1117;border-radius:10px;padding:12px;margin-bottom:10px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;">
+              <div>
+                <div style="color:#FFC107;font-size:14px;">${etoiles} ${a.note}/5</div>
+                <div style="color:white;font-weight:700;font-size:13px;">${a.nom||''} — ${a.pays||''}</div>
+                <div style="color:#4DD0E1;font-size:11px;">Pour : ${a.pro_nom||''}</div>
+                <div style="color:rgba(255,255,255,0.6);font-size:12px;margin-top:6px;">"${a.texte||''}"</div>
+                <div style="color:rgba(255,255,255,0.3);font-size:10px;margin-top:4px;">Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+              <button onclick="validerAvis('${d.id}','${a.pro_id||''}',${a.note||0})" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Publier</button>
+              <button onclick="supprimerAvis('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Supprimer</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error(e); }
+    }
+
+    window.validerAvis = async function(avisId, proId, note) {
+      try {
+        await updateDoc(doc(db, 'avis_clients', avisId), { statut: 'publie', date_validation: Timestamp.now() });
+        // Mettre a jour la note moyenne du pro
+        if (proId) {
+          const avisSnap = await getDocs(query(collection(db, 'avis_clients'), where('pro_id','==',proId), where('statut','==','publie')));
+          const notes = avisSnap.docs.map(d => d.data().note || 0);
+          const moyenne = notes.reduce((a,b) => a+b, 0) / notes.length;
+          await updateDoc(doc(db, 'professionnels', proId), {
+            note_moyenne: Math.round(moyenne * 10) / 10,
+            nb_avis: notes.length,
+          });
+        }
+        chargerAvisAttente();
+      } catch(e) { alert('Erreur validation'); }
+    };
+
+    window.supprimerAvis = async function(id) {
+      if (!confirm('Supprimer cet avis ?')) return;
+      await deleteDoc(doc(db, 'avis_clients', id));
+      chargerAvisAttente();
+    };
+
+    chargerAvisAttente();
       } catch(e) { alert('Erreur. Reessayez.'); }
     };
 
@@ -328,10 +392,126 @@
       try {
         await deleteDoc(doc(db, 'alertes_transport', id));
         chargerAlertes();
+
+    // Charger avis en attente
+    async function chargerAvisAttente() {
+      const container = document.getElementById('liste-avis-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(collection(db, 'avis_clients'), where('statut','==','en_attente'), orderBy('date','desc')));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucun avis en attente</p>';
+          return;
+        }
+        container.innerHTML = snap.docs.map(d => {
+          const a = d.data();
+          const date = a.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          const etoiles = '⭐'.repeat(a.note||0);
+          return `<div style="background:#0D1117;border-radius:10px;padding:12px;margin-bottom:10px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;">
+              <div>
+                <div style="color:#FFC107;font-size:14px;">${etoiles} ${a.note}/5</div>
+                <div style="color:white;font-weight:700;font-size:13px;">${a.nom||''} — ${a.pays||''}</div>
+                <div style="color:#4DD0E1;font-size:11px;">Pour : ${a.pro_nom||''}</div>
+                <div style="color:rgba(255,255,255,0.6);font-size:12px;margin-top:6px;">"${a.texte||''}"</div>
+                <div style="color:rgba(255,255,255,0.3);font-size:10px;margin-top:4px;">Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+              <button onclick="validerAvis('${d.id}','${a.pro_id||''}',${a.note||0})" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Publier</button>
+              <button onclick="supprimerAvis('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Supprimer</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error(e); }
+    }
+
+    window.validerAvis = async function(avisId, proId, note) {
+      try {
+        await updateDoc(doc(db, 'avis_clients', avisId), { statut: 'publie', date_validation: Timestamp.now() });
+        // Mettre a jour la note moyenne du pro
+        if (proId) {
+          const avisSnap = await getDocs(query(collection(db, 'avis_clients'), where('pro_id','==',proId), where('statut','==','publie')));
+          const notes = avisSnap.docs.map(d => d.data().note || 0);
+          const moyenne = notes.reduce((a,b) => a+b, 0) / notes.length;
+          await updateDoc(doc(db, 'professionnels', proId), {
+            note_moyenne: Math.round(moyenne * 10) / 10,
+            nb_avis: notes.length,
+          });
+        }
+        chargerAvisAttente();
+      } catch(e) { alert('Erreur validation'); }
+    };
+
+    window.supprimerAvis = async function(id) {
+      if (!confirm('Supprimer cet avis ?')) return;
+      await deleteDoc(doc(db, 'avis_clients', id));
+      chargerAvisAttente();
+    };
+
+    chargerAvisAttente();
       } catch(e) { alert('Erreur suppression'); }
     };
 
     chargerAlertes();
+
+    // Charger avis en attente
+    async function chargerAvisAttente() {
+      const container = document.getElementById('liste-avis-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(collection(db, 'avis_clients'), where('statut','==','en_attente'), orderBy('date','desc')));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucun avis en attente</p>';
+          return;
+        }
+        container.innerHTML = snap.docs.map(d => {
+          const a = d.data();
+          const date = a.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          const etoiles = '⭐'.repeat(a.note||0);
+          return `<div style="background:#0D1117;border-radius:10px;padding:12px;margin-bottom:10px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;">
+              <div>
+                <div style="color:#FFC107;font-size:14px;">${etoiles} ${a.note}/5</div>
+                <div style="color:white;font-weight:700;font-size:13px;">${a.nom||''} — ${a.pays||''}</div>
+                <div style="color:#4DD0E1;font-size:11px;">Pour : ${a.pro_nom||''}</div>
+                <div style="color:rgba(255,255,255,0.6);font-size:12px;margin-top:6px;">"${a.texte||''}"</div>
+                <div style="color:rgba(255,255,255,0.3);font-size:10px;margin-top:4px;">Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+              <button onclick="validerAvis('${d.id}','${a.pro_id||''}',${a.note||0})" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Publier</button>
+              <button onclick="supprimerAvis('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Supprimer</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error(e); }
+    }
+
+    window.validerAvis = async function(avisId, proId, note) {
+      try {
+        await updateDoc(doc(db, 'avis_clients', avisId), { statut: 'publie', date_validation: Timestamp.now() });
+        // Mettre a jour la note moyenne du pro
+        if (proId) {
+          const avisSnap = await getDocs(query(collection(db, 'avis_clients'), where('pro_id','==',proId), where('statut','==','publie')));
+          const notes = avisSnap.docs.map(d => d.data().note || 0);
+          const moyenne = notes.reduce((a,b) => a+b, 0) / notes.length;
+          await updateDoc(doc(db, 'professionnels', proId), {
+            note_moyenne: Math.round(moyenne * 10) / 10,
+            nb_avis: notes.length,
+          });
+        }
+        chargerAvisAttente();
+      } catch(e) { alert('Erreur validation'); }
+    };
+
+    window.supprimerAvis = async function(id) {
+      if (!confirm('Supprimer cet avis ?')) return;
+      await deleteDoc(doc(db, 'avis_clients', id));
+      chargerAvisAttente();
+    };
+
+    chargerAvisAttente();
     window.viderFormulaire();
       } catch(e) {
         alert('Erreur Firebase. Reessayez.');
@@ -358,6 +538,64 @@
         document.getElementById('a-source-alerte').value = '';
         setTimeout(() => document.getElementById('alerte-succes').style.display = 'none', 3000);
         chargerAlertes();
+
+    // Charger avis en attente
+    async function chargerAvisAttente() {
+      const container = document.getElementById('liste-avis-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(collection(db, 'avis_clients'), where('statut','==','en_attente'), orderBy('date','desc')));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucun avis en attente</p>';
+          return;
+        }
+        container.innerHTML = snap.docs.map(d => {
+          const a = d.data();
+          const date = a.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          const etoiles = '⭐'.repeat(a.note||0);
+          return `<div style="background:#0D1117;border-radius:10px;padding:12px;margin-bottom:10px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;">
+              <div>
+                <div style="color:#FFC107;font-size:14px;">${etoiles} ${a.note}/5</div>
+                <div style="color:white;font-weight:700;font-size:13px;">${a.nom||''} — ${a.pays||''}</div>
+                <div style="color:#4DD0E1;font-size:11px;">Pour : ${a.pro_nom||''}</div>
+                <div style="color:rgba(255,255,255,0.6);font-size:12px;margin-top:6px;">"${a.texte||''}"</div>
+                <div style="color:rgba(255,255,255,0.3);font-size:10px;margin-top:4px;">Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+              <button onclick="validerAvis('${d.id}','${a.pro_id||''}',${a.note||0})" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Publier</button>
+              <button onclick="supprimerAvis('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Supprimer</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error(e); }
+    }
+
+    window.validerAvis = async function(avisId, proId, note) {
+      try {
+        await updateDoc(doc(db, 'avis_clients', avisId), { statut: 'publie', date_validation: Timestamp.now() });
+        // Mettre a jour la note moyenne du pro
+        if (proId) {
+          const avisSnap = await getDocs(query(collection(db, 'avis_clients'), where('pro_id','==',proId), where('statut','==','publie')));
+          const notes = avisSnap.docs.map(d => d.data().note || 0);
+          const moyenne = notes.reduce((a,b) => a+b, 0) / notes.length;
+          await updateDoc(doc(db, 'professionnels', proId), {
+            note_moyenne: Math.round(moyenne * 10) / 10,
+            nb_avis: notes.length,
+          });
+        }
+        chargerAvisAttente();
+      } catch(e) { alert('Erreur validation'); }
+    };
+
+    window.supprimerAvis = async function(id) {
+      if (!confirm('Supprimer cet avis ?')) return;
+      await deleteDoc(doc(db, 'avis_clients', id));
+      chargerAvisAttente();
+    };
+
+    chargerAvisAttente();
       } catch(e) { alert('Erreur. Reessayez.'); }
     };
 
@@ -394,10 +632,126 @@
       try {
         await deleteDoc(doc(db, 'alertes_transport', id));
         chargerAlertes();
+
+    // Charger avis en attente
+    async function chargerAvisAttente() {
+      const container = document.getElementById('liste-avis-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(collection(db, 'avis_clients'), where('statut','==','en_attente'), orderBy('date','desc')));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucun avis en attente</p>';
+          return;
+        }
+        container.innerHTML = snap.docs.map(d => {
+          const a = d.data();
+          const date = a.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          const etoiles = '⭐'.repeat(a.note||0);
+          return `<div style="background:#0D1117;border-radius:10px;padding:12px;margin-bottom:10px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;">
+              <div>
+                <div style="color:#FFC107;font-size:14px;">${etoiles} ${a.note}/5</div>
+                <div style="color:white;font-weight:700;font-size:13px;">${a.nom||''} — ${a.pays||''}</div>
+                <div style="color:#4DD0E1;font-size:11px;">Pour : ${a.pro_nom||''}</div>
+                <div style="color:rgba(255,255,255,0.6);font-size:12px;margin-top:6px;">"${a.texte||''}"</div>
+                <div style="color:rgba(255,255,255,0.3);font-size:10px;margin-top:4px;">Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+              <button onclick="validerAvis('${d.id}','${a.pro_id||''}',${a.note||0})" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Publier</button>
+              <button onclick="supprimerAvis('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Supprimer</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error(e); }
+    }
+
+    window.validerAvis = async function(avisId, proId, note) {
+      try {
+        await updateDoc(doc(db, 'avis_clients', avisId), { statut: 'publie', date_validation: Timestamp.now() });
+        // Mettre a jour la note moyenne du pro
+        if (proId) {
+          const avisSnap = await getDocs(query(collection(db, 'avis_clients'), where('pro_id','==',proId), where('statut','==','publie')));
+          const notes = avisSnap.docs.map(d => d.data().note || 0);
+          const moyenne = notes.reduce((a,b) => a+b, 0) / notes.length;
+          await updateDoc(doc(db, 'professionnels', proId), {
+            note_moyenne: Math.round(moyenne * 10) / 10,
+            nb_avis: notes.length,
+          });
+        }
+        chargerAvisAttente();
+      } catch(e) { alert('Erreur validation'); }
+    };
+
+    window.supprimerAvis = async function(id) {
+      if (!confirm('Supprimer cet avis ?')) return;
+      await deleteDoc(doc(db, 'avis_clients', id));
+      chargerAvisAttente();
+    };
+
+    chargerAvisAttente();
       } catch(e) { alert('Erreur suppression'); }
     };
 
     chargerAlertes();
+
+    // Charger avis en attente
+    async function chargerAvisAttente() {
+      const container = document.getElementById('liste-avis-attente');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(collection(db, 'avis_clients'), where('statut','==','en_attente'), orderBy('date','desc')));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucun avis en attente</p>';
+          return;
+        }
+        container.innerHTML = snap.docs.map(d => {
+          const a = d.data();
+          const date = a.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          const etoiles = '⭐'.repeat(a.note||0);
+          return `<div style="background:#0D1117;border-radius:10px;padding:12px;margin-bottom:10px;border-left:3px solid #FFC107;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;">
+              <div>
+                <div style="color:#FFC107;font-size:14px;">${etoiles} ${a.note}/5</div>
+                <div style="color:white;font-weight:700;font-size:13px;">${a.nom||''} — ${a.pays||''}</div>
+                <div style="color:#4DD0E1;font-size:11px;">Pour : ${a.pro_nom||''}</div>
+                <div style="color:rgba(255,255,255,0.6);font-size:12px;margin-top:6px;">"${a.texte||''}"</div>
+                <div style="color:rgba(255,255,255,0.3);font-size:10px;margin-top:4px;">Le ${date}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+              <button onclick="validerAvis('${d.id}','${a.pro_id||''}',${a.note||0})" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Publier</button>
+              <button onclick="supprimerAvis('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Supprimer</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { console.error(e); }
+    }
+
+    window.validerAvis = async function(avisId, proId, note) {
+      try {
+        await updateDoc(doc(db, 'avis_clients', avisId), { statut: 'publie', date_validation: Timestamp.now() });
+        // Mettre a jour la note moyenne du pro
+        if (proId) {
+          const avisSnap = await getDocs(query(collection(db, 'avis_clients'), where('pro_id','==',proId), where('statut','==','publie')));
+          const notes = avisSnap.docs.map(d => d.data().note || 0);
+          const moyenne = notes.reduce((a,b) => a+b, 0) / notes.length;
+          await updateDoc(doc(db, 'professionnels', proId), {
+            note_moyenne: Math.round(moyenne * 10) / 10,
+            nb_avis: notes.length,
+          });
+        }
+        chargerAvisAttente();
+      } catch(e) { alert('Erreur validation'); }
+    };
+
+    window.supprimerAvis = async function(id) {
+      if (!confirm('Supprimer cet avis ?')) return;
+      await deleteDoc(doc(db, 'avis_clients', id));
+      chargerAvisAttente();
+    };
+
+    chargerAvisAttente();
     window.viderFormulaire = function() {
       ['a-profession','a-specialite','a-nom','a-prenom','a-wilaya','a-adresse','a-telephone','a-email','a-langues','a-ordre','a-presentation','a-notes'].forEach(id => {
         const el = document.getElementById(id);
