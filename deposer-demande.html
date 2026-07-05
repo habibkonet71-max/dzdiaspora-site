@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Déposer une demande — DZ Diaspora</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .secteur-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:24px; }
+    .secteur-btn { background:#1C2333; border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:20px; text-align:center; cursor:pointer; transition:all 0.2s; }
+    .secteur-btn:hover, .secteur-btn.actif { border-color:#4DD0E1; background:rgba(77,208,225,0.08); }
+    .secteur-btn .icon { font-size:36px; margin-bottom:8px; }
+    .secteur-btn .label { color:white; font-size:14px; font-weight:700; }
+    .secteur-btn .desc { color:rgba(255,255,255,0.4); font-size:11px; margin-top:4px; }
+    .form-section { display:none; }
+    .form-section.actif { display:block; }
+    .form-group { margin-bottom:14px; }
+    .form-group label { display:block; color:rgba(255,255,255,0.7); font-size:12px; margin-bottom:6px; font-weight:600; }
+    .form-group input, .form-group select, .form-group textarea { width:100%; padding:11px; border-radius:10px; background:#1C2333; color:white; border:1px solid rgba(255,255,255,0.12); font-size:13px; font-family:inherit; box-sizing:border-box; }
+    .form-group textarea { min-height:100px; resize:vertical; }
+    .btn-deposer { width:100%; padding:15px; background:#4DD0E1; color:#0D1117; border:none; border-radius:12px; font-size:15px; font-weight:700; cursor:pointer; }
+    .succes { display:none; background:rgba(168,224,99,0.1); border:1px solid rgba(168,224,99,0.4); border-radius:12px; padding:20px; text-align:center; }
+    .urgence-tag { display:inline-block; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:700; cursor:pointer; border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.5); margin:4px; }
+    .urgence-tag.actif { background:rgba(214,16,52,0.1); border-color:#D21034; color:#ff6b6b; }
+    .tags-container { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+    .tag { display:inline-block; padding:5px 12px; border-radius:20px; font-size:11px; cursor:pointer; border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.5); }
+    .tag.actif { background:rgba(77,208,225,0.1); border-color:#4DD0E1; color:#4DD0E1; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">🇩🇿 DZ Diaspora</a>
+    <div id="auth-btn-header" style="margin-left:6px"></div>
+    <button class="menu-btn" id="menuBtn">⋮</button>
+  </header>
+  <div class="menu-dropdown" id="menuDropdown">
+    <a href="index.html">🏠 Accueil</a>
+    <a href="annuaire-pro.html">📖 Annuaire Pro</a>
+    <a href="contact.html">Contact</a>
+  </div>
+
+  <main class="page-content">
+    <h1>📋 Déposer une demande</h1>
+    <p class="intro">Décrivez votre besoin — les professionnels disponibles vous répondent directement. Gratuit et sans engagement.</p>
+
+    <div class="succes" id="msgSucces">
+      ✅ Votre demande a été publiée !<br>
+      <span style="font-size:13px;color:rgba(255,255,255,0.6);">Les professionnels concernés vont vous contacter sous 24-48h.</span>
+      <div style="margin-top:14px;">
+        <a href="mes-demandes.html" style="background:#4DD0E1;color:#0D1117;padding:10px 20px;border-radius:20px;font-weight:700;text-decoration:none;font-size:13px;">📋 Suivre mes demandes</a>
+      </div>
+    </div>
+
+    <!-- CHOIX SECTEUR -->
+    <div class="bloc">
+      <h2>1. Choisissez votre secteur</h2>
+      <div class="secteur-grid">
+        <div class="secteur-btn" onclick="choisirSecteur('juridique',this)">
+          <div class="icon">⚖️</div>
+          <div class="label">Juridique</div>
+          <div class="desc">Avocats, notaires, huissiers</div>
+        </div>
+        <div class="secteur-btn" onclick="choisirSecteur('medical',this)">
+          <div class="icon">🏥</div>
+          <div class="label">Médical</div>
+          <div class="desc">Médecins, spécialistes, dentistes</div>
+        </div>
+        <div class="secteur-btn" onclick="choisirSecteur('immobilier',this)">
+          <div class="icon">🏠</div>
+          <div class="label">Immobilier</div>
+          <div class="desc">Achat, location, agences</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORMULAIRE JURIDIQUE -->
+    <div class="form-section bloc" id="form-juridique">
+      <h2>⚖️ Votre demande juridique</h2>
+      <div class="form-group">
+        <label>Type de droit *</label>
+        <select id="j-type">
+          <option value="">-- Sélectionnez --</option>
+          <option value="famille">Droit de la famille (divorce, héritage...)</option>
+          <option value="immobilier">Droit immobilier</option>
+          <option value="penal">Droit pénal</option>
+          <option value="travail">Droit du travail</option>
+          <option value="commercial">Droit commercial</option>
+          <option value="succession">Succession / Héritage</option>
+          <option value="nationalite">Nationalité / Visa</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Wilaya concernée</label>
+        <select id="j-wilaya">
+          <option value="">-- Toutes les wilayas --</option>
+          <option>Alger</option><option>Oran</option><option>Constantine</option>
+          <option>Annaba</option><option>Blida</option><option>Bejaia</option>
+          <option>Tizi Ouzou</option><option>Setif</option><option>Batna</option>
+          <option>Tlemcen</option><option>Autre</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Décrivez votre situation *</label>
+        <textarea id="j-description" placeholder="Expliquez votre problème juridique. Soyez précis pour recevoir les meilleures réponses..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Urgence</label>
+        <div>
+          <span class="urgence-tag" onclick="toggleUrgence(this,'juridique')">🚨 Urgent</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Langue de communication souhaitée</label>
+        <div class="tags-container">
+          <span class="tag actif" onclick="this.classList.toggle('actif')">Français</span>
+          <span class="tag" onclick="this.classList.toggle('actif')">Arabe</span>
+          <span class="tag" onclick="this.classList.toggle('actif')">Kabyle</span>
+          <span class="tag" onclick="this.classList.toggle('actif')">Anglais</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORMULAIRE MEDICAL -->
+    <div class="form-section bloc" id="form-medical">
+      <h2>🏥 Votre demande médicale</h2>
+      <div class="form-group">
+        <label>Spécialité recherchée *</label>
+        <select id="m-specialite">
+          <option value="">-- Sélectionnez --</option>
+          <option value="generaliste">Médecin généraliste</option>
+          <option value="cardiologue">Cardiologue</option>
+          <option value="dermatologue">Dermatologue</option>
+          <option value="gynécologue">Gynécologue</option>
+          <option value="ophtalmologue">Ophtalmologue</option>
+          <option value="pédiatre">Pédiatre</option>
+          <option value="psychiatre">Psychiatre / Psychologue</option>
+          <option value="dentiste">Dentiste</option>
+          <option value="pharmacien">Pharmacien</option>
+          <option value="autre">Autre spécialité</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Wilaya *</label>
+        <select id="m-wilaya">
+          <option value="">-- Sélectionnez --</option>
+          <option>Alger</option><option>Oran</option><option>Constantine</option>
+          <option>Annaba</option><option>Blida</option><option>Bejaia</option>
+          <option>Tizi Ouzou</option><option>Setif</option><option>Batna</option>
+          <option>Tlemcen</option><option>Autre</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Type de consultation *</label>
+        <select id="m-type">
+          <option value="presentiel">🏢 En cabinet (présentiel)</option>
+          <option value="teleconsultation">💻 Téléconsultation (vidéo)</option>
+          <option value="domicile">🏠 À domicile</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Décrivez vos symptômes ou votre besoin *</label>
+        <textarea id="m-description" placeholder="Décrivez vos symptômes, antécédents médicaux pertinents, ou ce que vous recherchez..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Urgence</label>
+        <div>
+          <span class="urgence-tag" onclick="toggleUrgence(this,'medical')">🚨 Urgent</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Langue souhaitée</label>
+        <div class="tags-container">
+          <span class="tag actif" onclick="this.classList.toggle('actif')">Français</span>
+          <span class="tag" onclick="this.classList.toggle('actif')">Arabe</span>
+          <span class="tag" onclick="this.classList.toggle('actif')">Kabyle</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORMULAIRE IMMOBILIER -->
+    <div class="form-section bloc" id="form-immobilier">
+      <h2>🏠 Votre recherche immobilière</h2>
+      <div class="form-group">
+        <label>Type de bien *</label>
+        <select id="i-type-bien">
+          <option value="">-- Sélectionnez --</option>
+          <option value="appartement">Appartement</option>
+          <option value="villa">Villa / Maison</option>
+          <option value="studio">Studio</option>
+          <option value="local">Local commercial</option>
+          <option value="terrain">Terrain</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Transaction *</label>
+        <select id="i-transaction">
+          <option value="achat">🏷️ Achat</option>
+          <option value="location">🔑 Location</option>
+          <option value="vente">💰 Vente (je vends)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Wilaya *</label>
+        <select id="i-wilaya">
+          <option value="">-- Sélectionnez --</option>
+          <option>Alger</option><option>Oran</option><option>Constantine</option>
+          <option>Annaba</option><option>Blida</option><option>Bejaia</option>
+          <option>Tizi Ouzou</option><option>Setif</option><option>Batna</option>
+          <option>Tlemcen</option><option>Autre</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-group">
+          <label>Budget (DZD ou €)</label>
+          <input type="text" id="i-budget" placeholder="Ex: 15 000 000 DZD">
+        </div>
+        <div class="form-group">
+          <label>Surface souhaitée</label>
+          <input type="text" id="i-surface" placeholder="Ex: 80 m²">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Nombre de pièces</label>
+        <select id="i-pieces">
+          <option value="">-- --</option>
+          <option value="1">1 pièce (studio)</option>
+          <option value="2">2 pièces (F2)</option>
+          <option value="3">3 pièces (F3)</option>
+          <option value="4">4 pièces (F4)</option>
+          <option value="5+">5 pièces et plus</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Description de votre recherche *</label>
+        <textarea id="i-description" placeholder="Décrivez précisément ce que vous cherchez : quartier, étage, équipements, proximité école/transport..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Équipements souhaités</label>
+        <div class="tags-container">
+          <span class="tag" onclick="this.classList.toggle('actif')">🚗 Parking</span>
+          <span class="tag" onclick="this.classList.toggle('actif')">🌿 Jardin</span>
+          <span class="tag" onclick="this.classList.toggle('actif')">🏊 Piscine</span>
+          <span class="tag" onclick="this.classList.toggle('actif')">🛗 Ascenseur</span>
+          <span class="tag" onclick="this.classList.toggle('actif')">🔒 Gardien</span>
+          <span class="tag" onclick="this.classList.toggle('actif')">🌊 Vue mer</span>
+          <span class="tag" onclick="this.classList.toggle('actif')">🏫 Proche école</span>
+          <span class="tag" onclick="this.classList.toggle('actif')">🚌 Proche transport</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- COORDONNEES COMMUNES -->
+    <div class="form-section bloc" id="form-coordonnees">
+      <h2>📞 Vos coordonnées</h2>
+      <div class="form-group">
+        <label>Nom complet *</label>
+        <input type="text" id="c-nom" placeholder="Votre nom et prénom">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" id="c-email" placeholder="votre@email.com">
+        </div>
+        <div class="form-group">
+          <label>Téléphone / WhatsApp</label>
+          <input type="tel" id="c-tel" placeholder="+33 6 XX XX XX XX">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Pays de résidence</label>
+        <select id="c-pays">
+          <option value="france">🇫🇷 France</option>
+          <option value="algerie">🇩🇿 Algérie</option>
+          <option value="belgique">🇧🇪 Belgique</option>
+          <option value="canada">🇨🇦 Canada</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="c-visibilite" checked style="width:auto;margin-right:6px;">
+          <span style="color:rgba(255,255,255,0.7);">Rendre ma demande visible aux professionnels (recommandé)</span>
+        </label>
+      </div>
+      <button class="btn-deposer" onclick="envoyerDemande()">📋 Publier ma demande</button>
+      <p style="color:rgba(255,255,255,0.3);font-size:11px;text-align:center;margin-top:8px;">Gratuit et sans engagement. Les pros vous contactent directement.</p>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>DZ Diaspora — Tous droits réservés</p>
+    <p><a href="cgu.html">CGU</a> · <a href="annuaire-pro.html">Annuaire</a></p>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const cfg = { apiKey:"AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ", appId:"1:223003656315:web:100de190b8b5e74ddae2de", messagingSenderId:"223003656315", projectId:"dzdiaspora-7260a", authDomain:"dzdiaspora-7260a.firebaseapp.com", storageBucket:"dzdiaspora-7260a.firebasestorage.app" };
+    const app = initializeApp(cfg);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    onAuthStateChanged(auth, (user) => {
+      const btn = document.getElementById('auth-btn-header');
+      if (btn) btn.innerHTML = user
+        ? '<button onclick="window.signOutUser()" style="background:rgba(214,16,52,0.15);border:1px solid #D61034;color:#ff6b6b;padding:5px 12px;border-radius:14px;font-size:12px;cursor:pointer;font-weight:bold;">🚪 '+user.email.split('@')[0]+'</button>'
+        : '<a href="connexion.html" style="background:rgba(77,208,225,0.15);border:1px solid #4DD0E1;color:#4DD0E1;padding:5px 12px;border-radius:14px;font-size:12px;font-weight:bold;text-decoration:none;">👤 Connexion</a>';
+      if (user) { document.getElementById('c-email').value = user.email; }
+    });
+    window.signOutUser = async () => { await signOut(auth); location.reload(); };
+    document.getElementById('menuBtn')?.addEventListener('click', () => document.getElementById('menuDropdown')?.classList.toggle('open'));
+
+    window.envoyerDemande = async function() {
+      const nom = document.getElementById('c-nom').value.trim();
+      const email = document.getElementById('c-email').value.trim();
+      if (!nom || !email || !window._secteur) { alert('Remplissez tous les champs obligatoires'); return; }
+
+      let data = {
+        secteur: window._secteur,
+        nom, email,
+        tel: document.getElementById('c-tel').value.trim(),
+        pays: document.getElementById('c-pays').value,
+        visible: document.getElementById('c-visibilite').checked,
+        statut: 'ouverte',
+        date: Timestamp.now(),
+        reponses: 0,
+      };
+
+      if (window._secteur === 'juridique') {
+        data.type = document.getElementById('j-type').value;
+        data.wilaya = document.getElementById('j-wilaya').value;
+        data.description = document.getElementById('j-description').value.trim();
+        data.urgent = window._urgent_juridique || false;
+        if (!data.type || !data.description) { alert('Complétez votre demande juridique'); return; }
+      } else if (window._secteur === 'medical') {
+        data.specialite = document.getElementById('m-specialite').value;
+        data.wilaya = document.getElementById('m-wilaya').value;
+        data.type_consultation = document.getElementById('m-type').value;
+        data.description = document.getElementById('m-description').value.trim();
+        data.urgent = window._urgent_medical || false;
+        if (!data.specialite || !data.description) { alert('Complétez votre demande médicale'); return; }
+      } else if (window._secteur === 'immobilier') {
+        data.type_bien = document.getElementById('i-type-bien').value;
+        data.transaction = document.getElementById('i-transaction').value;
+        data.wilaya = document.getElementById('i-wilaya').value;
+        data.budget = document.getElementById('i-budget').value.trim();
+        data.surface = document.getElementById('i-surface').value.trim();
+        data.pieces = document.getElementById('i-pieces').value;
+        data.description = document.getElementById('i-description').value.trim();
+        const equipements = [...document.querySelectorAll('#form-immobilier .tag.actif')].map(t => t.textContent.trim());
+        data.equipements = equipements;
+        if (!data.type_bien || !data.description) { alert('Complétez votre recherche immobilière'); return; }
+      }
+
+      try {
+        await addDoc(collection(db, 'demandes_clients'), data);
+        document.getElementById('msgSucces').style.display = 'block';
+        window.scrollTo(0, 0);
+      } catch(e) { alert('Erreur. Réessayez.'); }
+    };
+  </script>
+
+  <script>
+    window._secteur = null;
+    window._urgent_juridique = false;
+    window._urgent_medical = false;
+
+    window.choisirSecteur = function(secteur, el) {
+      document.querySelectorAll('.secteur-btn').forEach(b => b.classList.remove('actif'));
+      el.classList.add('actif');
+      window._secteur = secteur;
+      document.querySelectorAll('.form-section').forEach(f => f.classList.remove('actif'));
+      document.getElementById('form-' + secteur).classList.add('actif');
+      document.getElementById('form-coordonnees').classList.add('actif');
+      document.getElementById('form-' + secteur).scrollIntoView({behavior:'smooth'});
+    };
+
+    window.toggleUrgence = function(el, secteur) {
+      el.classList.toggle('actif');
+      window['_urgent_' + secteur] = el.classList.contains('actif');
+    };
+  </script>
+</body>
+</html>
