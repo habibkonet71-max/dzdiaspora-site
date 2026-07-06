@@ -403,36 +403,44 @@
   </script>
 
   <script>
-    // METEO ALGER
+    // METEO ALGER avec timeout
     async function chargerMeteo() {
+      const el = document.getElementById('bandeauMeteo');
+      if (!el) return;
       try {
-        const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=36.7&longitude=3.2&current_weather=true&wind_speed_unit=kmh');
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
+        const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=36.7&longitude=3.2&current_weather=true&wind_speed_unit=kmh', {signal: controller.signal});
+        clearTimeout(timeout);
         const d = await r.json();
         const temp = d.current_weather?.temperature;
         const vent = d.current_weather?.windspeed;
         const codes = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',61:'🌧️',71:'❄️',80:'🌧️',95:'⛈️'};
-        const code = d.current_weather?.weathercode || 0;
-        const icon = codes[code] || '🌡️';
-        document.getElementById('bandeauMeteo').innerHTML = 
-          '<span>' + icon + ' Alger : ' + temp + '°C — Vent ' + vent + ' km/h</span>';
+        const icon = codes[d.current_weather?.weathercode || 0] || '🌡️';
+        el.innerHTML = '<span>' + icon + ' Alger : ' + temp + '°C — Vent ' + vent + ' km/h</span>';
       } catch(e) {
-        document.getElementById('bandeauMeteo').innerHTML = '<span>🌡️ Météo Alger indisponible</span>';
+        el.innerHTML = '<span>🌡️ Alger — météo non disponible</span>';
       }
     }
 
-    // DEVISES
+    // DEVISES avec timeout et fallback
     async function chargerDevises() {
+      const el = document.getElementById('bandeauDevises');
+      if (!el) return;
       try {
-        const r = await fetch('https://api.exchangerate-api.com/v4/latest/EUR');
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
+        const r = await fetch('https://api.exchangerate-api.com/v4/latest/EUR', {signal: controller.signal});
+        clearTimeout(timeout);
         const d = await r.json();
-        const dzd = d.rates?.DZD?.toFixed(2);
-        const usd = d.rates?.USD?.toFixed(2);
-        const gbp = d.rates?.GBP?.toFixed(2);
-        const cad = d.rates?.CAD?.toFixed(2);
-        document.getElementById('bandeauDevises').innerHTML = 
-          '<span>💱 1€ = ' + dzd + ' DZD &nbsp;|&nbsp; 1€ = ' + usd + ' USD &nbsp;|&nbsp; 1€ = ' + gbp + ' GBP &nbsp;|&nbsp; 1€ = ' + cad + ' CAD</span>';
+        const dzd = d.rates?.DZD?.toFixed(2) || '~148';
+        const usd = d.rates?.USD?.toFixed(2) || '~1.08';
+        const gbp = d.rates?.GBP?.toFixed(2) || '~0.84';
+        const cad = d.rates?.CAD?.toFixed(2) || '~1.46';
+        el.innerHTML = '<span>💱 1€ = ' + dzd + ' DZD &nbsp;|&nbsp; 1€ = ' + usd + ' USD &nbsp;|&nbsp; 1€ = ' + gbp + ' GBP &nbsp;|&nbsp; 1€ = ' + cad + ' CAD</span>';
       } catch(e) {
-        document.getElementById('bandeauDevises').innerHTML = '<span>💱 Taux de change indisponible</span>';
+        // Fallback valeurs approximatives
+        el.innerHTML = '<span>💱 1€ ≈ 148 DZD &nbsp;|&nbsp; 1€ ≈ 1.08 USD &nbsp;|&nbsp; 1€ ≈ 0.84 GBP</span>';
       }
     }
 
