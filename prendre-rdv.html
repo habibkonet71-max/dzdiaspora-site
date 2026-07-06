@@ -30,6 +30,7 @@
     .type-btn .icon { font-size:22px; margin-bottom:4px; }
     .type-btn .label { color:rgba(255,255,255,0.7); font-size:12px; font-weight:600; }
   </style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
   <header>
@@ -243,6 +244,23 @@
         });
         document.getElementById('msgSucces').style.display = 'block';
         window.scrollTo(0, 0);
+
+        // Notifier le pro par email
+        try {
+          emailjs.init('lj-ndl5zGAWGWkJqc');
+          const proEmail = window._proData?.email;
+          const proNom = (window._proData?.prenom||'') + ' ' + (window._proData?.nom||'');
+          if (proEmail) {
+            await emailjs.send('service_pv5uh7i', 'template_e12y5yv', {
+              pro_nom: proNom,
+              pro_email: proEmail,
+              secteur: 'Rendez-vous',
+              wilaya: window._proData?.wilaya || '',
+              urgent: window._typeRdv === 'urgence' ? 'OUI' : 'Non',
+              description: 'Nouveau RDV de ' + nom + ' le ' + date + ' à ' + window._creneau + ' (' + window._typeRdv + ')\n\nMotif: ' + motif + '\nTéléphone: ' + document.getElementById('rdv-tel').value,
+            });
+          }
+        } catch(emailErr) { console.log('Email non envoyé:', emailErr); }
       } catch(e) {
         console.error(e);
         alert('Erreur. Réessayez.');
