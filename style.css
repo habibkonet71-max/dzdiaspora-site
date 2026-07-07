@@ -195,3 +195,35 @@ img { height: auto; display: block; max-width: 100%; }
 .grid-cartes { min-height: 100px; }
 header { min-height: 60px; }
 .carte { contain: layout; }
+
+/* Bandeaux meteo/wilayas avec defilement automatique (ticker) */
+.bandeau {
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  background: #1C2333;
+  padding: 10px 0;
+}
+.bandeau-track {
+  display: inline-flex;
+  gap: 28px;
+  animation: defilement 60s linear infinite;
+  padding-left: 100%;
+}
+.bandeau:hover .bandeau-track {
+  animation-play-state: paused;
+}
+.wilaya-chip {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.75);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color .2s, color .2s;
+}
+.wilaya-chip:hover {
+  border-color: #4DD0E1;
+  color: #4DD0E1;
+}
