@@ -325,7 +325,7 @@
           titre,
           details: document.getElementById('a-details-alerte').value.trim(),
           source: document.getElementById('a-source-alerte').value.trim(),
-          date: Timestamp.now(), actif: true,
+          date: Timestamp.now(), actif: true, source_admin: true,
         });
         document.getElementById('alerte-succes').style.display = 'block';
         document.getElementById('a-titre-alerte').value = '';
