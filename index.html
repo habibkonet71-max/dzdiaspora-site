@@ -426,23 +426,40 @@
       'Djanet':[24.55,9.48],'El MGhair':[33.95,5.93],'El Menia':[30.58,2.88]
     };
 
-    // METEO — une seule wilaya (Alger) pour simplicité et fiabilité
+    // METEO — plusieurs wilayas en défilement
     async function chargerMeteo() {
       const el = document.getElementById('bandeauMeteo');
       if (!el) return;
+      const villes = [
+        {nom:'Alger', lat:36.75, lon:3.06},
+        {nom:'Oran', lat:35.70, lon:-0.63},
+        {nom:'Constantine', lat:36.37, lon:6.61},
+        {nom:'Annaba', lat:36.90, lon:7.77},
+        {nom:'Tizi Ouzou', lat:36.72, lon:4.05},
+        {nom:'Béjaïa', lat:36.75, lon:5.08},
+        {nom:'Batna', lat:35.56, lon:6.17},
+        {nom:'Sétif', lat:36.19, lon:5.41},
+        {nom:'Tlemcen', lat:34.88, lon:-1.32},
+        {nom:'Ghardaïa', lat:32.49, lon:3.67},
+      ];
+      const codes = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',51:'🌦️',61:'🌧️',71:'❄️',80:'🌧️',95:'⛈️'};
       try {
+        const lats = villes.map(v=>v.lat).join(',');
+        const lons = villes.map(v=>v.lon).join(',');
         const controller = new AbortController();
-        setTimeout(() => controller.abort(), 5000);
-        const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=36.75&longitude=3.06&current_weather=true', {signal: controller.signal});
+        setTimeout(() => controller.abort(), 8000);
+        const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude='+lats+'&longitude='+lons+'&current_weather=true', {signal: controller.signal});
         const d = await r.json();
-        const temp = d.current_weather?.temperature || '?';
-        const vent = d.current_weather?.windspeed || '?';
-        const codes = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',51:'🌦️',61:'🌧️',71:'❄️',80:'🌧️',95:'⛈️'};
-        const icon = codes[d.current_weather?.weathercode] || '🌡️';
-        const texte = icon + ' Alger : ' + temp + '°C — Vent ' + vent + ' km/h &nbsp;|&nbsp; ' + icon + ' Alger : ' + temp + '°C — Vent ' + vent + ' km/h';
-        el.innerHTML = '<div class="bandeau-track"><span>' + texte + '</span></div>';
+        const resultats = Array.isArray(d) ? d : [d];
+        const morceaux = resultats.map((res, i) => {
+          const temp = res.current_weather?.temperature || '?';
+          const icon = codes[res.current_weather?.weathercode] || '🌡️';
+          return icon + ' ' + villes[i].nom + ' : ' + temp + '°C';
+        });
+        const texte = morceaux.join(' &nbsp;•&nbsp; ');
+        el.innerHTML = '<div class="bandeau-track"><span>' + texte + ' &nbsp;&nbsp;&nbsp; ' + texte + '</span></div>';
       } catch(e) {
-        el.innerHTML = '<div class="bandeau-track"><span>🌡️ Alger — météo non disponible &nbsp;|&nbsp; 🌡️ Alger — météo non disponible</span></div>';
+        el.innerHTML = '<div class="bandeau-track"><span>🌡️ Alger : chargement... &nbsp;•&nbsp; 🌡️ Oran : chargement...</span></div>';
       }
     }
 
@@ -466,14 +483,47 @@
       }
     }
 
-    // WILAYAS — affichage chips cliquables
+    // WILAYAS — chips cliquables avec popup horaires priere
     function chargerWilayas() {
       const el = document.getElementById('bandeauWilayas');
       if (!el) return;
       el.innerHTML = Object.keys(WILAYAS_GPS).map(w =>
-        '<a href="wilayas.html?w=' + encodeURIComponent(w) + '" style="display:inline-block;padding:4px 12px;border-radius:16px;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);font-size:12px;text-decoration:none;white-space:nowrap;margin:2px;">' + w + '</a>'
+        '<button onclick="voirHoraires(\''+w+'\','+WILAYAS_GPS[w][0]+','+WILAYAS_GPS[w][1]+')" style="display:inline-block;padding:4px 12px;border-radius:16px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:rgba(255,255,255,0.7);font-size:12px;cursor:pointer;white-space:nowrap;margin:2px;">' + w + '</button>'
       ).join('');
     }
+
+    // POPUP HORAIRES DE PRIERE
+    window.voirHoraires = async function(wilaya, lat, lon) {
+      const popup = document.getElementById('popup-horaires');
+      const titre = document.getElementById('popup-wilaya');
+      const contenu = document.getElementById('popup-contenu');
+      if (!popup) return;
+      titre.textContent = '🕌 ' + wilaya;
+      contenu.innerHTML = '<p style="color:rgba(255,255,255,0.5);">Chargement...</p>';
+      popup.style.display = 'flex';
+      try {
+        const today = new Date();
+        const r = await fetch('https://api.aladhan.com/v1/timings/'+today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear()+'?latitude='+lat+'&longitude='+lon+'&method=2');
+        const d = await r.json();
+        const t = d.data?.timings;
+        if (t) {
+          contenu.innerHTML = [
+            ['🌅 Fajr (Sobh)', t.Fajr],
+            ['🌄 Chourouq', t.Sunrise],
+            ['☀️ Dhohr', t.Dhuhr],
+            ['🌤️ Asr', t.Asr],
+            ['🌅 Maghreb', t.Maghrib],
+            ['🌙 Icha', t.Isha],
+          ].map(([nom, heure]) => 
+            '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08);">' +
+            '<span style="color:rgba(255,255,255,0.7);">'+nom+'</span>' +
+            '<span style="color:#4DD0E1;font-weight:bold;">'+heure+'</span></div>'
+          ).join('');
+        }
+      } catch(e) {
+        contenu.innerHTML = '<p style="color:#ff6b6b;">Horaires non disponibles</p>';
+      }
+    };
 
     // ALERTES TRANSPORT
     async function chargerAlertes() {
@@ -507,5 +557,19 @@
     setInterval(chargerDevises, 60 * 60 * 1000);
     setInterval(chargerAlertes, 5 * 60 * 1000);
   </script>
+
+  <!-- POPUP HORAIRES DE PRIERE -->
+  <div id="popup-horaires" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;" onclick="if(event.target===this)this.style.display='none'">
+    <div style="background:#1C2333;border-radius:16px;padding:20px;max-width:360px;width:100%;border:1px solid rgba(77,208,225,0.3);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h3 id="popup-wilaya" style="color:white;margin:0;font-size:16px;"></h3>
+        <button onclick="document.getElementById('popup-horaires').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,0.5);font-size:20px;cursor:pointer;">✕</button>
+      </div>
+      <div id="popup-contenu"></div>
+      <div style="margin-top:12px;text-align:center;">
+        <a href="wilayas.html" style="color:#4DD0E1;font-size:12px;">Voir toutes les wilayas →</a>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
