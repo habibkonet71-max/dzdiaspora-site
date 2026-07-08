@@ -534,12 +534,13 @@
         const app = getApps().length ? getApps()[0] : initializeApp(cfg);
         const db = getFirestore(app);
         const snap = await getDocs(query(collection(db, 'alertes_transport'), where('actif','==',true), orderBy('date','desc')));
-        if (!snap.empty) {
-          const a = snap.docs[0].data();
+        // Filtrer uniquement les alertes admin
+        const alerteAdmin = snap.docs.map(d => d.data()).find(d => d.source_admin === true);
+        if (alerteAdmin) {
           const el = document.getElementById('bandeauAlertes');
           const elTxt = document.getElementById('bandeauAlertesTexte');
           if (el && elTxt) {
-            const txt = '🚨 ' + a.titre + ' &nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp; 🚨 ' + a.titre;
+            const txt = '🚨 ' + alerteAdmin.titre + ' &nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp; 🚨 ' + alerteAdmin.titre;
             elTxt.innerHTML = txt;
             el.style.display = 'block';
           }
