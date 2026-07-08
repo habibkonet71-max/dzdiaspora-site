@@ -402,159 +402,110 @@
     document.getElementById('menuBtn')?.addEventListener('click', () => document.getElementById('menuDropdown')?.classList.toggle('open'));
   </script>
   <script>
-        // WILAYAS — 69 wilayas avec coordonnees GPS, cliquables, horaires de priere
+    // WILAYAS GPS — déclaré en premier
     const WILAYAS_GPS = {
-      'Adrar': [27.87, -0.28], 'Chlef': [36.17, 1.33], 'Laghouat': [33.80, 2.86],
-      'Oum El Bouaghi': [35.87, 7.11], 'Batna': [35.56, 6.17], 'Béjaïa': [36.75, 5.08],
-      'Biskra': [34.85, 5.73], 'Béchar': [31.62, -2.22], 'Blida': [36.47, 2.83],
-      'Bouira': [36.38, 3.90], 'Tamanrasset': [22.79, 5.53], 'Tébessa': [35.40, 8.12],
-      'Tlemcen': [34.88, -1.32], 'Tiaret': [35.37, 1.32], 'Tizi Ouzou': [36.72, 4.05],
-      'Alger': [36.75, 3.06], 'Djelfa': [34.67, 3.25], 'Jijel': [36.82, 5.77],
-      'Sétif': [36.19, 5.41], 'Saïda': [34.83, 0.15], 'Skikda': [36.88, 6.90],
-      'Sidi Bel Abbès': [35.19, -0.63], 'Annaba': [36.90, 7.77], 'Guelma': [36.46, 7.43],
-      'Constantine': [36.37, 6.61], 'Médéa': [36.26, 2.75], 'Mostaganem': [35.93, 0.09],
-      "M'Sila": [35.70, 4.54], 'Mascara': [35.40, 0.14], 'Ouargla': [31.95, 5.32],
-      'Oran': [35.70, -0.63], 'El Bayadh': [33.68, 1.02], 'Illizi': [26.48, 8.47],
-      'Bordj Bou Arréridj': [36.07, 4.76], 'Boumerdès': [36.77, 3.48], 'El Tarf': [36.77, 8.31],
-      'Tindouf': [27.67, -8.15], 'Tissemsilt': [35.61, 1.81], 'El Oued': [33.35, 6.87],
-      'Khenchela': [35.44, 7.14], 'Souk Ahras': [36.29, 7.95], 'Tipaza': [36.59, 2.45],
-      'Mila': [36.45, 6.26], 'Aïn Defla': [36.26, 1.97], 'Naâma': [33.27, -0.31],
-      'Aïn Témouchent': [35.30, -1.14], 'Ghardaïa': [32.49, 3.67], 'Relizane': [35.74, 0.56],
-      'Timimoun': [29.26, 0.23], 'Bordj Badji Mokhtar': [21.33, 0.95], 'Ouled Djellal': [34.42, 5.06],
-      'Béni Abbès': [30.13, -2.17], 'In Salah': [27.19, 2.48], 'In Guezzam': [19.57, 5.77],
-      'Touggourt': [33.10, 6.09], 'Djanet': [24.55, 9.48], "El M'Ghair": [33.95, 5.92],
-      'El Meniaa': [30.58, 2.88], 'Aflou': [34.11, 2.10], 'Barika': [35.38, 5.37],
-      'El Kantara': [35.22, 5.70], 'Bir El Ater': [34.75, 8.06], 'El Aricha': [34.30, -1.28],
-      'Ksar Chellala': [35.19, 2.31], 'Aïn Oussara': [35.45, 2.90], 'Messaad': [34.15, 3.50],
-      'Ksar El Boukhari': [35.87, 2.77], 'Bou Saâda': [35.21, 4.19], 'El Abiodh Sidi Cheikh': [32.90, 0.53]
+      'Adrar':[27.87,-0.28],'Chlef':[36.17,1.33],'Laghouat':[33.80,2.86],
+      'Oum El Bouaghi':[35.87,7.11],'Batna':[35.56,6.17],'Béjaïa':[36.75,5.08],
+      'Biskra':[34.85,5.73],'Béchar':[31.62,-2.22],'Blida':[36.47,2.83],
+      'Bouira':[36.38,3.90],'Tamanrasset':[22.79,5.53],'Tébessa':[35.40,8.12],
+      'Tlemcen':[34.88,-1.32],'Tiaret':[35.37,1.32],'Tizi Ouzou':[36.72,4.05],
+      'Alger':[36.75,3.06],'Djelfa':[34.67,3.25],'Jijel':[36.82,5.77],
+      'Sétif':[36.19,5.41],'Saïda':[34.83,0.15],'Skikda':[36.88,6.90],
+      'Sidi Bel Abbès':[35.18,-0.63],'Annaba':[36.90,7.77],'Guelma':[36.46,7.43],
+      'Constantine':[36.37,6.61],'Médéa':[36.26,2.75],'Mostaganem':[35.93,0.09],
+      'MSila':[35.70,4.54],'Mascara':[35.40,0.14],'Ouargla':[31.95,5.32],
+      'Oran':[35.70,-0.63],'El Bayadh':[33.68,1.02],'Illizi':[26.48,8.48],
+      'Bordj Bou Arréridj':[36.07,4.76],'Boumerdès':[36.76,3.48],'El Tarf':[36.77,8.31],
+      'Tindouf':[27.67,-8.15],'Tissemsilt':[35.61,1.81],'El Oued':[33.36,6.86],
+      'Khenchela':[35.43,7.14],'Souk Ahras':[36.29,7.95],'Tipaza':[36.59,2.45],
+      'Mila':[36.45,6.26],'Aïn Defla':[36.26,1.97],'Naâma':[33.27,-0.31],
+      'Aïn Témouchent':[35.30,-1.14],'Ghardaïa':[32.49,3.67],'Relizane':[35.74,0.55],
+      'Timimoun':[29.26,0.23],'Bordj Badji Mokhtar':[21.33,0.95],
+      'Ouled Djellal':[34.42,5.07],'Béni Abbès':[30.13,-2.17],
+      'In Salah':[27.20,2.47],'In Guezzam':[19.57,5.77],'Touggourt':[33.10,6.07],
+      'Djanet':[24.55,9.48],'El MGhair':[33.95,5.93],'El Menia':[30.58,2.88]
     };
 
-    // METEO ALGER avec timeout
+    // METEO — une seule wilaya (Alger) pour simplicité et fiabilité
     async function chargerMeteo() {
       const el = document.getElementById('bandeauMeteo');
       if (!el) return;
-      const noms = Object.keys(WILAYAS_GPS);
-      const TAILLE_LOT = 15;
-      const lots = [];
-      for (let i = 0; i < noms.length; i += TAILLE_LOT) {
-        lots.push(noms.slice(i, i + TAILLE_LOT));
-      }
-      const codes = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',61:'🌧️',71:'❄️',80:'🌧️',95:'⛈️'};
-      async function chargerLot(lotNoms) {
-        try {
-          const lats = lotNoms.map(n => WILAYAS_GPS[n][0]).join(',');
-          const lons = lotNoms.map(n => WILAYAS_GPS[n][1]).join(',');
-          const controller = new AbortController();
-          const timeout = setTimeout(() => controller.abort(), 8000);
-          const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lats + '&longitude=' + lons + '&current_weather=true&wind_speed_unit=kmh';
-          const r = await fetch(url, {signal: controller.signal});
-          clearTimeout(timeout);
-          const d = await r.json();
-          const resultats = Array.isArray(d) ? d : [d];
-          return resultats.map((res, i) => {
-            const temp = res.current_weather?.temperature;
-            const icon = codes[res.current_weather?.weathercode || 0] || '🌡️';
-            const num = WILAYAS_NUM[lotNoms[i]] || '';
-            return (temp !== undefined) ? (num + ' ' + icon + ' ' + lotNoms[i] + ' : ' + temp + '°C') : null;
-          }).filter(Boolean);
-        } catch (e) {
-          return [];
-        }
-      }
       try {
-        const resultatsLots = await Promise.all(lots.map(chargerLot));
-        const morceaux = resultatsLots.flat();
-        if (morceaux.length === 0) {
-          el.innerHTML = '<span>🌡️ Météo non disponible</span>';
-          return;
-        }
-        const texte = morceaux.join(' &nbsp;|&nbsp; ');
-        el.innerHTML = '<div class="bandeau-track"><span>' + texte + '</span><span>' + texte + '</span></div>';
-      } catch (e) {
-        el.innerHTML = '<span>🌡️ Météo non disponible</span>';
-      }
-    }
-          }).filter(Boolean);
-        } catch (e) {
-          return [];
-        }
-      }
-
-      try {
-        const resultatsLots = await Promise.all(lots.map(chargerLot));
-        const morceaux = resultatsLots.flat();
-        if (morceaux.length === 0) {
-          el.innerHTML = '<span>🌡️ Météo non disponible</span>';
-          return;
-        }
-        const texte = morceaux.join(' &nbsp;|&nbsp; ');
-        el.innerHTML = '<div class="bandeau-track"><span>' + texte + '</span><span>' + texte + '</span></div>';
-      } catch (e) {
-        el.innerHTML = '<span>🌡️ Météo non disponible</span>';
+        const controller = new AbortController();
+        setTimeout(() => controller.abort(), 5000);
+        const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=36.75&longitude=3.06&current_weather=true', {signal: controller.signal});
+        const d = await r.json();
+        const temp = d.current_weather?.temperature || '?';
+        const vent = d.current_weather?.windspeed || '?';
+        const codes = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',51:'🌦️',61:'🌧️',71:'❄️',80:'🌧️',95:'⛈️'};
+        const icon = codes[d.current_weather?.weathercode] || '🌡️';
+        const texte = icon + ' Alger : ' + temp + '°C — Vent ' + vent + ' km/h &nbsp;|&nbsp; ' + icon + ' Alger : ' + temp + '°C — Vent ' + vent + ' km/h';
+        el.innerHTML = '<div class="bandeau-track"><span>' + texte + '</span></div>';
+      } catch(e) {
+        el.innerHTML = '<div class="bandeau-track"><span>🌡️ Alger — météo non disponible &nbsp;|&nbsp; 🌡️ Alger — météo non disponible</span></div>';
       }
     }
 
-    // DEVISES avec timeout et fallback
+    // DEVISES
     async function chargerDevises() {
       const el = document.getElementById('bandeauDevises');
       if (!el) return;
       try {
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 5000);
+        setTimeout(() => controller.abort(), 5000);
         const r = await fetch('https://api.exchangerate-api.com/v4/latest/EUR', {signal: controller.signal});
-        clearTimeout(timeout);
         const d = await r.json();
-        const dzd = d.rates?.DZD?.toFixed(2) || '~148';
-        const usd = d.rates?.USD?.toFixed(2) || '~1.08';
-        const gbp = d.rates?.GBP?.toFixed(2) || '~0.84';
-        const cad = d.rates?.CAD?.toFixed(2) || '~1.46';
-        const texte = '💱 1€ = ' + dzd + ' DZD &nbsp;|&nbsp; 1€ = ' + usd + ' USD &nbsp;|&nbsp; 1€ = ' + gbp + ' GBP &nbsp;|&nbsp; 1€ = ' + cad + ' CAD';
-        el.innerHTML = '<div class="bandeau-track"><span>' + texte + '</span><span>' + texte + '</span></div>';
+        const dzd = d.rates?.DZD?.toFixed(2) || '148';
+        const usd = d.rates?.USD?.toFixed(2) || '1.08';
+        const gbp = d.rates?.GBP?.toFixed(2) || '0.84';
+        const cad = d.rates?.CAD?.toFixed(2) || '1.46';
+        const texte = '💱 1€ = ' + dzd + ' DZD | 1€ = ' + usd + ' USD | 1€ = ' + gbp + ' GBP | 1€ = ' + cad + ' CAD';
+        el.innerHTML = '<div class="bandeau-track"><span>' + texte + ' &nbsp;&nbsp;&nbsp; ' + texte + '</span></div>';
       } catch(e) {
-        const texte = '💱 1€ ≈ 148 DZD &nbsp;|&nbsp; 1€ ≈ 1.08 USD &nbsp;|&nbsp; 1€ ≈ 0.84 GBP';
-        el.innerHTML = '<div class="bandeau-track"><span>' + texte + '</span><span>' + texte + '</span></div>';
+        el.innerHTML = '<div class="bandeau-track"><span>💱 1€ ≈ 148 DZD | 1€ ≈ 1.08 USD | 1€ ≈ 0.84 GBP</span></div>';
       }
     }
 
-    // WILAYAS_GPS déplacé en haut
-
-    async function afficherHorairesWilaya(nom) {
-      const panel = document.getElementById('horairePanel');
-      const contenu = document.getElementById('horaireContenu');
-      const coord = WILAYAS_GPS[nom];
-      if (!coord || !panel || !contenu) return;
-      panel.style.display = 'block';
-      contenu.innerHTML = '<span style="color:rgba(255,255,255,0.5);">Chargement horaires ' + nom + '...</span>';
-      try {
-        const url = 'https://api.aladhan.com/v1/timings?latitude=' + coord[0] + '&longitude=' + coord[1] + '&method=2';
-        const r = await fetch(url);
-        const d = await r.json();
-        const t = d.data.timings;
-        contenu.innerHTML =
-          '<div style="color:#4DD0E1;font-weight:bold;margin-bottom:8px;">🕌 ' + nom + '</div>' +
-          '<div style="display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:white;">' +
-          '<span>Fajr: ' + t.Fajr + '</span><span>Dhuhr: ' + t.Dhuhr + '</span>' +
-          '<span>Asr: ' + t.Asr + '</span><span>Maghrib: ' + t.Maghrib + '</span>' +
-          '<span>Isha: ' + t.Isha + '</span></div>';
-      } catch(e) {
-        contenu.innerHTML = '<span style="color:rgba(255,255,255,0.5);">Horaires indisponibles</span>';
-      }
-    }
-
+    // WILAYAS — affichage chips cliquables
     function chargerWilayas() {
       const el = document.getElementById('bandeauWilayas');
       if (!el) return;
-      const noms = Object.keys(WILAYAS_GPS);
-      el.innerHTML = noms.map(nom =>
-        '<span class="wilaya-chip" onclick="afficherHorairesWilaya(\'' + nom.replace(/'/g, "\\'") + '\')">' + nom + '</span>'
+      el.innerHTML = Object.keys(WILAYAS_GPS).map(w =>
+        '<a href="wilayas.html?w=' + encodeURIComponent(w) + '" style="display:inline-block;padding:4px 12px;border-radius:16px;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);font-size:12px;text-decoration:none;white-space:nowrap;margin:2px;">' + w + '</a>'
       ).join('');
     }
 
+    // ALERTES TRANSPORT
+    async function chargerAlertes() {
+      try {
+        const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+        const { getFirestore, collection, getDocs, query, where, orderBy } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        const cfg = { apiKey:"AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ", projectId:"dzdiaspora-7260a", appId:"1:223003656315:web:100de190b8b5e74ddae2de" };
+        const app = getApps().length ? getApps()[0] : initializeApp(cfg);
+        const db = getFirestore(app);
+        const snap = await getDocs(query(collection(db, 'alertes_transport'), where('actif','==',true), orderBy('date','desc')));
+        if (!snap.empty) {
+          const a = snap.docs[0].data();
+          const el = document.getElementById('bandeauAlertes');
+          const elTxt = document.getElementById('bandeauAlertesTexte');
+          if (el && elTxt) {
+            elTxt.textContent = '🚨 ' + a.titre;
+            el.style.display = 'block';
+          }
+        }
+      } catch(e) {}
+    }
+
+    window.voirAlertes = function() { window.location.href = 'transport.html'; };
+
+    // Lancement
     chargerMeteo();
     chargerDevises();
     chargerWilayas();
-    setTimeout(chargerMeteo, 30 * 60 * 1000);
-    setTimeout(chargerDevises, 60 * 60 * 1000);
+    chargerAlertes();
+    setInterval(chargerMeteo, 30 * 60 * 1000);
+    setInterval(chargerDevises, 60 * 60 * 1000);
+    setInterval(chargerAlertes, 5 * 60 * 1000);
   </script>
 </body>
 </html>
