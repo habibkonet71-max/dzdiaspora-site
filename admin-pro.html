@@ -21,6 +21,7 @@
     .admin-lien { padding:8px 14px; border-radius:10px; font-size:12px; font-weight:700; text-decoration:none; }
     .pin-ecran { position:fixed; top:0; left:0; width:100%; height:100%; background:#0D1117; z-index:9999; display:flex; align-items:center; justify-content:center; }
   </style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
   <header>
@@ -227,11 +228,28 @@
             <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
               <button class="btn-ok" onclick="validerDemandePro('${d.id}')">✅ Valider et publier</button>
               <button class="btn-non" onclick="refuserDemandePro('${d.id}')">❌ Refuser</button>
+              <button onclick="envoyerEmailAcces('${p.email||''}','${p.prenom||''} ${p.nom||''}')" style="background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">📧 Email accès</button>
             </div>
           </div>`;
         }).join('');
       } catch(e) { container.innerHTML = '<p style="color:#ff6b6b;">Erreur: '+e.message+'</p>'; }
     }
+
+    window.envoyerEmailAcces = async function(email, nom) {
+      if (!email) { alert('Email manquant !'); return; }
+      try {
+        emailjs.init('lj-ndl5zGAWGWkJqc');
+        await emailjs.send('service_pv5uh7i', 'template_e12y5yv', {
+          pro_nom: nom || 'Professionnel',
+          pro_email: email,
+          secteur: 'Accès validé — Espace Pro DZ Diaspora',
+          wilaya: '',
+          urgent: 'Non',
+          description: 'Votre inscription professionnelle a ete validee par notre equipe. Connectez-vous sur : https://habibkonet71-max.github.io/dzdiaspora-site/espace-pro.html avec votre email et mot de passe. Bienvenue sur DZ Diaspora !',
+        });
+        alert('✅ Email envoye a ' + email + ' !');
+      } catch(e) { alert('Erreur: ' + e.text || e.message); }
+    };
 
     window.validerDemandePro = async function(id) {
       try {
