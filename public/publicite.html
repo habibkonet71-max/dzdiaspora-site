@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Espace Publicitaire — DZ Diaspora</title>
+  <meta name="description" content="Faites la promotion de votre activite aupres de la diaspora algerienne — banniere, article sponsorise, video, fiche mise en avant.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .format-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px; margin:30px 0; }
+    .format-carte { background:#1C2333; border-radius:16px; padding:24px; border:1px solid rgba(255,255,255,0.08); }
+    .format-carte .badge { display:inline-block; padding:4px 14px; border-radius:20px; font-size:11px; font-weight:700; margin-bottom:14px; }
+    .format-carte h3 { color:white; font-size:18px; margin-bottom:10px; }
+    .format-carte p { color:rgba(255,255,255,0.55); font-size:13px; line-height:1.7; margin-bottom:14px; }
+    .format-carte ul { list-style:none; padding:0; margin:0 0 16px; }
+    .format-carte ul li { color:rgba(255,255,255,0.7); font-size:13px; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
+    .format-carte ul li::before { content:"✅ "; }
+    .devis-badge { background:rgba(77,208,225,0.1); border:1px solid #4DD0E1; color:#4DD0E1; padding:8px 16px; border-radius:20px; font-size:13px; font-weight:700; display:inline-block; }
+    .apercu { background:#0D1117; border:1px dashed rgba(255,255,255,0.15); border-radius:10px; padding:12px; margin-bottom:14px; text-align:center; }
+    .apercu-banniere { background:rgba(77,208,225,0.08); border:1px dashed #4DD0E1; height:50px; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#4DD0E1; font-size:11px; }
+    .apercu-carre { background:rgba(168,224,99,0.08); border:1px dashed #A8E063; height:80px; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#A8E063; font-size:11px; }
+    .apercu-video { background:rgba(214,16,52,0.08); border:1px dashed #D21034; height:80px; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#ff6b6b; font-size:20px; }
+    .form-contact input, .form-contact select, .form-contact textarea { width:100%; padding:12px; border-radius:10px; background:#1C2333; color:white; border:1px solid rgba(255,255,255,0.15); font-size:14px; font-family:inherit; box-sizing:border-box; margin-bottom:12px; }
+    .form-contact textarea { min-height:100px; resize:vertical; }
+    .btn-envoyer { width:100%; padding:14px; background:#4DD0E1; color:#0D1117; border:none; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; }
+    .chiffres { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; margin:30px 0; }
+    .chiffre-box { background:#1C2333; border-radius:12px; padding:16px; text-align:center; border:1px solid rgba(255,255,255,0.06); }
+    .chiffre-nb { color:#4DD0E1; font-size:28px; font-weight:900; }
+    .chiffre-label { color:rgba(255,255,255,0.5); font-size:11px; margin-top:4px; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">🇩🇿 DZ Diaspora</a>
+    <nav class="nav-desktop">
+      <a href="index.html">🏠 Accueil</a>
+      <a href="pub.html">Nos offres</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div id="auth-btn-header" style="margin-left:6px"></div>
+    <button class="menu-btn" id="menuBtn">⋮</button>
+  </header>
+  <div class="menu-dropdown" id="menuDropdown">
+    <a href="index.html">🏠 Accueil</a>
+    <a href="pub.html">Nos offres</a>
+    <a href="contact.html">Contact</a>
+  </div>
+
+  <main class="page-content">
+    <h1>📣 Espace Publicitaire</h1>
+    <div style="text-align:center;margin:16px 0;"><a href="commander-pub.html" style="background:#4DD0E1;color:#0D1117;padding:14px 28px;border-radius:25px;font-weight:700;text-decoration:none;font-size:15px;">📣 Commander un espace maintenant</a></div>
+    <p class="intro">Touchez directement la diaspora algérienne en France, Belgique, Canada et dans le monde entier. DZ Diaspora vous offre plusieurs formats pour promouvoir votre activité auprès d'une communauté qualifiée et engagée.</p>
+
+    <!-- CHIFFRES CLES -->
+    <section class="bloc">
+      <h2>Notre audience</h2>
+      <div class="chiffres">
+        <div class="chiffre-box">
+          <div class="chiffre-nb">7M+</div>
+          <div class="chiffre-label">Algériens à l'étranger</div>
+        </div>
+        <div class="chiffre-box">
+          <div class="chiffre-nb">69</div>
+          <div class="chiffre-label">Wilayas couvertes</div>
+        </div>
+        <div class="chiffre-box">
+          <div class="chiffre-nb">4</div>
+          <div class="chiffre-label">Langues</div>
+        </div>
+        <div class="chiffre-box">
+          <div class="chiffre-nb">📱</div>
+          <div class="chiffre-label">Site + App Android</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORMATS -->
+    <section class="bloc">
+      <h2>Nos formats publicitaires</h2>
+      <div class="format-grid">
+
+        <!-- BANNIERE -->
+        <div class="format-carte">
+          <span class="badge" style="background:rgba(77,208,225,0.1);color:#4DD0E1;">🖼️ Bannière Display</span>
+          <div class="apercu">
+            <div class="apercu-banniere">Votre bannière ici — 728x90px</div>
+          </div>
+          <h3>Bannière Display</h3>
+          <p>Votre logo ou visuel affiché en haut de page sur l'ensemble du site et de l'application mobile. Format horizontal ou carré.</p>
+          <ul>
+            <li>Visible sur toutes les pages</li>
+            <li>Site web + App Android</li>
+            <li>Image ou GIF animé</li>
+            <li>Lien cliquable vers votre site</li>
+            <li>Statistiques de vues</li>
+          </ul>
+          <span class="devis-badge">Tarif sur devis</span>
+          <a href="commander-pub.html" style="display:block;margin-top:10px;text-align:center;padding:10px;background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;">📣 Commander cet espace</a>
+        </div>
+
+        <!-- ARTICLE SPONSORISE -->
+        <div class="format-carte">
+          <span class="badge" style="background:rgba(168,224,99,0.1);color:#A8E063;">📰 Article Sponsorisé</span>
+          <div class="apercu">
+            <div class="apercu-carre">📰 Article "Partenaire DZ Diaspora"</div>
+          </div>
+          <h3>Article Sponsorisé</h3>
+          <p>Un article dédié à votre activité, rédigé et publié sur DZ Diaspora. Visible dans la section actualités et dans l'application.</p>
+          <ul>
+            <li>Article rédigé professionnellement</li>
+            <li>Mention "Partenaire DZ Diaspora"</li>
+            <li>Reste en ligne indéfiniment</li>
+            <li>Partageable sur les réseaux sociaux</li>
+            <li>Photos et liens inclus</li>
+          </ul>
+          <span class="devis-badge">Tarif sur devis</span>
+          <a href="commander-pub.html" style="display:block;margin-top:10px;text-align:center;padding:10px;background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;">📣 Commander cet espace</a>
+        </div>
+
+        <!-- VIDEO -->
+        <div class="format-carte">
+          <span class="badge" style="background:rgba(214,16,52,0.1);color:#ff6b6b;">🎬 Vidéo Sponsorisée</span>
+          <div class="apercu">
+            <div class="apercu-video">▶️</div>
+          </div>
+          <h3>Vidéo Sponsorisée</h3>
+          <p>Votre courte vidéo promotionnelle (15 à 60 secondes) intégrée dans le fil d'actualités de la plateforme.</p>
+          <ul>
+            <li>Vidéo 15 à 60 secondes</li>
+            <li>Intégrée dans le fil presse</li>
+            <li>Visible site + app</li>
+            <li>Lien vers votre site ou WhatsApp</li>
+            <li>Très fort taux d'engagement</li>
+          </ul>
+          <span class="devis-badge">Tarif sur devis</span>
+          <a href="commander-pub.html" style="display:block;margin-top:10px;text-align:center;padding:10px;background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;">📣 Commander cet espace</a>
+        </div>
+
+        <!-- FICHE MISE EN AVANT -->
+        <div class="format-carte">
+          <span class="badge" style="background:rgba(255,193,7,0.1);color:#FFC107;">⭐ Fiche Mise en Avant</span>
+          <div class="apercu">
+            <div style="background:#1C2333;border:1px solid #FFC107;border-radius:8px;padding:10px;text-align:left;">
+              <span style="color:#FFC107;font-size:10px;font-weight:700;">⭐ PARTENAIRE OFFICIEL</span>
+              <div style="color:white;font-size:12px;margin-top:4px;">Votre cabinet / entreprise</div>
+            </div>
+          </div>
+          <h3>Fiche Mise en Avant</h3>
+          <p>Votre fiche professionnelle ou annonce mise en tête de liste avec badge "Partenaire Officiel DZ Diaspora".</p>
+          <ul>
+            <li>Badge Partenaire Officiel ⭐</li>
+            <li>En tête de l'annuaire</li>
+            <li>Mise en avant dans les recherches</li>
+            <li>Notification aux utilisateurs</li>
+            <li>Disponible sur 69 wilayas</li>
+          </ul>
+          <span class="devis-badge">Tarif sur devis</span>
+          <a href="commander-pub.html" style="display:block;margin-top:10px;text-align:center;padding:10px;background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;">📣 Commander cet espace</a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- POURQUOI -->
+    <section class="bloc">
+      <h2>Pourquoi communiquer sur DZ Diaspora ?</h2>
+      <div class="grid-cartes">
+        <div class="carte">
+          <h3>🎯 Audience ciblée</h3>
+          <p>La diaspora algérienne — une communauté qualifiée, active et avec un fort pouvoir d'achat, difficile à toucher sur les médias classiques.</p>
+        </div>
+        <div class="carte">
+          <h3>🌍 Portée mondiale</h3>
+          <p>France, Belgique, Canada, Qatar, Australie — votre message atteint les Algériens partout dans le monde.</p>
+        </div>
+        <div class="carte">
+          <h3>📱 Site + Application</h3>
+          <p>Double visibilité : votre publicité apparaît sur le site web ET sur l'application mobile Android.</p>
+        </div>
+        <div class="carte">
+          <h3>💬 4 Langues</h3>
+          <p>Votre message diffusé en français, arabe, anglais et mandarin pour toucher l'ensemble de la communauté.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="bloc">
+      <h2>📩 Demander un devis</h2>
+      <p style="color:rgba(255,255,255,0.5);font-size:13px;margin-bottom:20px;">Remplissez ce formulaire et nous vous contactons sous 48h avec une proposition personnalisée.</p>
+
+      <div id="msg-succes" style="display:none;background:rgba(168,224,99,0.1);border:1px solid rgba(168,224,99,0.4);border-radius:10px;padding:14px;text-align:center;color:#A8E063;margin-bottom:16px;">
+        ✅ Votre demande a été envoyée ! Nous vous répondons sous 48h.
+      </div>
+
+      <div class="form-contact">
+        <input type="text" id="pub-nom" placeholder="Votre nom / entreprise *">
+        <input type="email" id="pub-email" placeholder="Email *">
+        <input type="tel" id="pub-tel" placeholder="Téléphone / WhatsApp">
+        <select id="pub-format">
+          <option value="">-- Format publicitaire souhaité --</option>
+          <option value="banniere">🖼️ Bannière Display</option>
+          <option value="article">📰 Article Sponsorisé</option>
+          <option value="video">🎬 Vidéo Sponsorisée</option>
+          <option value="fiche">⭐ Fiche Mise en Avant</option>
+          <option value="plusieurs">Plusieurs formats</option>
+          <option value="autre">Autre / Je ne sais pas encore</option>
+        </select>
+        <select id="pub-budget">
+          <option value="">-- Budget mensuel envisagé --</option>
+          <option value="moins100">Moins de 100€</option>
+          <option value="100-300">100€ à 300€</option>
+          <option value="300-500">300€ à 500€</option>
+          <option value="500plus">Plus de 500€</option>
+          <option value="dzd">Paiement en DZD (Algérie)</option>
+        </select>
+        <textarea id="pub-message" placeholder="Décrivez votre activité et vos objectifs publicitaires..."></textarea>
+        <button class="btn-envoyer" onclick="envoyerDevis()">📩 Envoyer ma demande de devis</button>
+      </div>
+
+      <!-- CONTACT DIRECT -->
+      <div style="margin-top:20px;background:rgba(0,98,51,0.08);border:1px solid rgba(168,224,99,0.3);border-radius:12px;padding:16px;text-align:center;">
+        <p style="color:#A8E063;font-weight:700;margin-bottom:6px;">🇩🇿 Annonceurs en Algérie</p>
+        <p style="color:rgba(255,255,255,0.6);font-size:13px;">Contactez directement notre commercial :</p>
+        <a href="tel:+213799872890" style="color:#A8E063;font-size:18px;font-weight:900;text-decoration:none;">+213 (7) 99 87 28 90</a>
+        <p style="color:rgba(255,255,255,0.4);font-size:11px;margin-top:4px;">Paiement par virement bancaire DZD accepté</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>DZ Diaspora — Tous droits réservés</p>
+    <p><a href="cgu.html">CGU</a> · <a href="contact.html">Contact</a> · <a href="pub.html">Nos offres</a></p>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    const cfg = { apiKey:"AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ", appId:"1:223003656315:web:100de190b8b5e74ddae2de", messagingSenderId:"223003656315", projectId:"dzdiaspora-7260a", authDomain:"dzdiaspora-7260a.firebaseapp.com", storageBucket:"dzdiaspora-7260a.firebasestorage.app" };
+    const app = initializeApp(cfg);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    onAuthStateChanged(auth, (user) => {
+      const btn = document.getElementById('auth-btn-header');
+      if (btn) btn.innerHTML = user ? '<button onclick="window.signOutUser()" style="background:rgba(214,16,52,0.15);border:1px solid #D61034;color:#ff6b6b;padding:5px 12px;border-radius:14px;font-size:12px;cursor:pointer;font-weight:bold;">🚪 '+user.email.split('@')[0]+'</button>' : '<a href="connexion.html" style="background:rgba(77,208,225,0.15);border:1px solid #4DD0E1;color:#4DD0E1;padding:5px 12px;border-radius:14px;font-size:12px;font-weight:bold;text-decoration:none;">👤 Connexion</a>';
+    });
+    window.signOutUser = async () => { await signOut(auth); location.reload(); };
+    document.getElementById('menuBtn')?.addEventListener('click', () => document.getElementById('menuDropdown')?.classList.toggle('open'));
+    window.envoyerDevis = async function() {
+      const nom = document.getElementById('pub-nom').value.trim();
+      const email = document.getElementById('pub-email').value.trim();
+      if (!nom || !email) { alert('Veuillez renseigner votre nom et email.'); return; }
+      try {
+        await addDoc(collection(db, 'demandes_pub'), {
+          nom, email,
+          tel: document.getElementById('pub-tel').value.trim(),
+          format: document.getElementById('pub-format').value,
+          budget: document.getElementById('pub-budget').value,
+          message: document.getElementById('pub-message').value.trim(),
+          date: Timestamp.now(),
+          statut: 'nouveau'
+        });
+        document.getElementById('msg-succes').style.display = 'block';
+        window.scrollTo(0,0);
+      } catch(e) { alert('Erreur. Réessayez.'); }
+    };
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

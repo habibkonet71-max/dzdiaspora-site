@@ -403,7 +403,7 @@
   </script>
   <script>
     // METEO ALGER avec timeout
- async function chargerMeteo() {
+    async function chargerMeteo() {
       const el = document.getElementById('bandeauMeteo');
       if (!el) return;
       const noms = Object.keys(WILAYAS_GPS);
@@ -413,6 +413,7 @@
         lots.push(noms.slice(i, i + TAILLE_LOT));
       }
       const codes = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',61:'🌧️',71:'❄️',80:'🌧️',95:'⛈️'};
+
       async function chargerLot(lotNoms) {
         try {
           const lats = lotNoms.map(n => WILAYAS_GPS[n][0]).join(',');
@@ -427,26 +428,7 @@
           return resultats.map((res, i) => {
             const temp = res.current_weather?.temperature;
             const icon = codes[res.current_weather?.weathercode || 0] || '🌡️';
-            const num = WILAYAS_NUM[lotNoms[i]] || '';
-            return (temp !== undefined) ? (num + ' ' + icon + ' ' + lotNoms[i] + ' : ' + temp + '°C') : null;
-          }).filter(Boolean);
-        } catch (e) {
-          return [];
-        }
-      }
-      try {
-        const resultatsLots = await Promise.all(lots.map(chargerLot));
-        const morceaux = resultatsLots.flat();
-        if (morceaux.length === 0) {
-          el.innerHTML = '<span>🌡️ Météo non disponible</span>';
-          return;
-        }
-        const texte = morceaux.join(' &nbsp;|&nbsp; ');
-        el.innerHTML = '<div class="bandeau-track"><span>' + texte + '</span><span>' + texte + '</span></div>';
-      } catch (e) {
-        el.innerHTML = '<span>🌡️ Météo non disponible</span>';
-      }
-    }
+            return (temp !== undefined) ? (icon + ' ' + lotNoms[i] + ' : ' + temp + '°C') : null;
           }).filter(Boolean);
         } catch (e) {
           return [];

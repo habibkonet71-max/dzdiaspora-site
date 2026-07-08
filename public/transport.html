@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQC5E54Z71"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZQC5E54Z71');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transport Algerie — Vols, ferries, taxi et fret diaspora</title>
+    <meta name="keywords" content="vols Alger Paris temps reel, ferries Algerie Marseille, Air Algerie reservation, covoiturage Algerie France">
+  <meta name="description" content="Vols Air Algerie et autres compagnies en temps reel, lignes maritimes, taxis VTC et envoi de colis entre l Algerie et l etranger.">
+  <meta property="og:title" content="Transport Algerie — DZ Diaspora">
+  <meta property="og:description" content="Vols en temps reel, ferries, taxi et fret entre l Algerie et l etranger.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://habibkonet71-max.github.io/dzdiaspora-site/transport.html">
+  <link rel="canonical" href="https://habibkonet71-max.github.io/dzdiaspora-site/transport.html">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://api.exchangerate-api.com">
+  <link rel="dns-prefetch" href="https://api.aladhan.com">
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">DZ Diaspora</a>
+    <nav class="nav-desktop">
+      <a href="index.html">🏠 Accueil</a>
+      <a href="securite.html">Securite</a>
+      <a href="sante.html">Sante</a>
+      <a href="finance.html">Finance</a>
+      <a href="transport.html" class="active">Transport</a>
+      <a href="annonces.html">Annonces</a>
+    </nav>
+    <div class="lang-btns">
+      <button class="lang-btn active notranslate" data-lang="fr" onclick="changerLangueSite('fr')">FR</button>
+      <button class="lang-btn notranslate" data-lang="en" onclick="changerLangueSite('en')">EN</button>
+      <button class="lang-btn notranslate" data-lang="zh" onclick="changerLangueSite('zh')">中文</button>
+      <button class="lang-btn notranslate" data-lang="ar" onclick="changerLangueSite('ar')">عربي</button>
+    </div>
+    <div id="auth-btn-header" style="margin-left:6px"></div>
+    <button class="menu-btn" id="menuBtn">⋮</button>
+  </header>
+
+  <div class="menu-dropdown" id="menuDropdown">
+    <a href="securite.html">Securite</a>
+    <a href="sante.html">Sante</a>
+    <a href="finance.html">Finance</a>
+    <a href="justice.html">Justice</a>
+    <a href="immobilier.html">Immobilier</a>
+    <a href="administratif.html">Administratif</a>
+    <a href="wilayas.html">Wilayas</a>
+    <a href="transport.html">Transport</a>
+    <a href="annonces.html">Annonces</a>
+    <a href="abonnement.html">Devenir Pro</a>
+    <a href="contact.html">Contact</a>
+    <a href="cgu.html">CGU et mentions legales</a>
+  </div>
+
+  <main class="page-content">
+    <h1>✈️ Transport</h1>
+    <p class="intro">Vols entre l Algerie et le reste du monde, horaires mis a jour automatiquement.</p>
+
+    <section class="bloc">
+      <h2>Vols en temps reel</h2>
+      <div id="volsContainer">
+        <p style="color: rgba(255,255,255,0.4); text-align: center; padding: 20px 0;">Chargement des vols...</p>
+      </div>
+    </section>
+
+    <section class="bloc">
+    <section class="bloc">
+      <h2>✈️ Sites officiels des compagnies aeriennes</h2>
+      <div class="grid-cartes">
+        <a href="https://airalgerie.dz" target="_blank" class="carte carte-lien">
+          <h3>Air Algerie</h3>
+          <p>Compagnie nationale algerienne — reservation et enregistrement en ligne.</p>
+        </a>
+        <a href="https://wwws.airfrance.dz" target="_blank" class="carte carte-lien">
+          <h3>Air France</h3>
+          <p>Vols depuis Paris, Marseille, Nice vers Alger et autres villes algeriennes.</p>
+        </a>
+        <a href="https://www.transavia.com" target="_blank" class="carte carte-lien">
+          <h3>Transavia</h3>
+          <p>Low cost — Alger, Oran, Constantine, Tlemcen depuis plusieurs villes francaises.</p>
+        </a>
+        <a href="https://www.vueling.com" target="_blank" class="carte carte-lien">
+          <h3>Vueling</h3>
+          <p>Connexions vers l Espagne au depart de plusieurs villes algeriennes.</p>
+        </a>
+        <a href="https://www.turkishairlines.com" target="_blank" class="carte carte-lien">
+          <h3>Turkish Airlines</h3>
+          <p>Correspondances internationales via Istanbul.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="bloc">
+      <h2>⛴️ Lignes maritimes</h2>
+      <div class="grid-cartes">
+        <a href="https://www.algerieferries.dz" target="_blank" class="carte carte-lien">
+          <h3>Algerie Ferries</h3>
+          <p>Liaisons Alger-Marseille, Oran-Marseille, Bejaia-Marseille.</p>
+        </a>
+        <a href="https://www.corsicalinea.com" target="_blank" class="carte carte-lien">
+          <h3>Corsica Linea</h3>
+          <p>Traversees avec possibilite de transport de vehicule.</p>
+        </a>
+        <a href="https://www.gnv.it" target="_blank" class="carte carte-lien">
+          <h3>GNV</h3>
+          <p>Alternative au depart de Sete vers les ports algeriens.</p>
+        </a>
+        <a href="https://www.balearia.com" target="_blank" class="carte carte-lien">
+          <h3>Balearia</h3>
+          <p>Liaisons au depart d Alicante vers l Algerie.</p>
+        </a>
+        <a href="https://www.aferry.fr" target="_blank" class="carte carte-lien">
+          <h3>AFerry (comparateur)</h3>
+          <p>Compare tous les ferries vers l Algerie pour trouver le meilleur tarif.</p>
+        </a>
+        <a href="https://www.booking.com" target="_blank" class="carte carte-lien">
+          <h3>Booking.com</h3>
+          <p>Hebergements et parfois trajets combines pour votre sejour en Algerie.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="bloc">
+      <h2>🚖 Taxi et VTC</h2>
+      <div class="grid-cartes">
+        <a href="https://www.yassir.com" target="_blank" class="carte carte-lien">
+          <h3>Yassir</h3>
+          <p>Application VTC algerienne, disponible dans la plupart des grandes villes. Reservation a l avance possible.</p>
+        </a>
+        <a href="https://temtem.com.dz" target="_blank" class="carte carte-lien">
+          <h3>Temtem</h3>
+          <p>VTC a Alger, Oran et Constantine. Prix fixe annonce avant la course.</p>
+        </a>
+        <a href="https://www.coursadz.com" target="_blank" class="carte carte-lien">
+          <h3>Coursa</h3>
+          <p>VTC 100% algerien, Alger et environs (Tipaza, Blida, Boumerdes) et Oran.</p>
+        </a>
+        <div class="carte">
+          <h3>Taxis aeroport</h3>
+          <p>Des taxis officiels sont disponibles a la sortie de chaque aeroport. Demandez le prix avant de monter — pas de compteur systematique.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bloc">
+      <h2>📦 Envoi de colis et fret</h2>
+      <div class="grid-cartes">
+        <a href="https://www.chronopost.fr/fr/particulier/envoyer-un-colis/algerie" target="_blank" class="carte carte-lien">
+          <h3>Chronopost</h3>
+          <p>Service postal francais, suivi en ligne. Delais 10-21 jours, tarifs a partir de 60-90€ pour 5kg.</p>
+        </a>
+        <a href="https://www.dhl.com" target="_blank" class="carte carte-lien">
+          <h3>DHL Express</h3>
+          <p>Le plus rapide (3-5 jours) mais le plus cher (80-150€). Gere le dedouanement, suivi temps reel.</p>
+        </a>
+        <a href="https://www.upela.com/fr/envoi-colis-algerie-85.html" target="_blank" class="carte carte-lien">
+          <h3>Upela (comparateur)</h3>
+          <p>Compare plusieurs transporteurs pour trouver le meilleur tarif vers l Algerie.</p>
+        </a>
+        <div class="carte">
+          <h3>Transporteurs specialises diaspora</h3>
+          <p>Groupage (TransAlgerie, Dz Fret...) : tarifs 2-3x moins chers (~5-8€/kg), livraison en point relais, delai 5-15 jours.</p>
+        </div>
+      </div>
+      <p style="color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 14px; font-style: italic;">
+        Pour les transporteurs specialises diaspora, verifiez les avis et demandez des references avant de confier un colis de valeur.
+      </p>
+    </section>
+
+    <section class="bloc">
+      <h2>Conseils pratiques</h2>
+      <ul class="liste-conseils">
+        <li>Verifiez la validite de votre passeport (minimum 6 mois avant expiration recommande)</li>
+        <li>Anticipez vos reservations en periode de vacances scolaires et de Ramadan</li>
+        <li>Conservez une copie numerique de vos documents de voyage</li>
+        <li>Verifiez les franchises bagages avant de partir pour eviter les surtaxes</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>DZ Diaspora — Tous droits reserves</p>
+    <p><a href="cgu.html">CGU</a> · <a href="contact.html">Contact</a></p>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ",
+      appId: "1:223003656315:web:100de190b8b5e74ddae2de",
+      messagingSenderId: "223003656315",
+      projectId: "dzdiaspora-7260a",
+      authDomain: "dzdiaspora-7260a.firebaseapp.com",
+      storageBucket: "dzdiaspora-7260a.firebasestorage.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const EMAILS_ADMIN = ["kourrak.habib@hotmail.com"];
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "connexion.html";
+        return;
+      }
+      const estAdmin = EMAILS_ADMIN.includes(user.email);
+      if (!user.emailVerified && !estAdmin) {
+        window.location.href = "connexion.html";
+      }
+    });
+
+    async function chargerVols() {
+      const container = document.getElementById("volsContainer");
+      try {
+        const snap = await getDocs(collection(db, "vols_cache"));
+
+        if (snap.empty) {
+          container.innerHTML = "<p style=\"color: rgba(255,255,255,0.4); text-align: center; padding: 20px 0;\">Aucun vol en cache pour le moment</p>";
+          return;
+        }
+
+        let html = "<div class=\"grid-cartes\">";
+        snap.forEach((doc) => {
+          const data = doc.data();
+          const vols = data.vols || [];
+          const liensCompagnies = {
+            'Air Algerie': 'https://www.airalgerie.dz',
+            'Air France': 'https://www.airfrance.fr',
+            'Transavia': 'https://www.transavia.com',
+            'Vueling': 'https://www.vueling.com',
+            'Turkish Airlines': 'https://www.turkishairlines.com',
+            'Tassili Airlines': 'https://www.tassiliairlines.dz',
+            'Corsair': 'https://www.corsair.fr',
+            'Tunisair': 'https://www.tunisair.com',
+            'Royal Air Maroc': 'https://www.royalairmaroc.com',
+          };
+          vols.slice(0, 4).forEach((vol) => {
+            const nomCompagnie = vol.airline?.name || doc.id;
+            const lienCompagnie = Object.entries(liensCompagnies).find(([k]) => nomCompagnie.includes(k))?.[1] || 'https://www.airalgerie.dz';
+            html += `
+              <a href="${lienCompagnie}" target="_blank" class="carte carte-lien" style="text-decoration:none;">
+                <h3>${nomCompagnie} ${vol.flight?.iata || ""} ↗</h3>
+                <p>${vol.departure?.airport || "?"} → ${vol.arrival?.airport || "?"}</p>
+                <p class="detail">Depart: ${vol.departure?.scheduled?.substring(11,16) || "?"} — Arrivee: ${vol.arrival?.scheduled?.substring(11,16) || "?"}</p>
+                <p class="detail">Statut: ${vol.flight_status || "inconnu"}</p>
+              </a>
+            `;
+          });
+        });
+        html += "</div>";
+        container.innerHTML = html;
+      } catch (e) {
+        container.innerHTML = "<p style=\"color: rgba(255,255,255,0.4); text-align: center; padding: 20px 0;\">Vols indisponibles pour le moment</p>";
+      }
+    }
+
+    chargerVols();
+  </script>
+  <script src="recherche.js"></script>
+  <script src="script.js"></script>
+  <script src="traduction.js"></script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  const firebaseConfig = {
+    apiKey: "AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ",
+    appId: "1:223003656315:web:100de190b8b5e74ddae2de",
+    messagingSenderId: "223003656315",
+    projectId: "dzdiaspora-7260a",
+    authDomain: "dzdiaspora-7260a.firebaseapp.com",
+    storageBucket: "dzdiaspora-7260a.firebasestorage.app"
+  };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  onAuthStateChanged(auth, (user) => {
+    const btn = document.getElementById('auth-btn-header');
+    if (!btn) return;
+    if (user) {
+      btn.innerHTML = `<button onclick="signOutUser()" style="background:rgba(214,16,52,0.15);border:1px solid #D61034;color:#ff6b6b;padding:5px 12px;border-radius:14px;font-size:12px;cursor:pointer;font-weight:bold;">🚪 ${user.email.split('@')[0]}</button>`;
+    } else {
+      btn.innerHTML = `<a href="connexion.html" style="background:rgba(77,208,225,0.15);border:1px solid #4DD0E1;color:#4DD0E1;padding:5px 12px;border-radius:14px;font-size:12px;cursor:pointer;font-weight:bold;text-decoration:none;">👤 Connexion</a>`;
+    }
+  });
+  window.signOutUser = async function() {
+    await signOut(auth);
+    window.location.href = 'connexion.html';
+  };
+</script>
+
+  <!-- Bouton signaler une erreur -->
+  <div id="btn-signaler-flottant" style="position:fixed;bottom:20px;right:20px;z-index:999;">
+    <a href="contact.html?sujet=Signalement" style="display:flex;align-items:center;gap:6px;background:rgba(28,35,51,0.95);border:1px solid rgba(255,100,100,0.4);color:#ff6b6b;padding:10px 14px;border-radius:25px;font-size:12px;font-weight:bold;text-decoration:none;box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+      🚩 Signaler une erreur
+    </a>
+  </div>
+</body>
+</html>

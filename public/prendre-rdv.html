@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prendre un rendez-vous — DZ Diaspora</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .pro-card { background:#1C2333; border-radius:14px; padding:16px; margin-bottom:20px; display:flex; gap:14px; align-items:center; border:1px solid rgba(77,208,225,0.2); }
+    .pro-avatar { width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,#006233,#4DD0E1); display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+    .pro-info h3 { color:white; font-size:16px; margin-bottom:4px; }
+    .pro-info p { color:rgba(255,255,255,0.5); font-size:13px; }
+    .badge-verifie { background:rgba(168,224,99,0.1); border:1px solid rgba(168,224,99,0.3); color:#A8E063; padding:3px 10px; border-radius:12px; font-size:10px; font-weight:700; display:inline-block; margin-top:4px; }
+    .etape { background:#1C2333; border-radius:14px; padding:20px; margin-bottom:14px; border:1px solid rgba(255,255,255,0.08); }
+    .etape-titre { color:#4DD0E1; font-size:14px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+    .form-group { margin-bottom:14px; }
+    .form-group label { display:block; color:rgba(255,255,255,0.7); font-size:12px; margin-bottom:6px; font-weight:600; }
+    .form-group input, .form-group select, .form-group textarea { width:100%; padding:11px; border-radius:10px; background:#0D1117; color:white; border:1px solid rgba(255,255,255,0.12); font-size:13px; font-family:inherit; box-sizing:border-box; }
+    .form-group textarea { min-height:80px; resize:vertical; }
+    .creneaux-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(80px,1fr)); gap:8px; margin-top:8px; }
+    .creneau { background:#0D1117; border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:8px; text-align:center; cursor:pointer; font-size:12px; color:rgba(255,255,255,0.7); }
+    .creneau:hover { border-color:#4DD0E1; color:#4DD0E1; }
+    .creneau.actif { background:rgba(77,208,225,0.1); border-color:#4DD0E1; color:#4DD0E1; font-weight:700; }
+    .creneau.indisponible { opacity:0.3; cursor:not-allowed; }
+    .btn-rdv { width:100%; padding:15px; background:#4DD0E1; color:#0D1117; border:none; border-radius:12px; font-size:15px; font-weight:700; cursor:pointer; margin-top:8px; }
+    .succes { display:none; background:rgba(168,224,99,0.1); border:1px solid rgba(168,224,99,0.4); border-radius:12px; padding:20px; text-align:center; color:#A8E063; margin-bottom:16px; }
+    .type-rdv-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .type-btn { background:#0D1117; border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:12px; text-align:center; cursor:pointer; }
+    .type-btn.actif { background:rgba(77,208,225,0.1); border-color:#4DD0E1; }
+    .type-btn .icon { font-size:22px; margin-bottom:4px; }
+    .type-btn .label { color:rgba(255,255,255,0.7); font-size:12px; font-weight:600; }
+  </style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">🇩🇿 DZ Diaspora</a>
+    <div id="auth-btn-header" style="margin-left:6px"></div>
+    <button class="menu-btn" id="menuBtn">⋮</button>
+  </header>
+
+  <main class="page-content">
+    <h1>📅 Prendre un rendez-vous</h1>
+
+    <!-- FICHE PRO -->
+    <div class="pro-card" id="ficheProRdv">
+      <div class="pro-avatar" id="proAvatar">👨‍⚕️</div>
+      <div class="pro-info">
+        <h3 id="proNom">Chargement...</h3>
+        <p id="proProfession"></p>
+        <p id="proWilaya" style="margin-top:2px;"></p>
+        <span class="badge-verifie">✅ Vérifié DZ Diaspora</span>
+      </div>
+    </div>
+
+    <div class="succes" id="msgSucces">
+      📅 Votre demande de rendez-vous a été envoyée !<br>
+      <span style="font-size:13px;color:rgba(255,255,255,0.6);">Le professionnel vous confirmera sous 24h par email ou téléphone.</span>
+    </div>
+
+    <!-- TYPE RDV -->
+    <div class="etape">
+      <div class="etape-titre">
+        <span style="background:#4DD0E1;color:#0D1117;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">1</span>
+        Type de rendez-vous
+      </div>
+      <div class="type-rdv-grid" id="typesRdv">
+        <div class="type-btn actif" onclick="choisirType('presentiel',this)">
+          <div class="icon">🏢</div>
+          <div class="label">En cabinet<br><span style="color:rgba(255,255,255,0.4);font-size:10px;">Présentiel</span></div>
+        </div>
+        <div class="type-btn" onclick="choisirType('visio',this)">
+          <div class="icon">💻</div>
+          <div class="label">Visioconférence<br><span style="color:rgba(255,255,255,0.4);font-size:10px;">À distance</span></div>
+        </div>
+        <div class="type-btn" onclick="choisirType('telephone',this)">
+          <div class="icon">📞</div>
+          <div class="label">Téléphone<br><span style="color:rgba(255,255,255,0.4);font-size:10px;">Appel</span></div>
+        </div>
+        <div class="type-btn" onclick="choisirType('whatsapp',this)">
+          <div class="icon">💬</div>
+          <div class="label">WhatsApp<br><span style="color:rgba(255,255,255,0.4);font-size:10px;">Message/Appel</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATE -->
+    <div class="etape">
+      <div class="etape-titre">
+        <span style="background:#4DD0E1;color:#0D1117;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">2</span>
+        Date souhaitée
+      </div>
+      <div class="form-group">
+        <label>Choisissez une date *</label>
+        <input type="date" id="rdv-date" min="" onchange="genererCreneaux()">
+      </div>
+
+      <!-- CRENEAUX -->
+      <div id="zone-creneaux" style="display:none;">
+        <label style="color:rgba(255,255,255,0.7);font-size:12px;font-weight:600;">Créneau horaire souhaité *</label>
+        <div class="creneaux-grid" id="creneauxGrid"></div>
+      </div>
+    </div>
+
+    <!-- MOTIF -->
+    <div class="etape">
+      <div class="etape-titre">
+        <span style="background:#4DD0E1;color:#0D1117;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">3</span>
+        Motif du rendez-vous
+      </div>
+      <div class="form-group">
+        <label>Objet de la consultation *</label>
+        <select id="rdv-motif">
+          <option value="">-- Sélectionnez --</option>
+          <option value="premier_contact">Premier contact / Renseignement</option>
+          <option value="consultation">Consultation payante</option>
+          <option value="suivi_dossier">Suivi de dossier</option>
+          <option value="urgence">Urgence</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Décrivez brièvement votre situation</label>
+        <textarea id="rdv-description" placeholder="Expliquez votre situation pour que le professionnel puisse se préparer..."></textarea>
+      </div>
+    </div>
+
+    <!-- COORDONNEES -->
+    <div class="etape">
+      <div class="etape-titre">
+        <span style="background:#4DD0E1;color:#0D1117;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">4</span>
+        Vos coordonnées
+      </div>
+      <div class="form-group">
+        <label>Nom complet *</label>
+        <input type="text" id="rdv-nom" placeholder="Votre nom et prénom">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" id="rdv-email" placeholder="votre@email.com">
+        </div>
+        <div class="form-group">
+          <label>Téléphone / WhatsApp</label>
+          <input type="tel" id="rdv-tel" placeholder="+33 6 XX XX XX XX">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Pays de résidence</label>
+        <select id="rdv-pays">
+          <option value="france">🇫🇷 France</option>
+          <option value="algerie">🇩🇿 Algérie</option>
+          <option value="belgique">🇧🇪 Belgique</option>
+          <option value="canada">🇨🇦 Canada</option>
+          <option value="autre">Autre pays</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn-rdv" onclick="envoyerRdv()">📅 Confirmer la demande de RDV</button>
+
+    <p style="color:rgba(255,255,255,0.3);font-size:11px;text-align:center;margin-top:10px;">
+      Le professionnel vous confirmera le rendez-vous sous 24h. Aucun paiement requis à ce stade.
+    </p>
+  </main>
+
+  <footer>
+    <p>DZ Diaspora — Tous droits réservés</p>
+    <p><a href="annuaire-pro.html">📖 Annuaire</a> · <a href="contact.html">Contact</a></p>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, doc, getDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const cfg = { apiKey:"AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ", appId:"1:223003656315:web:100de190b8b5e74ddae2de", messagingSenderId:"223003656315", projectId:"dzdiaspora-7260a", authDomain:"dzdiaspora-7260a.firebaseapp.com", storageBucket:"dzdiaspora-7260a.firebasestorage.app" };
+    const app = initializeApp(cfg);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Recuperer ID pro depuis URL
+    const params = new URLSearchParams(window.location.search);
+    const proId = params.get('pro');
+    window._proId = proId;
+    window._proData = null;
+
+    // Charger fiche pro
+    if (proId) {
+      getDoc(doc(db, 'professionnels', proId)).then(snap => {
+        if (snap.exists()) {
+          const p = snap.data();
+          window._proData = p;
+          const icons = { avocat:'⚖️', medecin:'🏥', medecin_spec:'🏥', notaire:'📜', pharmacien:'💊', dentiste:'🦷', psychologue:'🧠', comptable:'💼' };
+          document.getElementById('proAvatar').textContent = icons[p.profession] || '👨‍⚕️';
+          document.getElementById('proNom').textContent = (p.prenom || '') + ' ' + (p.nom || '');
+          document.getElementById('proProfession').textContent = p.profession + (p.specialite ? ' — ' + p.specialite : '');
+          document.getElementById('proWilaya').textContent = '📍 ' + (p.wilaya || '') + (p.adresse ? ' — ' + p.adresse : '');
+        }
+      });
+    }
+
+    // Auth
+    onAuthStateChanged(auth, (user) => {
+      const btn = document.getElementById('auth-btn-header');
+      if (btn) btn.innerHTML = user
+        ? '<button onclick="window.signOutUser()" style="background:rgba(214,16,52,0.15);border:1px solid #D61034;color:#ff6b6b;padding:5px 12px;border-radius:14px;font-size:12px;cursor:pointer;font-weight:bold;">🚪 '+user.email.split('@')[0]+'</button>'
+        : '<a href="connexion.html" style="background:rgba(77,208,225,0.15);border:1px solid #4DD0E1;color:#4DD0E1;padding:5px 12px;border-radius:14px;font-size:12px;font-weight:bold;text-decoration:none;">👤 Connexion</a>';
+      if (user) {
+        document.getElementById('rdv-email').value = user.email;
+      }
+    });
+    window.signOutUser = async () => { await signOut(auth); location.reload(); };
+
+    // Date minimum = aujourd'hui
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('rdv-date').min = today;
+
+    window.envoyerRdv = async function() {
+      const nom = document.getElementById('rdv-nom').value.trim();
+      const email = document.getElementById('rdv-email').value.trim();
+      const date = document.getElementById('rdv-date').value;
+      const motif = document.getElementById('rdv-motif').value;
+      if (!nom || !email || !date || !motif || !window._creneau) {
+        alert('Veuillez remplir tous les champs obligatoires et choisir un créneau.');
+        return;
+      }
+      try {
+        await addDoc(collection(db, 'rendez_vous'), {
+          pro_id: window._proId || '',
+          pro_nom: (window._proData?.prenom || '') + ' ' + (window._proData?.nom || ''),
+          pro_email: window._proData?.email || '',
+          pro_tel: window._proData?.telephone || '',
+          type: window._typeRdv || 'presentiel',
+          date,
+          creneau: window._creneau,
+          motif,
+          description: document.getElementById('rdv-description').value.trim(),
+          nom, email,
+          tel: document.getElementById('rdv-tel').value.trim(),
+          pays: document.getElementById('rdv-pays').value,
+          statut: 'en_attente',
+          date_demande: Timestamp.now(),
+        });
+        document.getElementById('msgSucces').style.display = 'block';
+        window.scrollTo(0, 0);
+
+        // Notifier le pro par email
+        try {
+          emailjs.init('lj-ndl5zGAWGWkJqc');
+          const proEmail = window._proData?.email;
+          const proNom = (window._proData?.prenom||'') + ' ' + (window._proData?.nom||'');
+          if (proEmail) {
+            await emailjs.send('service_pv5uh7i', 'template_e12y5yv', {
+              pro_nom: proNom,
+              pro_email: proEmail,
+              secteur: 'Rendez-vous',
+              wilaya: window._proData?.wilaya || '',
+              urgent: window._typeRdv === 'urgence' ? 'OUI' : 'Non',
+              description: 'Nouveau RDV de ' + nom + ' le ' + date + ' à ' + window._creneau + ' (' + window._typeRdv + ')\n\nMotif: ' + motif + '\nTéléphone: ' + document.getElementById('rdv-tel').value,
+            });
+          }
+        } catch(emailErr) { console.log('Email non envoyé:', emailErr); }
+      } catch(e) {
+        console.error(e);
+        alert('Erreur. Réessayez.');
+      }
+    };
+
+    document.getElementById('menuBtn')?.addEventListener('click', () => document.getElementById('menuDropdown')?.classList.toggle('open'));
+  </script>
+
+  <script>
+    window._typeRdv = 'presentiel';
+    window._creneau = null;
+
+    window.choisirType = function(type, el) {
+      document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('actif'));
+      el.classList.add('actif');
+      window._typeRdv = type;
+    };
+
+    window.genererCreneaux = function() {
+      const creneaux = ['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'];
+      const grid = document.getElementById('creneauxGrid');
+      grid.innerHTML = creneaux.map(h => `<div class="creneau" onclick="choisirCreneau('${h}',this)">${h}</div>`).join('');
+      document.getElementById('zone-creneaux').style.display = 'block';
+    };
+
+    window.choisirCreneau = function(h, el) {
+      document.querySelectorAll('.creneau').forEach(c => c.classList.remove('actif'));
+      el.classList.add('actif');
+      window._creneau = h;
+    };
+  </script>
+</body>
+</html>

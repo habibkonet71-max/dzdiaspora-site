@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DZ Diaspora — Portail de la diaspora algérienne</title>
+  <title>DZ Diaspora — Plateforme de référence de la diaspora algérienne</title>
   <meta name="description" content="Visibilité, annonces, annuaire pro, alertes transport — tout pour la diaspora algérienne.">
   <link rel="stylesheet" href="style.css">
   <style>
@@ -47,74 +47,17 @@
     <a href="index.html" class="logo">🇩🇿 DZ Diaspora</a>
     <nav class="nav-desktop">
       <a href="index.html">🏠 Accueil</a>
-      <a href="annuaire-pro.html">📖 Annuaire Pro</a>
+      <a href="annuaire-pro.html">📖 Annuaire</a>
       <a href="inscription-pro.html">👨‍⚕️ S inscrire</a>
-      <a href="annonces.html">📢 Annonces</a>
       <a href="contact.html">Contact</a>
     </nav>
-    <div id="auth-btn-header" style="margin-left:6px"></div>
     <button class="menu-btn" id="menuBtn">⋮</button>
   </header>
-  <div class="menu-dropdown" id="menuDropdown">
-    <a href="securite.html">Securite</a>
-    <a href="sante.html">Sante</a>
-    <a href="finance.html">Finance</a>
-    <a href="justice.html">Justice</a>
-    <a href="immobilier.html">Immobilier</a>
-    <a href="administratif.html">Administratif</a>
-    <a href="wilayas.html">Wilayas</a>
-    <a href="transport.html">Transport</a>
-    <a href="annonces.html">Annonces</a>
-    <a href="annuaire-pro.html">📖 Annuaire Pro</a>
-    <a href="inscription-pro.html">👨‍⚕️ Inscription Pro</a>
-    <a href="abonnement.html">Devenir Pro</a>
-    <a href="pub.html">🚀 Nos offres</a>
-    <a href="publicite.html">📣 Espace pub</a>
-    <a href="admin-pub.html" id="lien-admin-pub" style="display:none;color:#FFC107;">📣 Admin Pub</a>
-    <a href="contact.html">Contact</a>
-    <a href="mon-espace.html">👤 Mon Espace</a>
-    <a href="deposer-demande.html">📋 Déposer une demande</a>
-    <a href="espace-pro.html">👨‍⚕️ Espace Pro</a>
-    <a href="installer-app.html">📱 Telecharger l app</a>
-    <a href="admin-pro.html" id="lien-admin-menu" style="display:none;color:#A8E063;">🔐 Admin Pro</a>
-  </div>
 
   <main>
-
-  <!-- DEVISE CIRCULAIRE AUTOUR DU DRAPEAU -->
-  <section style="padding:30px 16px;text-align:center;">
-    <div style="position:relative;display:inline-block;width:280px;height:280px;">
-      <!-- DRAPEAU AU CENTRE -->
-      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:90px;z-index:2;filter:drop-shadow(0 4px 14px rgba(0,0,0,0.6));">🇩🇿</div>
-      <!-- DEVISE QUI TOURNE -->
-      <svg width="280" height="280" style="position:absolute;top:0;left:0;animation:tourner 35s linear infinite;">
-        <defs>
-          <path id="cercle-devise" d="M 140,140 m -115,0 a 115,115 0 1,1 230,0 a 115,115 0 1,1 -230,0"/><filter id="relief"><feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#004400" flood-opacity="0.9"/></filter>
-        </defs>
-        <text font-size="15" font-family="Georgia,serif" fill="#A8E063" font-weight="bold" letter-spacing="3" filter="url(#relief)">
-          <textPath href="#cercle-devise">بِالشَّعْبِ وَلِلشَّعْبِ • Par le peuple et pour le peuple • By the people for the people • للشعب ومن الشعب •</textPath>
-        </text>
-      </svg>
-      <!-- CERCLE DECORATIF -->
-      <svg width="220" height="220" style="position:absolute;top:0;left:0;">
-        <circle cx="110" cy="110" r="90" fill="none" stroke="rgba(0,98,51,0.2)" stroke-width="1"/>
-        <circle cx="110" cy="110" r="75" fill="none" stroke="rgba(0,98,51,0.1)" stroke-width="1"/>
-      </svg>
-    </div>
-  </section>
-  <style>
-    @keyframes tourner { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-  </style>
     <!-- HERO -->
     <section class="hero-pub">
-      <div style="display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:16px;">
-        <div style="font-size:56px;">🇩🇿</div>
-        <div style="text-align:center;">
-          <img src="emir-abdelkader.jpg" alt="Emir Abdelkader" 
-            style="width:90px;height:120px;object-fit:cover;object-position:top;border-radius:10px;border:3px solid rgba(255,255,255,0.3);box-shadow:0 4px 20px rgba(0,0,0,0.5);">
-          <div style="color:rgba(255,255,255,0.6);font-size:10px;margin-top:4px;">الأمير عبد القادر</div>
-        </div>
-      </div>
+      <div style="font-size:56px;margin-bottom:16px;">🇩🇿</div>
       <h1>Le portail N°1 de la<br>diaspora algérienne</h1>
       <p>Visibilité internationale, annonces immobilières, annuaire professionnel, alertes transport en temps réel — tout ce dont la communauté algérienne a besoin, en un seul endroit.</p>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
@@ -142,36 +85,6 @@
         </div>
       </div>
     </section>
-
-
-  <!-- BANDEAU DEVISE ALGERIENNE -->
-  <div style="background:#006233;padding:10px 0;overflow:hidden;position:relative;">
-    <div id="deviseDefilante" style="white-space:nowrap;display:inline-block;animation:defiler 20s linear infinite;">
-      <span style="color:white;font-size:14px;font-weight:700;letter-spacing:2px;padding:0 40px;">
-        بِالشَّعْبِ وَلِلشَّعْبِ &nbsp;—&nbsp; Par le peuple et pour le peuple &nbsp;—&nbsp; By the people and for the people &nbsp;—&nbsp; 为人民，靠人民 &nbsp;—&nbsp; بِالشَّعْبِ وَلِلشَّعْبِ &nbsp;—&nbsp; Par le peuple et pour le peuple &nbsp;—&nbsp; By the people and for the people &nbsp;—&nbsp; 为人民，靠人民
-      </span>
-    </div>
-  </div>
-  <style>
-    @keyframes defiler {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-  </style>
-    <!-- BANDEAUX -->
-    <div class="bandeaux-row">
-      <div class="bandeau" id="bandeauMeteo"><span>Chargement meteo...</span></div>
-      <div class="bandeau" id="bandeauDevises"><span>Chargement devises...</span></div>
-    </div>
-    <div style="overflow-x:auto;display:flex;gap:6px;padding:8px 12px;background:#0D1117;border-top:1px solid rgba(255,255,255,0.05);" id="bandeauWilayas">
-      <span style="color:rgba(255,255,255,0.3);font-size:11px;">Chargement wilayas...</span>
-    </div>
-    <div id="horairePanel" style="display:none;padding:12px 16px;background:#1C2333;border-top:1px solid rgba(77,208,225,0.3);">
-      <div id="horaireContenu"></div>
-    </div>
-    <div id="bandeauAlertes" style="display:none;background:#D21034;padding:10px 16px;text-align:center;cursor:pointer;" onclick="voirAlertes()">
-      <span id="bandeauAlertesTexte" style="color:white;font-size:13px;font-weight:700;"></span>
-    </div>
 
     <div style="max-width:900px;margin:0 auto;padding:0 16px;">
 
@@ -379,180 +292,9 @@
   </footer>
 
   <script>
-
-  </script>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    const cfg = { apiKey:"AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ", appId:"1:223003656315:web:100de190b8b5e74ddae2de", messagingSenderId:"223003656315", projectId:"dzdiaspora-7260a", authDomain:"dzdiaspora-7260a.firebaseapp.com", storageBucket:"dzdiaspora-7260a.firebasestorage.app" };
-    const app = initializeApp(cfg);
-    const auth = getAuth(app);
-    onAuthStateChanged(auth, (user) => {
-      const btn = document.getElementById('auth-btn-header');
-      if (btn) {
-        btn.innerHTML = user
-          ? '<button onclick="window.signOutUser()" style="background:rgba(214,16,52,0.15);border:1px solid #D61034;color:#ff6b6b;padding:5px 12px;border-radius:14px;font-size:12px;cursor:pointer;font-weight:bold;">🚪 '+user.email.split('@')[0]+'</button>'
-          : '<a href="connexion.html" style="background:rgba(77,208,225,0.15);border:1px solid #4DD0E1;color:#4DD0E1;padding:5px 12px;border-radius:14px;font-size:12px;font-weight:bold;text-decoration:none;">👤 Connexion</a>';
-      }
-      const lienAdmin = document.getElementById('lien-admin-menu');
-      if (lienAdmin) lienAdmin.style.display = (user && user.email === 'kourrak.habib@hotmail.com') ? 'block' : 'none';
+    document.getElementById('menuBtn').addEventListener('click', () => {
+      document.getElementById('menuDropdown')?.classList.toggle('open');
     });
-    window.signOutUser = async () => { await signOut(auth); location.reload(); };
-    document.getElementById('menuBtn')?.addEventListener('click', () => document.getElementById('menuDropdown')?.classList.toggle('open'));
-  </script>
-  <script>
-    // METEO ALGER avec timeout
- async function chargerMeteo() {
-      const el = document.getElementById('bandeauMeteo');
-      if (!el) return;
-      const noms = Object.keys(WILAYAS_GPS);
-      const TAILLE_LOT = 15;
-      const lots = [];
-      for (let i = 0; i < noms.length; i += TAILLE_LOT) {
-        lots.push(noms.slice(i, i + TAILLE_LOT));
-      }
-      const codes = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',61:'🌧️',71:'❄️',80:'🌧️',95:'⛈️'};
-      async function chargerLot(lotNoms) {
-        try {
-          const lats = lotNoms.map(n => WILAYAS_GPS[n][0]).join(',');
-          const lons = lotNoms.map(n => WILAYAS_GPS[n][1]).join(',');
-          const controller = new AbortController();
-          const timeout = setTimeout(() => controller.abort(), 8000);
-          const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lats + '&longitude=' + lons + '&current_weather=true&wind_speed_unit=kmh';
-          const r = await fetch(url, {signal: controller.signal});
-          clearTimeout(timeout);
-          const d = await r.json();
-          const resultats = Array.isArray(d) ? d : [d];
-          return resultats.map((res, i) => {
-            const temp = res.current_weather?.temperature;
-            const icon = codes[res.current_weather?.weathercode || 0] || '🌡️';
-            const num = WILAYAS_NUM[lotNoms[i]] || '';
-            return (temp !== undefined) ? (num + ' ' + icon + ' ' + lotNoms[i] + ' : ' + temp + '°C') : null;
-          }).filter(Boolean);
-        } catch (e) {
-          return [];
-        }
-      }
-      try {
-        const resultatsLots = await Promise.all(lots.map(chargerLot));
-        const morceaux = resultatsLots.flat();
-        if (morceaux.length === 0) {
-          el.innerHTML = '<span>🌡️ Météo non disponible</span>';
-          return;
-        }
-        const texte = morceaux.join(' &nbsp;|&nbsp; ');
-        el.innerHTML = '<div class="bandeau-track"><span>' + texte + '</span><span>' + texte + '</span></div>';
-      } catch (e) {
-        el.innerHTML = '<span>🌡️ Météo non disponible</span>';
-      }
-    }
-          }).filter(Boolean);
-        } catch (e) {
-          return [];
-        }
-      }
-
-      try {
-        const resultatsLots = await Promise.all(lots.map(chargerLot));
-        const morceaux = resultatsLots.flat();
-        if (morceaux.length === 0) {
-          el.innerHTML = '<span>🌡️ Météo non disponible</span>';
-          return;
-        }
-        const texte = morceaux.join(' &nbsp;|&nbsp; ');
-        el.innerHTML = '<div class="bandeau-track"><span>' + texte + '</span><span>' + texte + '</span></div>';
-      } catch (e) {
-        el.innerHTML = '<span>🌡️ Météo non disponible</span>';
-      }
-    }
-
-    // DEVISES avec timeout et fallback
-    async function chargerDevises() {
-      const el = document.getElementById('bandeauDevises');
-      if (!el) return;
-      try {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 5000);
-        const r = await fetch('https://api.exchangerate-api.com/v4/latest/EUR', {signal: controller.signal});
-        clearTimeout(timeout);
-        const d = await r.json();
-        const dzd = d.rates?.DZD?.toFixed(2) || '~148';
-        const usd = d.rates?.USD?.toFixed(2) || '~1.08';
-        const gbp = d.rates?.GBP?.toFixed(2) || '~0.84';
-        const cad = d.rates?.CAD?.toFixed(2) || '~1.46';
-        const texte = '💱 1€ = ' + dzd + ' DZD &nbsp;|&nbsp; 1€ = ' + usd + ' USD &nbsp;|&nbsp; 1€ = ' + gbp + ' GBP &nbsp;|&nbsp; 1€ = ' + cad + ' CAD';
-        el.innerHTML = '<div class="bandeau-track"><span>' + texte + '</span><span>' + texte + '</span></div>';
-      } catch(e) {
-        const texte = '💱 1€ ≈ 148 DZD &nbsp;|&nbsp; 1€ ≈ 1.08 USD &nbsp;|&nbsp; 1€ ≈ 0.84 GBP';
-        el.innerHTML = '<div class="bandeau-track"><span>' + texte + '</span><span>' + texte + '</span></div>';
-      }
-    }
-
-    // WILAYAS — 69 wilayas avec coordonnees GPS, cliquables, horaires de priere
-    const WILAYAS_GPS = {
-      'Adrar': [27.87, -0.28], 'Chlef': [36.17, 1.33], 'Laghouat': [33.80, 2.86],
-      'Oum El Bouaghi': [35.87, 7.11], 'Batna': [35.56, 6.17], 'Béjaïa': [36.75, 5.08],
-      'Biskra': [34.85, 5.73], 'Béchar': [31.62, -2.22], 'Blida': [36.47, 2.83],
-      'Bouira': [36.38, 3.90], 'Tamanrasset': [22.79, 5.53], 'Tébessa': [35.40, 8.12],
-      'Tlemcen': [34.88, -1.32], 'Tiaret': [35.37, 1.32], 'Tizi Ouzou': [36.72, 4.05],
-      'Alger': [36.75, 3.06], 'Djelfa': [34.67, 3.25], 'Jijel': [36.82, 5.77],
-      'Sétif': [36.19, 5.41], 'Saïda': [34.83, 0.15], 'Skikda': [36.88, 6.90],
-      'Sidi Bel Abbès': [35.19, -0.63], 'Annaba': [36.90, 7.77], 'Guelma': [36.46, 7.43],
-      'Constantine': [36.37, 6.61], 'Médéa': [36.26, 2.75], 'Mostaganem': [35.93, 0.09],
-      "M'Sila": [35.70, 4.54], 'Mascara': [35.40, 0.14], 'Ouargla': [31.95, 5.32],
-      'Oran': [35.70, -0.63], 'El Bayadh': [33.68, 1.02], 'Illizi': [26.48, 8.47],
-      'Bordj Bou Arréridj': [36.07, 4.76], 'Boumerdès': [36.77, 3.48], 'El Tarf': [36.77, 8.31],
-      'Tindouf': [27.67, -8.15], 'Tissemsilt': [35.61, 1.81], 'El Oued': [33.35, 6.87],
-      'Khenchela': [35.44, 7.14], 'Souk Ahras': [36.29, 7.95], 'Tipaza': [36.59, 2.45],
-      'Mila': [36.45, 6.26], 'Aïn Defla': [36.26, 1.97], 'Naâma': [33.27, -0.31],
-      'Aïn Témouchent': [35.30, -1.14], 'Ghardaïa': [32.49, 3.67], 'Relizane': [35.74, 0.56],
-      'Timimoun': [29.26, 0.23], 'Bordj Badji Mokhtar': [21.33, 0.95], 'Ouled Djellal': [34.42, 5.06],
-      'Béni Abbès': [30.13, -2.17], 'In Salah': [27.19, 2.48], 'In Guezzam': [19.57, 5.77],
-      'Touggourt': [33.10, 6.09], 'Djanet': [24.55, 9.48], "El M'Ghair": [33.95, 5.92],
-      'El Meniaa': [30.58, 2.88], 'Aflou': [34.11, 2.10], 'Barika': [35.38, 5.37],
-      'El Kantara': [35.22, 5.70], 'Bir El Ater': [34.75, 8.06], 'El Aricha': [34.30, -1.28],
-      'Ksar Chellala': [35.19, 2.31], 'Aïn Oussara': [35.45, 2.90], 'Messaad': [34.15, 3.50],
-      'Ksar El Boukhari': [35.87, 2.77], 'Bou Saâda': [35.21, 4.19], 'El Abiodh Sidi Cheikh': [32.90, 0.53]
-    };
-
-    async function afficherHorairesWilaya(nom) {
-      const panel = document.getElementById('horairePanel');
-      const contenu = document.getElementById('horaireContenu');
-      const coord = WILAYAS_GPS[nom];
-      if (!coord || !panel || !contenu) return;
-      panel.style.display = 'block';
-      contenu.innerHTML = '<span style="color:rgba(255,255,255,0.5);">Chargement horaires ' + nom + '...</span>';
-      try {
-        const url = 'https://api.aladhan.com/v1/timings?latitude=' + coord[0] + '&longitude=' + coord[1] + '&method=2';
-        const r = await fetch(url);
-        const d = await r.json();
-        const t = d.data.timings;
-        contenu.innerHTML =
-          '<div style="color:#4DD0E1;font-weight:bold;margin-bottom:8px;">🕌 ' + nom + '</div>' +
-          '<div style="display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:white;">' +
-          '<span>Fajr: ' + t.Fajr + '</span><span>Dhuhr: ' + t.Dhuhr + '</span>' +
-          '<span>Asr: ' + t.Asr + '</span><span>Maghrib: ' + t.Maghrib + '</span>' +
-          '<span>Isha: ' + t.Isha + '</span></div>';
-      } catch(e) {
-        contenu.innerHTML = '<span style="color:rgba(255,255,255,0.5);">Horaires indisponibles</span>';
-      }
-    }
-
-    function chargerWilayas() {
-      const el = document.getElementById('bandeauWilayas');
-      if (!el) return;
-      const noms = Object.keys(WILAYAS_GPS);
-      el.innerHTML = noms.map(nom =>
-        '<span class="wilaya-chip" onclick="afficherHorairesWilaya(\'' + nom.replace(/'/g, "\\'") + '\')">' + nom + '</span>'
-      ).join('');
-    }
-
-    chargerMeteo();
-    chargerDevises();
-    chargerWilayas();
-    setTimeout(chargerMeteo, 30 * 60 * 1000);
-    setTimeout(chargerDevises, 60 * 60 * 1000);
   </script>
 </body>
 </html>
