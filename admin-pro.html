@@ -364,11 +364,11 @@
     }
 
     // Remplir le formulaire avec une alerte existante
-    window.remplirFormAlerte = function(titre, type, details, source) {
-      document.getElementById('a-titre-alerte').value = titre;
-      document.getElementById('a-type-alerte').value = type || 'info';
-      document.getElementById('a-details-alerte').value = details;
-      document.getElementById('a-source-alerte').value = source;
+    window.remplirFormAlerte = function(btn) {
+      document.getElementById('a-titre-alerte').value = btn.dataset.titre || '';
+      document.getElementById('a-type-alerte').value = btn.dataset.type || 'info';
+      document.getElementById('a-details-alerte').value = btn.dataset.details || '';
+      document.getElementById('a-source-alerte').value = btn.dataset.source || '';
       document.getElementById('a-titre-alerte').scrollIntoView({behavior:'smooth'});
       document.getElementById('a-titre-alerte').focus();
     };
