@@ -152,6 +152,40 @@
       <button onclick="viderFormulaire()" style="width:100%;padding:10px;background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);border-radius:10px;font-size:13px;cursor:pointer;margin-top:8px;">🗑️ Vider le formulaire</button>
     </section>
 
+  
+      <!-- SECTION ENVOI EMAIL GENERAL -->
+      <section class="bloc" style="border-color:rgba(77,208,225,0.4);">
+        <h2 style="color:#4DD0E1;">📧 Envoyer un email</h2>
+        <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-bottom:16px;">Envoyez un email à un pro ou un client — accès, confirmation, information...</p>
+        <div class="form-group">
+          <label>Email destinataire *</label>
+          <input type="email" id="em-email" placeholder="destinataire@email.com">
+        </div>
+        <div class="form-group">
+          <label>Nom du destinataire *</label>
+          <input type="text" id="em-nom" placeholder="Dr. Benali Mohamed">
+        </div>
+        <div class="form-group">
+          <label>Sujet *</label>
+          <select id="em-sujet" onchange="majSujet()">
+            <option value="Accès validé — Espace Professionnel">✅ Accès espace pro validé</option>
+            <option value="Votre inscription est en cours de traitement">⏳ Inscription en traitement</option>
+            <option value="Votre inscription a été refusée">❌ Inscription refusée</option>
+            <option value="Confirmation de paiement reçu">💳 Paiement confirmé</option>
+            <option value="Votre publicité est en ligne">📣 Pub en ligne</option>
+            <option value="Votre rendez-vous est confirmé">📅 RDV confirmé</option>
+            <option value="Information importante — DZ Diaspora">ℹ️ Information générale</option>
+            <option value="custom">✏️ Sujet personnalisé...</option>
+          </select>
+          <input type="text" id="em-sujet-custom" placeholder="Écrivez votre sujet..." style="display:none;margin-top:8px;">
+        </div>
+        <div class="form-group">
+          <label>Message *</label>
+          <textarea id="em-message" rows="5" placeholder="Rédigez votre message ici...&#10;&#10;Exemple: Votre inscription professionnelle a été validée. Connectez-vous sur notre espace pro pour répondre aux demandes clients."></textarea>
+        </div>
+        <div id="em-succes" style="display:none;background:rgba(168,224,99,0.1);border:1px solid rgba(168,224,99,0.4);border-radius:10px;padding:12px;color:#A8E063;text-align:center;margin-bottom:12px;">✅ Email envoyé avec succès !</div>
+        <button onclick="envoyerEmailGeneral()" style="width:100%;padding:13px;background:#4DD0E1;color:#0D1117;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">📧 Envoyer l'email</button>
+      </section>
   </main>
   </div>
 
@@ -390,6 +424,35 @@
       } catch(e) { alert('Erreur: '+e.message); }
     };
 
+
+    // EMAIL GENERAL
+    window.majSujet = function() {
+      const val = document.getElementById('em-sujet').value;
+      document.getElementById('em-sujet-custom').style.display = val === 'custom' ? 'block' : 'none';
+    };
+
+    window.envoyerEmailGeneral = async function() {
+      const email = document.getElementById('em-email').value.trim();
+      const nom = document.getElementById('em-nom').value.trim();
+      const sujetSelect = document.getElementById('em-sujet').value;
+      const sujet = sujetSelect === 'custom' ? document.getElementById('em-sujet-custom').value.trim() : sujetSelect;
+      const message = document.getElementById('em-message').value.trim();
+      if (!email || !nom || !sujet || !message) { alert('Remplissez tous les champs'); return; }
+      try {
+        emailjs.init('lj-ndl5zGAWGWkJqc');
+        await emailjs.send('service_pv5uh7i', 'template_j1o985m', {
+          email_dest: email,
+          destinataire: nom,
+          sujet: sujet,
+          message: message,
+        });
+        document.getElementById('em-succes').style.display = 'block';
+        setTimeout(() => document.getElementById('em-succes').style.display = 'none', 4000);
+        document.getElementById('em-email').value = '';
+        document.getElementById('em-nom').value = '';
+        document.getElementById('em-message').value = '';
+      } catch(e) { alert('Erreur envoi: ' + (e.text || e.message)); }
+    };
     window.viderFormulaire = function() {
       ['profession','specialite','nom','prenom','wilaya','adresse','telephone','email','langues','ordre','presentation','paiement','notes_internes'].forEach(id => {
         const el = document.getElementById(id);
