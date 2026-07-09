@@ -157,7 +157,7 @@ footer a { color: rgba(255,255,255,0.4); }
   display: flex;
   gap: 32px;
   white-space: nowrap;
-  animation: defilement 18s linear infinite;
+  animation: defilement 8s linear infinite;
   font-size: 14px;
   color: #A8E063;
   font-weight: bold;
