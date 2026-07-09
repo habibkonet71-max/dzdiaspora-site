@@ -256,14 +256,16 @@
             <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
               <button class="btn-ok" onclick="validerDemandePro('${d.id}')">✅ Valider et publier</button>
               <button class="btn-non" onclick="refuserDemandePro('${d.id}')">❌ Refuser</button>
-              <button onclick="envoyerEmailAcces('${p.email||''}','${p.prenom||''} ${p.nom||''}')" style="background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">📧 Email accès</button>
+              <button onclick="envoyerEmailAcces(this)" data-email="${p.email||''}" data-nom="${p.prenom||''} ${p.nom||''}" style="background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">📧 Email accès</button>
             </div>
           </div>`;
         }).join('');
       } catch(e) { container.innerHTML = '<p style="color:#ff6b6b;">Erreur: '+e.message+'</p>'; }
     }
 
-    window.envoyerEmailAcces = async function(email, nom) {
+    window.envoyerEmailAcces = async function(btn) {
+      const email = btn.dataset?.email || btn;
+      const nom = btn.dataset?.nom || '';
       if (!email) { alert('Email manquant !'); return; }
       try {
         emailjs.init('lj-ndl5zGAWGWkJqc');
