@@ -485,9 +485,9 @@
         const gbp = d.rates?.GBP?.toFixed(2) || '0.84';
         const cad = d.rates?.CAD?.toFixed(2) || '1.46';
         const texte = '💱 1€ = ' + dzd + ' DZD | 1€ = ' + usd + ' USD | 1€ = ' + gbp + ' GBP | 1€ = ' + cad + ' CAD';
-        el.innerHTML = '<div class="bandeau-track"><span>' + texte + ' &nbsp;&nbsp;&nbsp; ' + texte + '</span></div>';
+        el.innerHTML = '<div class="bandeau-devises-track"><span>' + texte + ' &nbsp;&nbsp;&nbsp; ' + texte + '</span></div>';
       } catch(e) {
-        el.innerHTML = '<div class="bandeau-track"><span>💱 1€ ≈ 148 DZD | 1€ ≈ 1.08 USD | 1€ ≈ 0.84 GBP</span></div>';
+        el.innerHTML = '<div class="bandeau-devises-track"><span>💱 1€ ≈ 148 DZD | 1€ ≈ 1.08 USD | 1€ ≈ 0.84 GBP</span></div>';
       }
     }
 
