@@ -54,7 +54,12 @@
     </nav>
     <div id="auth-btn-header" style="margin-left:6px"></div>
   
-  <div id="google_translate_element" style="margin-left:auto;margin-right:8px;"></div>
+  <div style="display:flex;gap:5px;margin-left:auto;margin-right:8px;">
+    <button onclick="tradPage('fr')" style="background:rgba(77,208,225,0.15);border:1px solid #4DD0E1;color:#4DD0E1;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;">FR</button>
+    <button onclick="tradPage('ar')" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;">ع</button>
+    <button onclick="tradPage('en')" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;">EN</button>
+    <button onclick="tradPage('zh-CN')" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;">中</button>
+  </div>
   <button class="menu-btn" id="menuBtn">⋮</button>
   </header>
   <div class="menu-dropdown" id="menuDropdown">
@@ -389,7 +394,8 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     const cfg = { apiKey:"AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ", appId:"1:223003656315:web:100de190b8b5e74ddae2de", messagingSenderId:"223003656315", projectId:"dzdiaspora-7260a", authDomain:"dzdiaspora-7260a.firebaseapp.com", storageBucket:"dzdiaspora-7260a.firebasestorage.app" };
-    const app = initializeApp(cfg);
+    import { getApps } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    const app = getApps().length ? getApps()[0] : initializeApp(cfg);
     const auth = getAuth(app);
     onAuthStateChanged(auth, (user) => {
       const btn = document.getElementById('auth-btn-header');
@@ -578,25 +584,18 @@
     </div>
   </div>
 
-  <script type="text/javascript">
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement({
-        pageLanguage: 'fr',
-        includedLanguages: 'fr,ar,en,zh-CN',
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-        autoDisplay: false
-      }, 'google_translate_element');
+  <script>
+    function tradPage(lang) {
+      if (lang === 'fr') {
+        // Retour français - recharger la page sans traduction
+        const url = window.location.href.replace(/[?&]hl=[^&]+/, '');
+        window.location.href = url;
+        return;
+      }
+      // Utiliser Google Translate API via URL
+      const pageUrl = encodeURIComponent(window.location.href);
+      window.location.href = 'https://translate.google.com/translate?sl=fr&tl=' + lang + '&u=' + pageUrl;
     }
-  </script>
-  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-  <style>
-    #google_translate_element { display:flex; align-items:center; }
-    .goog-te-gadget-simple { background:transparent !important; border:1px solid rgba(77,208,225,0.4) !important; border-radius:12px !important; padding:4px 8px !important; }
-    .goog-te-gadget-simple span, .goog-te-gadget-simple a { color:#4DD0E1 !important; font-size:11px !important; font-weight:700 !important; text-decoration:none !important; }
-    .goog-te-gadget-icon { display:none !important; }
-    .goog-logo-link { display:none !important; }
-    body { top: 0px !important; }
-    .skiptranslate { display:none !important; }
-  </style>t>
+  </script>t>
 </body>
 </html>
