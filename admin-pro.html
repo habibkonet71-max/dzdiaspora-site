@@ -257,11 +257,54 @@
               <button class="btn-ok" onclick="validerDemandePro(this)" data-id="${d.id}">✅ Valider et publier</button>
               <button class="btn-non" onclick="refuserDemandePro(this)" data-id="${d.id}">❌ Refuser</button>
               <button onclick="envoyerEmailAcces(this)" data-email="${p.email||''}" data-nom="${p.prenom||''} ${p.nom||''}" style="background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">📧 Email accès</button>
+              <button onclick="demanderPieces(this)" data-email="${p.email||''}" data-nom="${p.prenom||''} ${p.nom||''}" data-profession="${p.profession||''}" style="background:rgba(255,193,7,0.1);border:1px solid #FFC107;color:#FFC107;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">📎 Demander pièces</button>
             </div>
           </div>`;
         }).join('');
       } catch(e) { container.innerHTML = '<p style="color:#ff6b6b;">Erreur: '+e.message+'</p>'; }
     }
+
+    // Demander pièces justificatives au pro
+    window.demanderPieces = async function(btn) {
+      const email = btn.dataset?.email || '';
+      const nom = btn.dataset?.nom || 'Professionnel';
+      const profession = btn.dataset?.profession || '';
+      if (!email) { alert('Email manquant !'); return; }
+
+      const profLabels = {
+        avocat: 'avocat',
+        medecin: 'médecin généraliste',
+        medecin_spec: 'médecin spécialiste',
+        notaire: 'notaire',
+        pharmacien: 'pharmacien',
+        dentiste: 'dentiste',
+        psychologue: 'psychologue',
+        comptable: 'expert comptable',
+      };
+      const profNom = profLabels[profession] || profession;
+
+      const message = `Bonjour ${nom},\n\n` +
+        `Nous avons bien reçu votre demande d'inscription sur DZ Diaspora en tant que ${profNom}.\n\n` +
+        `Afin de valider votre profil et de vous attribuer le badge "✅ Vérifié DZ Diaspora", nous avons besoin des pièces justificatives suivantes :\n\n` +
+        `1. 📄 Copie de votre CNI (carte nationale d'identité) ou passeport\n` +
+        `2. 🏅 Copie de votre carte professionnelle ou numéro d'ordre (barreau, CNOM, chambre des notaires...)\n` +
+        `3. 📍 Justificatif de votre adresse cabinet (facture, bail, etc.)\n\n` +
+        `Merci d'envoyer ces documents à l'adresse suivante :\n` +
+        `📧 kourrak.habib@hotmail.com\n\n` +
+        `Votre profil sera validé et publié dans l'annuaire dans les 48h suivant réception des pièces.\n\n` +
+        `Cordialement,\nL'équipe DZ Diaspora`;
+
+      try {
+        emailjs.init('lj-ndl5zGAWGWkJqc');
+        await emailjs.send('service_pv5uh7i', 'template_j1o985m', {
+          email_dest: email,
+          destinataire: nom,
+          sujet: 'Vérification de votre profil — DZ Diaspora',
+          message: message,
+        });
+        alert('✅ Email envoyé à ' + email + ' — pièces justificatives demandées !');
+      } catch(e) { alert('Erreur: ' + (e.text || e.message)); }
+    };
 
     window.envoyerEmailAcces = async function(btn) {
       const email = btn.dataset?.email || btn;
