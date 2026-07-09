@@ -55,10 +55,10 @@
     <div id="auth-btn-header" style="margin-left:6px"></div>
   
   <div style="display:flex;gap:5px;margin-left:auto;margin-right:8px;">
-    <button onclick="tradPage('fr')" style="background:rgba(77,208,225,0.15);border:1px solid #4DD0E1;color:#4DD0E1;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;">FR</button>
-    <button onclick="tradPage('ar')" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;">ع</button>
-    <button onclick="tradPage('en')" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;">EN</button>
-    <button onclick="tradPage('zh-CN')" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;">中</button>
+    <button onclick="tradPage('fr')" data-lang="fr" style="background:rgba(77,208,225,0.15);border:1px solid #4DD0E1;color:#4DD0E1;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;">FR</button>
+    <button onclick="tradPage('ar')" data-lang="ar" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;">ع</button>
+    <button onclick="tradPage('en')" data-lang="en" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;">EN</button>
+    <button onclick="tradPage('zh')" data-lang="zh" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;">中</button>
   </div>
   <button class="menu-btn" id="menuBtn">⋮</button>
   </header>
@@ -585,17 +585,72 @@
   </div>
 
   <script>
-    function tradPage(lang) {
-      if (lang === 'fr') {
-        // Retour français - recharger la page sans traduction
-        const url = window.location.href.replace(/[?&]hl=[^&]+/, '');
-        window.location.href = url;
-        return;
+    // Traductions intégrées des éléments clés
+    const TRAD = {
+      fr: {
+        nav_accueil: 'Accueil', nav_annuaire: 'Annuaire Pro', nav_actu: 'Actualités',
+        nav_transport: 'Transport', nav_contact: 'Contact',
+        btn_rdv: '📅 Prendre RDV', btn_demande: '📋 Déposer une demande',
+        btn_installer: '📱 Installer l'app', btn_annuaire: '🔍 Voir l'annuaire',
+        titre_services: '🛡️ Nos services',
+        stat1: 'Professionnels vérifiés', stat2: 'Wilayas couvertes',
+        stat3: 'Langues (FR/AR/EN/中)', stat4: 'Disponible',
+      },
+      ar: {
+        nav_accueil: 'الرئيسية', nav_annuaire: 'دليل المهنيين', nav_actu: 'الأخبار',
+        nav_transport: 'النقل', nav_contact: 'اتصل بنا',
+        btn_rdv: '📅 حجز موعد', btn_demande: '📋 تقديم طلب',
+        btn_installer: '📱 تحميل التطبيق', btn_annuaire: '🔍 عرض الدليل',
+        titre_services: '🛡️ خدماتنا',
+        stat1: 'محترفون موثقون', stat2: 'ولاية مغطاة',
+        stat3: 'لغات', stat4: 'متاح',
+      },
+      en: {
+        nav_accueil: 'Home', nav_annuaire: 'Pro Directory', nav_actu: 'News',
+        nav_transport: 'Transport', nav_contact: 'Contact',
+        btn_rdv: '📅 Book appointment', btn_demande: '📋 Submit request',
+        btn_installer: '📱 Install app', btn_annuaire: '🔍 View directory',
+        titre_services: '🛡️ Our services',
+        stat1: 'Verified professionals', stat2: 'Wilayas covered',
+        stat3: 'Languages (FR/AR/EN/中)', stat4: 'Available',
+      },
+      zh: {
+        nav_accueil: '首页', nav_annuaire: '专业目录', nav_actu: '新闻',
+        nav_transport: '交通', nav_contact: '联系我们',
+        btn_rdv: '📅 预约', btn_demande: '📋 提交请求',
+        btn_installer: '📱 安装应用', btn_annuaire: '🔍 查看目录',
+        titre_services: '🛡️ 我们的服务',
+        stat1: '认证专业人士', stat2: '覆盖省份',
+        stat3: '语言', stat4: '可用',
       }
-      // Utiliser Google Translate API via URL
-      const pageUrl = encodeURIComponent(window.location.href);
-      window.location.href = 'https://translate.google.com/translate?sl=fr&tl=' + lang + '&u=' + pageUrl;
+    };
+
+    function tradPage(lang) {
+      const t = TRAD[lang] || TRAD.fr;
+      document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
+      localStorage.setItem('dz_langue', lang);
+
+      // Mettre à jour les boutons actifs
+      ['fr','ar','en','zh'].forEach(l => {
+        const btns = document.querySelectorAll('[data-lang="'+l+'"]');
+        btns.forEach(btn => {
+          btn.style.background = l === lang ? 'rgba(77,208,225,0.15)' : 'transparent';
+          btn.style.color = l === lang ? '#4DD0E1' : 'rgba(255,255,255,0.5)';
+          btn.style.border = l === lang ? '1px solid #4DD0E1' : '1px solid rgba(255,255,255,0.2)';
+        });
+      });
+
+      // Traduire les éléments avec data-trad
+      document.querySelectorAll('[data-trad]').forEach(el => {
+        const key = el.getAttribute('data-trad');
+        if (t[key]) el.textContent = t[key];
+      });
     }
+
+    // Appliquer au chargement
+    document.addEventListener('DOMContentLoaded', () => {
+      tradPage(localStorage.getItem('dz_langue') || 'fr');
+    });
   </script>t>
 </body>
 </html>
