@@ -31,7 +31,7 @@
   </header>
 
   <!-- ECRAN PIN -->
-  <div id="ecran-pin" class="pin-ecran">
+  <div id="ecran-pin" class="pin-ecran" style="display:flex;">
     <div style="text-align:center;padding:40px;background:#1C2333;border-radius:16px;border:1px solid rgba(77,208,225,0.3);max-width:320px;width:90%;">
       <div style="font-size:48px;margin-bottom:16px;">🔐</div>
       <h2 style="color:white;margin-bottom:8px;">Code PIN Admin</h2>
@@ -209,13 +209,7 @@
 
     onAuthStateChanged(auth, async (user) => {
       const btn = document.getElementById('auth-btn-header');
-      if (!user || user.email !== ADMIN) {
-        document.getElementById('ecran-pin').style.display = 'none';
-        document.getElementById('acces-refuse').style.display = 'block';
-        return;
-      }
-      // Utilisateur connecté avec bon email — afficher le PIN
-      document.getElementById('ecran-pin').style.display = 'flex';
+      if (btn && user) btn.innerHTML = '<button onclick="window.signOutUser()" style="background:rgba(214,16,52,0.15);border:1px solid #D61034;color:#ff6b6b;padding:5px 12px;border-radius:14px;font-size:12px;cursor:pointer;">🚪 Admin</button>';
       if (btn) btn.innerHTML = '<button onclick="window.signOutUser()" style="background:rgba(214,16,52,0.15);border:1px solid #D61034;color:#ff6b6b;padding:5px 12px;border-radius:14px;font-size:12px;cursor:pointer;">🚪 Admin</button>';
       setTimeout(() => document.getElementById('pin-input').focus(), 100);
     });
