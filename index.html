@@ -535,14 +535,15 @@
         const app = getApps().length ? getApps()[0] : initializeApp(cfg);
         const db = getFirestore(app);
         const snap = await getDocs(query(collection(db, 'alertes_transport'), where('actif','==',true), orderBy('date','desc')));
-        // Filtrer uniquement les alertes admin
-        const alerteAdmin = snap.docs.map(d => d.data()).find(d => d.source_admin === true);
-        if (alerteAdmin) {
+        // Afficher la dernière alerte automatiquement
+        if (!snap.empty) {
+          const a = snap.docs[0].data();
           const el = document.getElementById('bandeauAlertes');
           const elTxt = document.getElementById('bandeauAlertesTexte');
-          if (el && elTxt) {
-            const txt = '🚨 ' + alerteAdmin.titre + ' &nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp; 🚨 ' + alerteAdmin.titre;
-            elTxt.innerHTML = txt;
+          if (el && elTxt && a.titre) {
+            const details = a.details ? ' — ' + a.details : '';
+            const msg = '🚨 ' + a.titre + details;
+            elTxt.innerHTML = msg + ' &nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp; ' + msg;
             el.style.display = 'block';
           }
         }
