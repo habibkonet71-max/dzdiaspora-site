@@ -32,6 +32,7 @@
     .recap-ligne { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05); font-size:13px; }
     .recap-ligne .val { color:#4DD0E1; font-weight:600; }
   </style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
   <header>
@@ -338,6 +339,16 @@
         });
 
         document.getElementById('msgSucces').style.display = 'block';
+        try {
+          emailjs.init('lj-ndl5zGAWGWkJqc');
+          const emailClient = document.getElementById('p-email')?.value||'';
+          const nomClient = document.getElementById('p-nom')?.value||'';
+          if (emailClient) await emailjs.send('service_pv5uh7i', 'template_j1o985m', {
+            email_dest: emailClient, destinataire: nomClient||'Client',
+            sujet: 'Commande publicitaire reçue — DZ Diaspora',
+            message: 'Votre commande publicitaire a bien été reçue. Notre équipe vous contacte sous 48h avec le tarif et les instructions de paiement.\n\nkourrak.habib@hotmail.com | +213 (7) 99 87 28 90',
+          });
+        } catch(e) { console.log('Email non envoyé:', e); }
         window.scrollTo(0, 0);
       } catch(e) {
         console.error(e);
