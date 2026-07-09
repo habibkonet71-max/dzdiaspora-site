@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/</loc></url>
-  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/transport.html</loc></url>
-  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/finance.html</loc></url>
-  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/securite.html</loc></url>
-  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/sante.html</loc></url>
-  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/justice.html</loc></url>
-  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/immobilier.html</loc></url>
-  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/annonces.html</loc></url>
+  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/</loc><lastmod>2026-07-09</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/annuaire-pro.html</loc><lastmod>2026-07-09</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/inscription-pro.html</loc><lastmod>2026-07-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/deposer-demande.html</loc><lastmod>2026-07-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/transport.html</loc><lastmod>2026-07-09</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/actualites.html</loc><lastmod>2026-07-09</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/finance.html</loc><lastmod>2026-07-09</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/justice.html</loc><lastmod>2026-07-09</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/sante.html</loc><lastmod>2026-07-09</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/immobilier.html</loc><lastmod>2026-07-09</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/wilayas.html</loc><lastmod>2026-07-09</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/installer-app.html</loc><lastmod>2026-07-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/prendre-rdv.html</loc><lastmod>2026-07-09</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/objets-trouves.html</loc><lastmod>2026-07-09</lastmod><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/annonces.html</loc><lastmod>2026-07-09</lastmod><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/tourisme.html</loc><lastmod>2026-07-09</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/securite.html</loc><lastmod>2026-07-09</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/administratif.html</loc><lastmod>2026-07-09</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/publicite.html</loc><lastmod>2026-07-09</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/contact.html</loc><lastmod>2026-07-09</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://habibkonet71-max.github.io/dzdiaspora-site/cgu.html</loc><lastmod>2026-07-09</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
 </urlset>
