@@ -254,8 +254,8 @@
             ${p.presentation?'<div style="color:rgba(255,255,255,0.4);font-size:12px;font-style:italic;margin-top:4px;">"'+p.presentation.substring(0,100)+'"</div>':''}
             <div style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:4px;">Abonnement: ${p.abonnement||'—'} | Le ${date}</div>
             <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
-              <button class="btn-ok" onclick="validerDemandePro('${d.id}')">✅ Valider et publier</button>
-              <button class="btn-non" onclick="refuserDemandePro('${d.id}')">❌ Refuser</button>
+              <button class="btn-ok" onclick="validerDemandePro(this)" data-id="${d.id}">✅ Valider et publier</button>
+              <button class="btn-non" onclick="refuserDemandePro(this)" data-id="${d.id}">❌ Refuser</button>
               <button onclick="envoyerEmailAcces(this)" data-email="${p.email||''}" data-nom="${p.prenom||''} ${p.nom||''}" style="background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">📧 Email accès</button>
             </div>
           </div>`;
@@ -281,7 +281,8 @@
       } catch(e) { alert('Erreur: ' + e.text || e.message); }
     };
 
-    window.validerDemandePro = async function(id) {
+    window.validerDemandePro = async function(btn) {
+      const id = btn.dataset?.id || btn;
       try {
         const demandeSnap = await getDoc(doc(db, 'professionnels_demandes', id));
         const data = demandeSnap.data();
@@ -292,7 +293,8 @@
       } catch(e) { alert('Erreur: ' + e.message); }
     };
 
-    window.refuserDemandePro = async function(id) {
+    window.refuserDemandePro = async function(btn) {
+      const id = btn.dataset?.id || btn;
       if (!confirm('Refuser cette demande ?')) return;
       await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'refuse' });
       chargerDemandesPros();
@@ -314,15 +316,18 @@
             <div style="color:rgba(255,255,255,0.6);font-size:12px;margin-top:4px;">"${a.texte||''}"</div>
             <div style="color:rgba(255,255,255,0.3);font-size:10px;">Le ${date}</div>
             <div style="display:flex;gap:8px;margin-top:8px;">
-              <button class="btn-ok" onclick="validerAvis('${d.id}','${a.pro_id||''}',${a.note||0})">✅ Publier</button>
-              <button class="btn-non" onclick="supprimerAvis('${d.id}')">❌ Supprimer</button>
+              <button class="btn-ok" onclick="validerAvis(this)" data-id="${d.id}" data-proid="${a.pro_id||''}" data-note="${a.note||0}">✅ Publier</button>
+              <button class="btn-non" onclick="supprimerAvis(this)" data-id="${d.id}">❌ Supprimer</button>
             </div>
           </div>`;
         }).join('');
       } catch(e) { container.innerHTML = '<p style="color:#ff6b6b;">Erreur: '+e.message+'</p>'; }
     }
 
-    window.validerAvis = async function(id, proId, note) {
+    window.validerAvis = async function(btn) {
+      const id = btn.dataset?.id || btn;
+      const proId = btn.dataset?.proid || '';
+      const note = parseInt(btn.dataset?.note || 0);
       try {
         await updateDoc(doc(db, 'avis_clients', id), { statut: 'publie', date_validation: Timestamp.now() });
         if (proId) {
@@ -336,7 +341,8 @@
       } catch(e) { alert('Erreur: '+e.message); }
     };
 
-    window.supprimerAvis = async function(id) {
+    window.supprimerAvis = async function(btn) {
+      const id = btn.dataset?.id || btn;
       if (!confirm('Supprimer cet avis ?')) return;
       await deleteDoc(doc(db, 'avis_clients', id));
       chargerAvisAttente();
@@ -358,7 +364,7 @@
                 <div style="color:white;font-size:13px;">${a.titre||''}</div>
                 ${a.source?'<div style="color:rgba(255,255,255,0.4);font-size:11px;">Source: '+a.source+'</div>':''}
               </div>
-              <button onclick="supprimerAlerte('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">🗑️</button>
+              <button onclick="supprimerAlerte(this)" data-id="${d.id}" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">🗑️</button>
               <button onclick="remplirFormAlerte(this)" data-titre="${a.titre||''}" data-type="${a.type||''}" data-details="${a.details||''}" data-source="${a.source||''}" style="background:rgba(255,193,7,0.1);border:1px solid #FFC107;color:#FFC107;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">✏️ Modifier</button>
             </div>`;
           }).join('');
@@ -395,7 +401,8 @@
       } catch(e) { alert('Erreur: '+e.message); }
     };
 
-    window.supprimerAlerte = async function(id) {
+    window.supprimerAlerte = async function(btn) {
+      const id = btn.dataset?.id || btn;
       if (!confirm('Supprimer cette alerte ?')) return;
       await deleteDoc(doc(db, 'alertes_transport', id));
       chargerAlertes();
