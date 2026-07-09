@@ -147,6 +147,38 @@
       </div>
       <div class="form-group"><label>Paiement reçu</label><input type="text" id="paiement" placeholder="Ex: Virement reçu le 05/07/2026"></div>
       <div class="form-group"><label>Notes internes</label><textarea id="notes_internes" placeholder="Notes visibles uniquement par l'admin..."></textarea></div>
+
+      <!-- VERIFICATION PROFESSIONNELLE -->
+      <div style="background:#0D1117;border-radius:10px;padding:14px;margin-bottom:14px;border:1px solid rgba(168,224,99,0.3);">
+        <p style="color:#A8E063;font-weight:700;font-size:13px;margin-bottom:12px;">🔍 Vérification professionnelle</p>
+        <div class="form-group">
+          <label>Vérification identité</label>
+          <select id="verification_id" style="width:100%;padding:11px;border-radius:10px;background:#1C2333;color:white;border:1px solid rgba(255,255,255,0.12);">
+            <option value="">-- Non vérifié --</option>
+            <option value="cni">✅ CNI vérifiée</option>
+            <option value="passeport">✅ Passeport vérifié</option>
+            <option value="en_cours">⏳ En cours</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Vérification numéro d'ordre</label>
+          <select id="verification_ordre" style="width:100%;padding:11px;border-radius:10px;background:#1C2333;color:white;border:1px solid rgba(255,255,255,0.12);">
+            <option value="">-- Non vérifié --</option>
+            <option value="verifie">✅ Numéro d'ordre vérifié</option>
+            <option value="en_cours">⏳ En cours</option>
+            <option value="na">N/A</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>🏅 Badge</label>
+          <select id="badge_niveau" style="width:100%;padding:11px;border-radius:10px;background:#1C2333;color:white;border:1px solid rgba(255,255,255,0.12);">
+            <option value="">Aucun badge</option>
+            <option value="verifie">✅ Vérifié DZ Diaspora</option>
+            <option value="certifie">🏅 Certifié DZ Diaspora</option>
+            <option value="premium">⭐ Premium DZ Diaspora</option>
+          </select>
+        </div>
+      </div>
       <div id="succes-pro" style="display:none;background:rgba(168,224,99,0.1);border:1px solid rgba(168,224,99,0.4);border-radius:10px;padding:12px;color:#A8E063;text-align:center;margin-bottom:12px;">✅ Professionnel publié dans l'annuaire !</div>
       <button class="btn-publier" onclick="publierPro()">✅ Publier dans l'annuaire</button>
       <button onclick="viderFormulaire()" style="width:100%;padding:10px;background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);border-radius:10px;font-size:13px;cursor:pointer;margin-top:8px;">🗑️ Vider le formulaire</button>
