@@ -359,7 +359,7 @@
                 ${a.source?'<div style="color:rgba(255,255,255,0.4);font-size:11px;">Source: '+a.source+'</div>':''}
               </div>
               <button onclick="supprimerAlerte('${d.id}')" style="background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">🗑️</button>
-              <button onclick="remplirFormAlerte('${(a.titre||'').replace(/'/g,\'\'')}','${(a.type||'')}','${(a.details||'').replace(/'/g,\'\'')}','${(a.source||'').replace(/'/g,\'\'')}')" style="background:rgba(255,193,7,0.1);border:1px solid #FFC107;color:#FFC107;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">✏️ Modifier</button>
+              <button onclick="remplirFormAlerte(this)" data-titre="${a.titre||''}" data-type="${a.type||''}" data-details="${a.details||''}" data-source="${a.source||''}" style="background:rgba(255,193,7,0.1);border:1px solid #FFC107;color:#FFC107;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">✏️ Modifier</button>
             </div>`;
           }).join('');
       } catch(e) {}
