@@ -54,12 +54,7 @@
     </nav>
     <div id="auth-btn-header" style="margin-left:6px"></div>
   
-  <div id="lang-switcher" style="display:flex;gap:6px;margin-left:auto;margin-right:8px;">
-    <button onclick="changerLangue('fr')" id="btn-fr" style="background:rgba(77,208,225,0.2);border:1px solid #4DD0E1;color:#4DD0E1;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;">FR</button>
-    <button onclick="changerLangue('ar')" id="btn-ar" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;">ع</button>
-    <button onclick="changerLangue('en')" id="btn-en" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;">EN</button>
-    <button onclick="changerLangue('zh')" id="btn-zh" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;">中</button>
-  </div>
+  <div id="google_translate_element" style="margin-left:auto;margin-right:8px;"></div>
   <button class="menu-btn" id="menuBtn">⋮</button>
   </header>
   <div class="menu-dropdown" id="menuDropdown">
@@ -583,70 +578,25 @@
     </div>
   </div>
 
-  <script>
-    // TRADUCTIONS
-    const TRAD = {
-      fr: {
-        titre: 'DZ Diaspora — La plateforme de la diaspora algérienne',
-        slogan: 'Votre lien avec l'Algérie',
-        annuaire: 'Annuaire Pro',
-        actualites: 'Actualités',
-        transport: 'Transport',
-        contact: 'Contact',
-      },
-      ar: {
-        titre: 'DZ Diaspora — منصة الجالية الجزائرية',
-        slogan: 'رابطك بالجزائر',
-        annuaire: 'دليل المهنيين',
-        actualites: 'الأخبار',
-        transport: 'النقل',
-        contact: 'اتصل بنا',
-      },
-      en: {
-        titre: 'DZ Diaspora — The Algerian Diaspora Platform',
-        slogan: 'Your link to Algeria',
-        annuaire: 'Pro Directory',
-        actualites: 'News',
-        transport: 'Transport',
-        contact: 'Contact',
-      },
-      zh: {
-        titre: 'DZ Diaspora — 阿尔及利亚侨民平台',
-        slogan: '您与阿尔及利亚的纽带',
-        annuaire: '专业目录',
-        actualites: '新闻',
-        transport: '交通',
-        contact: '联系',
-      }
-    };
-
-    let langueActuelle = localStorage.getItem('dz_langue') || 'fr';
-
-    function changerLangue(lang) {
-      langueActuelle = lang;
-      localStorage.setItem('dz_langue', lang);
-      // Mettre à jour les boutons
-      ['fr','ar','en','zh'].forEach(l => {
-        const btn = document.getElementById('btn-' + l);
-        if (btn) {
-          btn.style.background = l === lang ? 'rgba(77,208,225,0.2)' : 'transparent';
-          btn.style.border = l === lang ? '1px solid #4DD0E1' : '1px solid rgba(255,255,255,0.2)';
-          btn.style.color = l === lang ? '#4DD0E1' : 'rgba(255,255,255,0.5)';
-        }
-      });
-      // Direction RTL pour l'arabe
-      document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
-      // Google Translate
-      if (lang !== 'fr') {
-        const url = 'https://translate.google.com/translate?sl=fr&tl=' + lang + '&u=' + encodeURIComponent(window.location.href);
-        window.open(url, '_blank');
-      }
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'fr',
+        includedLanguages: 'fr,ar,en,zh-CN',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+      }, 'google_translate_element');
     }
-
-    // Appliquer la langue au chargement
-    document.addEventListener('DOMContentLoaded', () => {
-      changerLangue(langueActuelle);
-    });
   </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <style>
+    #google_translate_element { display:flex; align-items:center; }
+    .goog-te-gadget-simple { background:transparent !important; border:1px solid rgba(77,208,225,0.4) !important; border-radius:12px !important; padding:4px 8px !important; }
+    .goog-te-gadget-simple span, .goog-te-gadget-simple a { color:#4DD0E1 !important; font-size:11px !important; font-weight:700 !important; text-decoration:none !important; }
+    .goog-te-gadget-icon { display:none !important; }
+    .goog-logo-link { display:none !important; }
+    body { top: 0px !important; }
+    .skiptranslate { display:none !important; }
+  </style>t>
 </body>
 </html>
