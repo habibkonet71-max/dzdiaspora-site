@@ -473,6 +473,9 @@
           abonnement: document.getElementById('abonnement').value,
           paiement: document.getElementById('paiement').value.trim(),
           notes_internes: document.getElementById('notes_internes').value.trim(),
+          verification_id: document.getElementById('verification_id').value,
+          verification_ordre: document.getElementById('verification_ordre').value,
+          badge_niveau: document.getElementById('badge_niveau').value,
           statut: 'valide',
           date: Timestamp.now(),
         });
@@ -511,7 +514,7 @@
       } catch(e) { alert('Erreur envoi: ' + (e.text || e.message)); }
     };
     window.viderFormulaire = function() {
-      ['profession','specialite','nom','prenom','wilaya','adresse','telephone','email','langues','ordre','presentation','paiement','notes_internes'].forEach(id => {
+      ['profession','specialite','nom','prenom','wilaya','adresse','telephone','email','langues','ordre','presentation','paiement','notes_internes','verification_id','verification_ordre','badge_niveau'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = '';
       });
