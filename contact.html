@@ -204,3 +204,14 @@
   <script src="depannage.js"></script>
 </body>
 </html>
+<script>
+emailjs.send('service_pv5uh7i', 'template_e12y5yv', {
+  'to_email': document.getElementById('emailDest').value,
+  'nom': document.getElementById('nomDest').value,
+  'sujet': document.getElementById('sujet').value,
+  'message': document.getElementById('message').value,
+}).then(
+  (response) => alert('Email envoyé avec succès'),
+  (error) => alert('Erreur : ' + error)
+);
+</script>
