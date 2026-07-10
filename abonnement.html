@@ -124,7 +124,7 @@
             <li class="non">Annonces illimitees</li>
             <li class="non">Badge vendeur verifie</li>
           </ul>
-          <a href="connexion.html" class="plan-btn" style="background:#4DD0E1;color:#0D1117">Choisir Starter — 14€</a>
+          <button class="plan-btn" style="background:#4DD0E1;color:#0D1117;border:none;cursor:pointer;width:100%;font-size:14px;" onclick="lancerPaiement('hebdomadaire')">Choisir Starter — 14€</button>
         </div>
 
         <div class="plan-card best">
@@ -140,8 +140,23 @@
             <li>Photos illimitees par annonce</li>
             <li>Support prioritaire sous 24h</li>
             <li>Annulation a tout moment</li>
+        <div class="plan-card">
+          <div class="plan-badge" style="background:#FF7043;color:white">Professionnel</div>
+          <div class="plan-nom">Pro Metier</div>
+          <div class="plan-prix" style="color:#FF7043">20€ <span>/ mois</span></div>
+          <div class="plan-desc">Pour les professionnels references : medecin, avocat, pharmacien, notaire, architecte et autres metiers.</div>
+          <ul class="plan-features">
+            <li>Fiche professionnelle complete</li>
+            <li>Badge professionnel verifie</li>
+            <li>Visibilite sur la page de votre specialite</li>
+            <li>Coordonnees et horaires affiches</li>
+            <li>Support prioritaire sous 24h</li>
+            <li>Formule annuelle : 240€/an (2 mois offerts)</li>
           </ul>
-          <a href="connexion.html" class="plan-btn" style="background:#A8E063;color:#0D1117">Passer Pro — 60€/mois</a>
+          <button class="plan-btn" style="background:#FF7043;color:white;border:none;cursor:pointer;width:100%;font-size:14px;" onclick="lancerPaiementMetier('mensuel')">Devenir Pro Metier — 20€/mois</button>
+        </div>
+          </ul>
+          <button class="plan-btn" style="background:#A8E063;color:#0D1117;border:none;cursor:pointer;width:100%;font-size:14px;" onclick="lancerPaiement('mensuel')">Passer Pro — 60€/mois</button>
         </div>
 
       </div>
@@ -220,6 +235,38 @@
     window.signOutUser = async function() { await signOut(auth); window.location.href = 'connexion.html'; };
   </script>
   <script src="script.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ",
+      appId: "1:223003656315:web:100de190b8b5e74ddae2de",
+      messagingSenderId: "223003656315",
+      projectId: "dzdiaspora-7260a",
+      authDomain: "dzdiaspora-7260a.firebaseapp.com",
+      storageBucket: "dzdiaspora-7260a.firebasestorage.app"
+    };
+    const app = initializeApp(firebaseConfig);
+    const functions = getFunctions(app);
+    window.lancerPaiement = async function(type) {
+      try {
+        const creer = httpsCallable(functions, "creerSessionAbonnementPro");
+        const result = await creer({ typeAbonnement: type });
+        if (result.data.url) window.location.href = result.data.url;
+      } catch (e) {
+        alert("Erreur lors de la creation du paiement. Reessayez.");
+      }
+    };
+    window.lancerPaiementMetier = async function(type) {
+      try {
+        const creer = httpsCallable(functions, "creerSessionProMetier");
+        const result = await creer({ typeAbonnement: type });
+        if (result.data.url) window.location.href = result.data.url;
+      } catch (e) {
+        alert("Erreur lors de la creation du paiement. Reessayez.");
+      }
+    };
+  </script>
   <script src="traduction.js"></script>
 
   <!-- Bouton signaler une erreur -->
