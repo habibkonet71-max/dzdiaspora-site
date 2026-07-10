@@ -135,7 +135,7 @@
           emailjs.init('lj-ndl5zGAWGWkJqc');
           const emailClient = document.getElementById('avis-email')?.value||'';
           const nomClient = document.getElementById('avis-nom')?.value||'';
-          if (emailClient) await emailjs.send('service_pv5uh7i', 'template_j1o985m', {
+          if (emailClient) await emailjs.send('service_pv5uh7i', 'template_gum64zs', {
             email_dest: emailClient, destinataire: nomClient||'Client',
             sujet: 'Avis reçu — DZ Diaspora',
             message: 'Merci pour votre avis ! Il sera publié après validation par notre équipe sous 24h.\n\nkourrak.habib@hotmail.com',

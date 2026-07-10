@@ -286,7 +286,7 @@
           emailjs.init('lj-ndl5zGAWGWkJqc');
           const nomPro = (document.getElementById('prenom')?.value||'') + ' ' + (document.getElementById('nom')?.value||'');
           const emailPro = document.getElementById('email')?.value||'';
-          if (emailPro) await emailjs.send('service_pv5uh7i', 'template_j1o985m', {
+          if (emailPro) await emailjs.send('service_pv5uh7i', 'template_gum64zs', {
             email_dest: emailPro, destinataire: nomPro.trim()||'Professionnel',
             sujet: 'Demande inscription reçue — DZ Diaspora',
             message: 'Votre demande a bien été reçue. Notre équipe vous contacte sous 48h pour validation et paiement.\n\nkourrak.habib@hotmail.com | +213 (0) 799 87 28 90',
