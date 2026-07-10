@@ -138,7 +138,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ",
@@ -259,6 +259,26 @@
         msgErreur.textContent = "⚠️ Votre annonce contient des termes non autorises. Veuillez la corriger.";
         msgErreur.style.display = "block";
         return;
+      }
+
+      const userEmail = auth.currentUser ? auth.currentUser.email : null;
+      if (userEmail) {
+        let totalAnnonces = 0;
+        for (const col of ["annonces_immobilier", "annonces_vehicule", "annonces_covoiturage", "annonces_service"]) {
+          const snap = await getDocs(query(collection(db, col), where("contact", "==", userEmail)));
+          totalAnnonces += snap.size;
+        }
+        if (totalAnnonces >= 4) {
+          try {
+            const result = await fetch("https://us-central1-dzdiaspora-7260a.cloudfunctions.net/creerPaiementAnnonce", { method: "POST" });
+            const data = await result.json();
+            if (data.url) { window.location.href = data.url; return; }
+          } catch (err) {
+            msgErreur.textContent = "❌ Erreur lors de la redirection vers le paiement. Reessayez.";
+            msgErreur.style.display = "block";
+            return;
+          }
+        }
       }
 
       const donnees = {
