@@ -1,46 +1,34 @@
 function googleTranslateElementInit() {
   new google.translate.TranslateElement(
-    {
-      pageLanguage: "fr",
-      includedLanguages: "fr,en,zh-CN,ar",
-      autoDisplay: false,
-      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-    },
+    { pageLanguage: "fr", includedLanguages: "fr,en,zh-CN,ar", autoDisplay: false },
     "google_translate_element"
   );
+}
+
+function effacerCookiesTraduction() {
+  document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+  document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
+  document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=." + window.location.hostname;
 }
 
 function changerLangueSite(codeLangue) {
   document.documentElement.dir = (codeLangue === 'ar') ? 'rtl' : 'ltr';
   document.documentElement.lang = (codeLangue === 'zh') ? 'zh-CN' : codeLangue;
-  document.querySelectorAll(".lang-btn").forEach(function (bouton) {
-    bouton.classList.remove("active");
-  });
+  document.querySelectorAll(".lang-btn").forEach(b => b.classList.remove("active"));
   const boutonActif = document.querySelector('.lang-btn[data-lang="' + codeLangue + '"]');
   if (boutonActif) boutonActif.classList.add("active");
 
-  if (codeLangue === 'kab') {
-    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
-    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname;
-    return;
-  }
+  effacerCookiesTraduction();
 
-  if (codeLangue === "fr") {
-    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
+  if (codeLangue === 'fr' || codeLangue === 'kab') {
     window.location.reload();
     return;
   }
 
   const codeCible = codeLangue === "zh" ? "zh-CN" : codeLangue;
-  const select = document.querySelector("#google_translate_element select.goog-te-combo");
-  if (select) {
-    select.value = codeCible;
-    select.dispatchEvent(new Event("change"));
-  } else {
-    document.cookie = "googtrans=/fr/" + codeCible + "; path=/";
-    window.location.reload();
-  }
+  document.cookie = "googtrans=/fr/" + codeCible + "; path=/";
+  document.cookie = "googtrans=/fr/" + codeCible + "; path=/; domain=." + window.location.hostname;
+  window.location.reload();
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -51,7 +39,5 @@ document.addEventListener("DOMContentLoaded", function () {
   hiddenDiv.id = "google_translate_element";
   hiddenDiv.style.display = "none";
   document.body.appendChild(hiddenDiv);
-  document.querySelectorAll(".lang-btn").forEach(function (bouton) {
-    bouton.classList.add("notranslate");
-  });
+  document.querySelectorAll(".lang-btn").forEach(b => b.classList.add("notranslate"));
 });
