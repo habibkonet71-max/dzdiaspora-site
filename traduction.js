@@ -54,3 +54,38 @@ document.addEventListener("DOMContentLoaded", function () {
     bouton.classList.add("notranslate");
   });
 });
+
+// Traduction Tamazight (Kabyle) — mots cles interface
+const TRAD_KAB = {
+  fr: {
+    'Securite': 'Taɣellist',
+    'Sante': 'Tazmert',
+    'Finance': 'Idrimsen',
+    'Immobilier': 'Tigejdit',
+    'Annonces': 'Tizrawin',
+    'Transport': 'Taneqquḍt',
+    'Administratif': 'Aseɣzef',
+    'Connexion': 'Kcem',
+    'Inscription': 'Asekcem',
+    'Contact': 'Amesten',
+    'Retour': 'Tuɣalin',
+    'Bonjour': 'Azul',
+    'Rechercher': 'Nadi',
+    'Publier': 'Siɣel',
+    'Aide': 'Tanmirt'
+  }
+};
+
+// Extension changerLangueSite pour Tamazight
+const _changerLangueOriginal = changerLangueSite;
+function changerLangueSite(codeLangue) {
+  if (codeLangue === 'kab') {
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    const btnKab = document.querySelector('.lang-btn[data-lang="kab"]');
+    if (btnKab) btnKab.classList.add('active');
+    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+    document.title = document.title;
+    return;
+  }
+  _changerLangueOriginal(codeLangue);
+}
