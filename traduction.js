@@ -1,44 +1,39 @@
-var _gtInitDone = false;
-function googleTranslateElementInit() {
-  if (_gtInitDone) return;
-  _gtInitDone = true;
-  new google.translate.TranslateElement(
-    { pageLanguage: "fr", includedLanguages: "fr,en,zh-CN,ar", autoDisplay: false },
-    "google_translate_element"
-  );
-}
-
-function effacerCookiesTraduction() {
-  document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-  document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
-  document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=." + window.location.hostname;
-}
-
 function changerLangueSite(codeLangue) {
-  document.documentElement.dir = (codeLangue === 'ar') ? 'rtl' : 'ltr';
-  document.documentElement.lang = (codeLangue === 'zh') ? 'zh-CN' : codeLangue;
   document.querySelectorAll(".lang-btn").forEach(b => b.classList.remove("active"));
-  const boutonActif = document.querySelector('.lang-btn[data-lang="' + codeLangue + '"]');
-  if (boutonActif) boutonActif.classList.add("active");
-  effacerCookiesTraduction();
+  const btn = document.querySelector('.lang-btn[data-lang="' + codeLangue + '"]');
+  if (btn) btn.classList.add("active");
+  document.documentElement.dir = (codeLangue === 'ar') ? 'rtl' : 'ltr';
+  document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+  document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=." + window.location.hostname;
   if (codeLangue === 'fr' || codeLangue === 'kab') {
     window.location.reload();
     return;
   }
-  const codeCible = codeLangue === "zh" ? "zh-CN" : codeLangue;
-  document.cookie = "googtrans=/fr/" + codeCible + "; path=/";
-  document.cookie = "googtrans=/fr/" + codeCible + "; path=/; domain=." + window.location.hostname;
+  const code = codeLangue === "zh" ? "zh-CN" : codeLangue;
+  document.cookie = "googtrans=/fr/" + code + "; path=/";
+  document.cookie = "googtrans=/fr/" + code + "; path=/; domain=." + window.location.hostname;
   window.location.reload();
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  if (document.getElementById("google_translate_element")) return;
-  const script = document.createElement("script");
-  script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-  document.body.appendChild(script);
-  const hiddenDiv = document.createElement("div");
-  hiddenDiv.id = "google_translate_element";
-  hiddenDiv.style.display = "none";
-  document.body.appendChild(hiddenDiv);
+  var gt = document.createElement("script");
+  gt.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+  gt.onerror = function() { console.log("Google Translate indisponible"); };
+  document.body.appendChild(gt);
+  var div = document.createElement("div");
+  div.id = "google_translate_element";
+  div.style.display = "none";
+  document.body.appendChild(div);
   document.querySelectorAll(".lang-btn").forEach(b => b.classList.add("notranslate"));
 });
+
+function googleTranslateElementInit() {
+  if (window._gtDone) return;
+  window._gtDone = true;
+  try {
+    new google.translate.TranslateElement(
+      { pageLanguage: "fr", includedLanguages: "fr,en,zh-CN,ar", autoDisplay: false },
+      "google_translate_element"
+    );
+  } catch(e) { console.log("GT init error:", e); }
+}
