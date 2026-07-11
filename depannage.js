@@ -63,24 +63,23 @@
         traduction: { label: "🌐 翻译问题", etapes: ["FR / EN / AR / 中文 按钮位于每页顶部。","翻译无效？检查您的网络连接。","如果按钮无响应，请刷新页面。","翻译错误来自Google翻译。"]},
         autre: { label: "❓ 其他问题", etapes: ["在联系页面描述您的问题 — 我们会迅速回复。","请注明相关页面、错误信息和您的电子邮件。","刷新页面（Ctrl+Shift+R）以清除缓存。","安卓应用有问题？请注明您的手机版本。"]}
       }
-    }
-  };
-
+    },
     kab: {
-      titre: "🔧 Helliot Slem",
-      intro: "Azul ! Nec d Helliot Slem, amddakel-ik. Amek ara k-sseɣreɣ?",
-      retour: "← Tuɣalin", nonResolu: "Ugur ur yettwafhem ara?", contact: "Kemmel-aɣ-d",
+      titre: "Helliot Slem",
+      intro: "Azul ! Nec d Helliot Slem. Amek ara k-sseghreg?",
+      retour: "<- Tughalin", nonResolu: "Ugur ur yettwafhem ara?", contact: "Kemmel-agh-d",
       problemes: {
-        tarifs: { label: "💰 Isufar d Ifuyla", etapes: ["Amiḍan amagnu: ABALAGH - kcem s imayl n tesdawit.","Tizrawin: 4 n tizrawin ifasen, syin 2 iru s tizriwt.","Pro Ageldar: 14 iru/imala neɣ 60 iru/aggur.","Pro Agemmaḍ: 20 iru/aggur neɣ 240 iru/aseggas.","Tasertit: s usuter - kemmel-aɣ-d."]},
-        connexion: { label: "🔐 Ugur n ukcem", etapes: ["Senqed imayl-ik d tifrat-ik.","Tensitem tifrat-ik? Sqerdec ggur n tseddart.","Teddlem-d tura? Senqed imayl-ik send akcem.","Mazal ugur? Kemmel-aɣ-d s usebter n tmuɣli."]},
-        annonce: { label: "📋 Ugur n tizriwt", etapes: ["Ilaq ad tkecmed s imayl yettwaseknen.","4 tizrawin ifasen. Syin 2 iru s tizriwt.","Tizriwt ur tetban ara? Qqim akk, aleqqem asebter.","Awal yettwaksan? Beddel agzul, ɛreḍ tikkelt-nniḍen."]},
-        paiement: { label: "💳 Ugur n uɛeddis", etapes: ["Aɛeddis yettwasireg s Stripe. Senqed tikart-ik.","Asebter n uɛeddis yettwasɣer? Kkes aḥerrez n tɣuri.","Ugur deg uɛeddis? Qqim 5 n tisdatin, ɛreḍ tikelt-nniḍen.","Yettwakkes aker? Kemmel-aɣ-d s imayl d azemz."]},
-        abonnement: { label: "⭐ Afuyla Pro", etapes: ["Pro Ageldar: 14 iru/imala neɣ 60 iru/aggur.","Pro Agemmaḍ: 20 iru/aggur neɣ 240 iru/aseggas.","Afuyla-ik yefk-ak izurar n tẓuri.","Asuter n usekres? Kemmel-aɣ-d."]},
-        page404: { label: "🔴 Asebter ur yettwaf ara", etapes: ["Asebter ur yella ara neɣ yettwakkes.","Uɣal ɣer usebter amezwaru.","Tazult tettemḍal? Kcem tikelt-nniḍen.","Ugur yesɛa? Kemmel-aɣ-d."]},
-        traduction: { label: "🌐 Ugur n usuqqel", etapes: ["Ibibuten FR / EN / AR / ⵣ Kab deg ufella n yal asebter.","Usuqqel ur ixdem ara? Senqed tazwara-ik.","Aleqqem asebter ma ibibuten ur ttmeslayen ara.","Tuccḍa n usuqqel seg Google Translate d."]},
-        autre: { label: "❓ Ugur-nniḍen", etapes: ["Mmeslay-d ugur-ik deg usebter n tmuɣli — nettmeslay deg ureg.","Bgen asebter, iznan n tuccḍa d imayl-ik.","Aleqqem asebter (Ctrl+Shift+R).","Ugur deg usnas? Bgen talmest n tilifun-ik."]}
+        tarifs: { label: "Isufar d Ifuyla", etapes: ["Amidan amagnu: ABALAGH.","Tizrawin: 4 ifasen, syin 2 iru.","Pro Ageldar: 14 iru/imala negh 60 iru/aggur.","Pro Agemmar: 20 iru/aggur negh 240 iru/aseggas."] },
+        connexion: { label: "Ugur n ukcem", etapes: ["Senqed imayl-ik d tifrat-ik.","Tensitem tifrat-ik? Sqerdec ggur n tseddart.","Teddlem-d tura? Senqed imayl-ik send akcem.","Mazal ugur? Kemmel-agh-d."] },
+        annonce: { label: "Ugur n tizriwt", etapes: ["Ilaq ad tkecmed s imayl yettwaseknen.","4 tizrawin ifasen. Syin 2 iru s tizriwt.","Tizriwt ur tetban ara? Aleqqem asebter.","Awal yettwaksan? Beddel, ered tikelt-nniden."] },
+        paiement: { label: "Ugur n ueddis", etapes: ["Aeddis yettwasireg s Stripe.","Asebter n ueddis yettwasghur? Kkes aherrez.","Ugur? Qqim 5 n tisdatin.","Yettwakkes aker? Kemmel-agh-d s imayl."] },
+        abonnement: { label: "Afuyla Pro", etapes: ["Pro Ageldar: 14 iru/imala negh 60 iru/aggur.","Pro Agemmar: 20 iru/aggur negh 240 iru/aseggas.","Afuyla-ik yefk-ak izurar n tzuri.","Asuter n usekres? Kemmel-agh-d."] },
+        page404: { label: "Asebter ur yettwaf ara", etapes: ["Asebter ur yella ara.","Ughal ger usebter amezwaru.","Tazult tettemral? Kcem tikelt-nniden.","Ugur yesaa? Kemmel-agh-d."] },
+        traduction: { label: "Ugur n usuqqel", etapes: ["Ibibuten FR/EN/AR/Kab deg ufella.","Usuqqel ur ixdem ara? Senqed tazwara-ik.","Aleqqem asebter ma ibibuten ur ttmeslayen.","Tuccda n usuqqel seg Google Translate d."] },
+        autre: { label: "Ugur-nniden", etapes: ["Mmeslay-d ugur-ik deg usebter n tmugli.","Bgen asebter, iznan n tuccda d imayl-ik.","Aleqqem asebter (Ctrl+Shift+R).","Ugur deg usnas? Bgen talmest n tilifun-ik."] }
       }
     },
+  };
   function detecterLang(){const c=document.cookie;if(c.includes("googtrans=/fr/zh"))return"zh";if(c.includes("googtrans=/fr/ar"))return"ar";if(c.includes("googtrans=/fr/en"))return"en";return"fr";}
 
   function creerAssistant(){
