@@ -4,36 +4,25 @@ function changerLangueSite(codeLangue) {
   if (btn) btn.classList.add("active");
   document.documentElement.dir = (codeLangue === 'ar') ? 'rtl' : 'ltr';
 
-  if (codeLangue === 'fr') {
-    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=." + window.location.hostname;
+  // Effacer TOUS les cookies googtrans d'abord
+  var domain = window.location.hostname;
+  var expiry = "expires=Thu, 01 Jan 1970 00:00:00 UTC";
+  document.cookie = "googtrans=; " + expiry + "; path=/";
+  document.cookie = "googtrans=; " + expiry + "; path=/; domain=" + domain;
+  document.cookie = "googtrans=; " + expiry + "; path=/; domain=." + domain;
+
+  if (codeLangue === 'fr' || codeLangue === 'kab') {
     window.location.reload();
     return;
   }
 
-  if (codeLangue === 'kab') {
-    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=." + window.location.hostname;
+  // Attendre que les cookies soient effacés puis définir le nouveau
+  var code = codeLangue === "zh" ? "zh-CN" : codeLangue;
+  setTimeout(function() {
+    document.cookie = "googtrans=/fr/" + code + "; path=/";
+    document.cookie = "googtrans=/fr/" + code + "; path=/; domain=." + domain;
     window.location.reload();
-    return;
-  }
-
-  const code = codeLangue === "zh" ? "zh-CN" : codeLangue;
-
-  // Essayer via le select Google Translate
-  const select = document.querySelector("select.goog-te-combo");
-  if (select) {
-    select.value = code;
-    select.dispatchEvent(new Event("change"));
-    return;
-  }
-
-  // Fallback: cookie + reload
-  document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-  document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=." + window.location.hostname;
-  document.cookie = "googtrans=/fr/" + code + "; path=/";
-  document.cookie = "googtrans=/fr/" + code + "; path=/; domain=." + window.location.hostname;
-  window.location.reload();
+  }, 100);
 }
 
 window._gtDone = false;
@@ -53,10 +42,8 @@ document.addEventListener("DOMContentLoaded", function () {
   div.id = "google_translate_element";
   div.style.display = "none";
   document.body.appendChild(div);
-
   var gt = document.createElement("script");
   gt.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
   document.body.appendChild(gt);
-
   document.querySelectorAll(".lang-btn").forEach(b => b.classList.add("notranslate"));
 });
