@@ -1210,7 +1210,28 @@ const TRAD_KAB_SITE = {
 
 const _textes_originaux = new Map();
 
+
+// Observer les changements DOM pour traduire le contenu dynamique
+var _kabActif = false;
+var _observer = new MutationObserver(function(mutations) {
+  if (_kabActif) {
+    setTimeout(function() {
+      document.querySelectorAll('a,button,h1,h2,h3,h4,li,span,p,td,th,label,div').forEach(function(el) {
+        if (el.children.length === 0) {
+          var t = el.textContent.trim();
+          if (TRAD_KAB_SITE[t] && el.textContent !== TRAD_KAB_SITE[t]) {
+            if (!_orig.has(el)) _orig.set(el, t);
+            el.textContent = TRAD_KAB_SITE[t];
+          }
+        }
+      });
+    }, 300);
+  }
+});
+
 function appliquerTamazight() {
+  _kabActif = true;
+  _observer.observe(document.body, {childList: true, subtree: true});
   document.querySelectorAll('a, button, h1, h2, h3, h4, li, span, p').forEach(el => {
     if (el.children.length === 0) {
       const texte = el.textContent.trim();
