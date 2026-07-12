@@ -1,4 +1,7 @@
 const TRAD_KAB_SITE = {
+  'Le portail N°1 de la':'ⴰⵎⵙⴻⴳⵏⵓ ⴰⵎⴻⵣⵡⴰⵔⵓ ⵏ',
+  'diaspora algérienne':'ⵜⴰⵙⴻⴼⵙⵉⵜ ⵜⴰⵣⵣⴰⵢⵔⵉⵜ',
+  'Visibilité internationale, annonces immobilières, annuaire professionnel, alertes transport en temps réel — tout ce dont la communauté algérienne a besoin, en un seul endroit.':'ⵜⵉⵣⵔⴰⵡⵉⵏ ⵜⵉⵎⴻⵇⵔⴰⵏⵉⵏ, ⵜⵉⵎⴻⵙⵏⴰⴷⵉⵏ, ⵉⵏⵣⴻⵔⴼⴰⵏ ⵏ ⵜⴰⵏⴻⵇⵇⴰⵍⵜ — ⴰⴽⴽ ⴰⵢ ⵉⵍⴰⵇ ⵜⴰⵙⴻⴼⵙⵉⵜ ⵜⴰⵣⵣⴰⵢⵔⵉⵜ.',
   '(app DZ Diaspora)':'(ⴰⴱⴱ ⴷⵣ ⴷⵉⴰⵙⴱⵓⵔⴰ)',
   '(offres, promesses, justificatifs) — ils serviront en cas de litige':'(ⵓⴼⴼⵔⴻⵙ, ⴱⵔⵓⵎⴻⵙⵙⴻⵙ, ⵊⵓⵙⵜⵉⴼⵉⵙⴰⵜⵉⴼⵙ) — ⵉⵍⵙ ⵙⴻⵔⴼⵉⵔⵓⵏⵜ ⴻⵏ ⵙⴰⵙ ⴷⴻ ⵍⵉⵜⵉⴳⴻ',
   '(recommandé — toujours actif)':'(ⵔⴻⵙⵓⵎⵎⴰⵏⴷⴻ — ⵜⵓⵓⵊⵓⵓⵔⵙ ⴰⵙⵜⵉⴼ)',
