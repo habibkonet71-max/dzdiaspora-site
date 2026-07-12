@@ -1212,7 +1212,6 @@ const TRAD_KAB_SITE = {
   '🪪 Carte consulaire (immatriculation)':'🪪 ⵙⴰⵔⵜⴻ ⵙⵓⵏⵙⵓⵍⴰⵉⵔⴻ (ⵉⵎⵎⴰⵜⵔⵉⵙⵓⵍⴰⵜⵉⵓⵏ)',
 };
 
-const _textes_originaux = new Map();
 
 
 // Observer les changements DOM pour traduire le contenu dynamique
@@ -1239,7 +1238,7 @@ function appliquerTamazight() {
   document.querySelectorAll('a, button, h1, h2, h3, h4, li, span, p').forEach(el => {
     if (el.children.length === 0) {
       const texte = el.textContent.trim();
-      if (!_textes_originaux.has(el)) _textes_originaux.set(el, texte);
+      if (!_orig.has(el)) _orig.set(el, texte);
       const trad = TRAD_KAB_SITE[texte];
       if (trad) el.textContent = trad;
     }
@@ -1247,8 +1246,8 @@ function appliquerTamazight() {
 }
 
 function restaurerOriginal() {
-  _textes_originaux.forEach((texte, el) => { el.textContent = texte; });
-  _textes_originaux.clear();
+  _orig.forEach((texte, el) => { el.textContent = texte; });
+  _orig.clear();
 }
 
 function effacerCookies() {
