@@ -1,3 +1,4 @@
+const _orig = new Map();
 const TRAD_KAB_SITE = {
   'Le portail N°1 de la':'ⴰⵎⵙⴻⴳⵏⵓ ⴰⵎⴻⵣⵡⴰⵔⵓ ⵏ',
   'diaspora algérienne':'ⵜⴰⵙⴻⴼⵙⵉⵜ ⵜⴰⵣⵣⴰⵢⵔⵉⵜ',
