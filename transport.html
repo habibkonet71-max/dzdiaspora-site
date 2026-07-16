@@ -131,6 +131,13 @@
     </section>
 
     <section class="bloc">
+      <h2>⛴️ Traversees en direct</h2>
+      <div id="maritimeContainer">
+        <p style="color: rgba(255,255,255,0.4); text-align: center; padding: 20px 0;">Chargement des traversees...</p>
+      </div>
+    </section>
+
+    <section class="bloc">
       <h2>🚖 Taxi et VTC</h2>
       <div class="grid-cartes">
         <a href="https://www.yassir.com" target="_blank" class="carte carte-lien">
@@ -268,6 +275,52 @@
     }
 
     chargerVols();
+
+    function echapperHtml(texte) {
+      const div = document.createElement("div");
+      div.textContent = texte == null ? "" : String(texte);
+      return div.innerHTML;
+    }
+
+    async function chargerMaritime() {
+      const container = document.getElementById("maritimeContainer");
+      try {
+        const snap = await getDocs(collection(db, "traversees_maritimes"));
+
+        if (snap.empty) {
+          container.innerHTML = "<p style=\"color: rgba(255,255,255,0.4); text-align: center; padding: 20px 0;\">Aucun horaire disponible pour le moment</p>";
+          return;
+        }
+
+        let html = "<div class=\"grid-cartes\">";
+        snap.forEach((doc) => {
+          const data = doc.data();
+          const horaires = data.horaires || [];
+          const lignes = horaires.length > 1 ? horaires.slice(1) : [];
+          const lignesAffichees = lignes.slice(0, 6).map((ligne) => (ligne?.cellules || []).map(echapperHtml).join(" • "));
+
+          let texteMaj = "";
+          if (data.updated_at) {
+            const diffJours = Math.floor((Date.now() - data.updated_at.toDate().getTime()) / 86400000);
+            texteMaj = diffJours <= 0 ? "Mis a jour aujourd hui" : `Mis a jour il y a ${diffJours} jours`;
+          }
+
+          html += `
+            <div class="carte">
+              <h3>${echapperHtml(data.origine || "?")} → ${echapperHtml(data.destination || "?")}</h3>
+              ${lignesAffichees.map((l) => `<p class="detail">${l}</p>`).join("")}
+              ${texteMaj ? `<p class="detail" style="opacity:0.6;">${texteMaj}</p>` : ""}
+            </div>
+          `;
+        });
+        html += "</div>";
+        container.innerHTML = html;
+      } catch (e) {
+        container.innerHTML = "<p style=\"color: rgba(255,255,255,0.4); text-align: center; padding: 20px 0;\">Traversees indisponibles pour le moment</p>";
+      }
+    }
+
+    chargerMaritime();
   </script>
   <script src="recherche.js"></script>
   <script src="script.js"></script>
