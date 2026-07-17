@@ -1,4 +1,7 @@
 const TRAD_KAB_SITE = {
+  'Depart:':'ⴷⴻⴱⴰⵔⵜ:',
+  'Arrivee:':'ⴰⵔⵔⵉⴼⴻⴻ:',
+  'Statut:':'ⵙⵜⴰⵜⵓⵜ:',
   '"Autoriser depuis cette source"':'"ⴰⵓⵜⵓⵔⵉⵙⴻⵔ ⴷⴻⴱⵓⵉⵙ ⵙⴻⵜⵜⴻ ⵙⵓⵓⵔⵙⴻ"',
   '"Grace a DZ Diaspora, mes clients algeriens en France me trouvent facilement. J ai recu 3 nouveaux dossiers le mois dernier via la plateforme."':'"ⴳⵔⴰⵙⴻ ⴰ ⴷⵣ ⴷⵉⴰⵙⴱⵓⵔⴰ, ⵎⴻⵙ ⵙⵍⵉⴻⵏⵜⵙ ⴰⵍⴳⴻⵔⵉⴻⵏⵙ ⴻⵏ ⴼⵔⴰⵏⵙⴻ ⵎⴻ ⵜⵔⵓⵓⴼⴻⵏⵜ ⴼⴰⵙⵉⵍⴻⵎⴻⵏⵜ. ⵊ ⴰⵉ ⵔⴻⵙⵓ 3 ⵏⵓⵓⴼⴻⴰⵓⵅ ⴷⵓⵙⵙⵉⴻⵔⵙ ⵍⴻ ⵎⵓⵉⵙ ⴷⴻⵔⵏⵉⴻⵔ ⴼⵉⴰ ⵍⴰ ⴱⵍⴰⵜⴻⴼⵓⵔⵎⴻ."',
   '"Grâce à DZ Diaspora, mes clients algériens en France me trouvent facilement. J ai reçu 3 nouveaux dossiers le mois dernier via la plateforme."':'"ⴳⵔⴰⵙⴻ ⴰ ⴷⵣ ⴷⵉⴰⵙⴱⵓⵔⴰ, ⵎⴻⵙ ⵙⵍⵉⴻⵏⵜⵙ ⴰⵍⴳⴻⵔⵉⴻⵏⵙ ⴻⵏ ⴼⵔⴰⵏⵙⴻ ⵎⴻ ⵜⵔⵓⵓⴼⴻⵏⵜ ⴼⴰⵙⵉⵍⴻⵎⴻⵏⵜ. ⵊ ⴰⵉ ⵔⴻⵙⵓ 3 ⵏⵓⵓⴼⴻⴰⵓⵅ ⴷⵓⵙⵙⵉⴻⵔⵙ ⵍⴻ ⵎⵓⵉⵙ ⴷⴻⵔⵏⵉⴻⵔ ⴼⵉⴰ ⵍⴰ ⴱⵍⴰⵜⴻⴼⵓⵔⵎⴻ."',

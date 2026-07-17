@@ -261,8 +261,8 @@
               <a href="${lienCompagnie}" target="_blank" class="carte carte-lien" style="text-decoration:none;">
                 <h3>${nomCompagnie} ${vol.flight?.iata || ""} ↗</h3>
                 <p>${vol.departure?.airport || "?"} → ${vol.arrival?.airport || "?"}</p>
-                <p class="detail">Depart: ${vol.departure?.scheduled?.substring(11,16) || "?"} — Arrivee: ${vol.arrival?.scheduled?.substring(11,16) || "?"}</p>
-                <p class="detail">Statut: ${vol.flight_status || "inconnu"}</p>
+                <p class="detail"><span>Depart:</span> ${vol.departure?.scheduled?.substring(11,16) || "?"} — <span>Arrivee:</span> ${vol.arrival?.scheduled?.substring(11,16) || "?"}</p>
+                <p class="detail"><span>Statut:</span> ${vol.flight_status || "inconnu"}</p>
               </a>
             `;
           });
