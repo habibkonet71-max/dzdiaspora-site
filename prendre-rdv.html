@@ -228,7 +228,8 @@
         return;
       }
       try {
-        await addDoc(collection(db, 'rendez_vous'), {
+        const _token = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2);
+        const _rdvRef = await addDoc(collection(db, 'rendez_vous'), {
           pro_id: window._proId || '',
           pro_nom: (window._proData?.prenom || '') + ' ' + (window._proData?.nom || ''),
           pro_email: window._proData?.email || '',
@@ -242,6 +243,7 @@
           tel: document.getElementById('rdv-tel').value.trim(),
           pays: document.getElementById('rdv-pays').value,
           statut: 'en_attente',
+          token: _token,
           date_demande: Timestamp.now(),
         });
         document.getElementById('msgSucces').style.display = 'block';
@@ -259,7 +261,7 @@
               secteur: 'Rendez-vous',
               wilaya: window._proData?.wilaya || '',
               urgent: window._typeRdv === 'urgence' ? 'OUI' : 'Non',
-              description: 'Nouveau RDV de ' + nom + ' le ' + date + ' à ' + window._creneau + ' (' + window._typeRdv + ')\n\nMotif: ' + motif + '\nTéléphone: ' + document.getElementById('rdv-tel').value,
+              description: 'Nouveau RDV de ' + nom + ' le ' + date + ' à ' + window._creneau + ' (' + window._typeRdv + ')\n\nMotif: ' + motif + '\nTéléphone: ' + document.getElementById('rdv-tel').value + '\n\n--- Répondez directement ---\n✅ Confirmer: https://us-central1-dzdiaspora-7260a.cloudfunctions.net/repondreRdv?id=' + _rdvRef.id + '&token=' + _token + '&action=confirmer\n❌ Refuser: https://us-central1-dzdiaspora-7260a.cloudfunctions.net/repondreRdv?id=' + _rdvRef.id + '&token=' + _token + '&action=refuser\n📅 Proposer un autre créneau: https://us-central1-dzdiaspora-7260a.cloudfunctions.net/repondreRdv?id=' + _rdvRef.id + '&token=' + _token + '&action=proposer',
             });
           }
         } catch(emailErr) { console.log('Email non envoyé:', emailErr); }
