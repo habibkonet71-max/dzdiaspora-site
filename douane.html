@@ -11,31 +11,28 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Justice Algerie — Tribunaux, avocats et plainte en ligne</title>
-    <meta name="keywords" content="avocat Alger droit famille, tribunal Algerie, casier judiciaire B3, notaire Algerie diaspora">
-  <meta name="description" content="Tribunaux par wilaya, e-Nyaba, pre-plainte en ligne, avocats et notaires pour la diaspora algerienne.">
-  <meta property="og:title" content="Justice Algerie — DZ Diaspora">
-  <meta property="og:description" content="Tribunaux, plainte en ligne et professionnels du droit en Algerie.">
+  <title>Douane Algerie — Declaration devises, franchises et regles voyageurs</title>
+  <meta name="description" content="Regles douanieres algeriennes pour la diaspora : declaration de devises, franchise bagages, import de vehicules et formulaire telechargeable.">
+  <meta property="og:title" content="Douane Algerie — DZ Diaspora">
+  <meta property="og:description" content="Declaration devises, franchises et regles d importation pour la diaspora.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://dzdiaspora.online/justice.html">
-  <link rel="canonical" href="https://dzdiaspora.online/justice.html">
+  <meta property="og:url" content="https://dzdiaspora.online/douane.html">
+  <link rel="canonical" href="https://dzdiaspora.online/douane.html">
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
-  <link rel="dns-prefetch" href="https://api.exchangerate-api.com">
-  <link rel="dns-prefetch" href="https://api.aladhan.com">
 </head>
 <body>
   <header>
     <a href="index.html" class="logo">DZ Diaspora</a>
     <nav class="nav-desktop">
       <a href="index.html">🏠 Accueil</a>
-      <a href="douane.html">Douane</a>
-    <a href="securite.html">Securite</a>
+      <a href="douane.html" class="active">Douane</a>
+      <a href="securite.html">Securite</a>
       <a href="sante.html">Sante</a>
       <a href="finance.html">Finance</a>
-      <a href="justice.html" class="active">Justice</a>
       <a href="transport.html">Transport</a>
+      <a href="annonces.html">Annonces</a>
     </nav>
     <div class="lang-btns">
       <button class="lang-btn active notranslate" data-lang="fr" onclick="changerLangueSite('fr')">FR</button>
@@ -47,7 +44,6 @@
     <div id="auth-btn-header" style="margin-left:6px"></div>
     <button class="menu-btn" id="menuBtn">⋮</button>
   </header>
-
   <div class="menu-dropdown" id="menuDropdown">
     <a href="douane.html">Douane</a>
     <a href="securite.html">Securite</a>
@@ -63,109 +59,57 @@
     <a href="contact.html">Contact</a>
     <a href="cgu.html">CGU et mentions legales</a>
   </div>
-
   <main class="page-content">
+    <h1>🛃 Douane</h1>
+    <p class="intro">Declaration de devises, franchises bagages et regles d importation de vehicules pour les voyageurs entre la France et l Algerie.</p>
 
-    <div style="background:rgba(0,98,51,0.08);border:1px solid rgba(168,224,99,0.3);border-radius:10px;padding:14px;margin-bottom:16px;font-size:13px;">
-      🇩🇿 <strong style="color:#A8E063;">Clients en Algerie</strong> — Paiement par virement bancaire DZD disponible.<br>
-      Contactez notre commercial : <a href="tel:+213799872890" style="color:#A8E063;font-weight:bold;">+213 (0) 799 87 28 90</a> <sup>*</sup><br>
-      <span style="color:rgba(255,255,255,0.3);font-size:10px;">* Virement bancaire uniquement — NET-HABITA</span>
-    </div>
-    <h1>⚖️ Justice</h1>
-    <p class="intro">Tribunaux, cours d appel, avocats, notaires et mediateurs — trouvez la juridiction competente pour votre wilaya.</p>
     <section class="bloc">
-      <h2>📰 Actualites Justice</h2>
+      <h2>📰 Actualites Douane</h2>
       <div id="actualitesContainer" class="grid-cartes"></div>
     </section>
 
     <section class="bloc">
-      <h2>🏛️ Trouver le tribunal de votre wilaya</h2>
+      <h2>💶 Declaration de devises</h2>
       <div class="carte">
-        <p style="margin-bottom: 14px;">L Algerie compte 48 cours d appel et 210 tribunaux repartis sur l ensemble des wilayas. Consultez le site officiel du Ministere de la Justice pour trouver les coordonnees exactes de votre juridiction.</p>
-        <a href="https://www.mjustice.dz/fr/cours-et-tribunaux/" target="_blank" class="btn-telecharger">🔍 Rechercher mon tribunal sur mjustice.dz</a>
+        <p style="margin-bottom: 14px;">Toute somme en devises etrangeres depassant l equivalent de 1000 euros doit etre declaree aupres des services douaniers, a l entree comme a la sortie du territoire. Cette declaration doit etre conservee : elle sert de justificatif si vous devez ressortir la meme somme lors d un prochain voyage. L envoi de devises par courrier, colis ou service express est interdit — seul le transport personnel declare ou les circuits bancaires officiels sont autorises. Les douanes peuvent retenir une somme non declaree ou suspecte pendant une periode pouvant aller jusqu a 30 jours, le temps de verifier son origine.</p>
+        <a href="declaration_devises_douane.pdf" download class="btn-telecharger">📄 Telecharger le formulaire de declaration de devises</a>
       </div>
     </section>
 
     <section class="bloc">
-      <h2>Organisation judiciaire</h2>
+      <h2>🧳 Franchise bagages et objets personnels</h2>
       <div class="grid-cartes">
         <div class="carte">
-          <h3>Tribunal (1er degre)</h3>
-          <p>Juridiction de premiere instance. Sections : civile, penale, affaires familiales, sociale, fonciere, commerciale, mineurs.</p>
+          <h3>Valeur globale franchisee</h3>
+          <p>Les effets personnels et cadeaux transportes beneficient d une franchise dont la valeur totale est plafonnee ; au dela, une taxe s applique sur la difference.</p>
         </div>
         <div class="carte">
-          <h3>Cour d appel</h3>
-          <p>48 cours en Algerie. Statue en appel des decisions des tribunaux. Comprend un tribunal criminel (crimes, delits et contraventions connexes).</p>
+          <h3>Tabac, alcool, parfums</h3>
+          <p>Des quantites limitees de tabac, d alcool et de parfums sont tolerees par voyageur adulte. Au-dela de ces quantites, les produits peuvent etre taxes ou saisis.</p>
         </div>
-        <div class="carte">
-          <h3>Cour supreme</h3>
-        <a href="https://www.mjustice.dz" target="_blank" class="carte carte-lien">
-          <h3>Parquet electronique (e-Nyaba)</h3>
-          <p>Plateforme officielle pour introduire une plainte ou requete devant le procureur a distance — particulierement utile pour la diaspora.</p>
-        </a>
-        <a href="https://ppgn.mdn.dz/cgn_fr/index.php" target="_blank" class="carte carte-lien">
-          <h3>Pre-plainte en ligne (Gendarmerie)</h3>
-          <p>Signalez un crime ou deposez une pre-plainte via internet, a confirmer ensuite auprès de l unite competente.</p>
-        </a>
       </div>
-      <p style="color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 14px; font-style: italic;">
-        Ces services concernent generalement les atteintes aux biens dont l auteur est inconnu. Pour les urgences ou infractions graves, contactez directement le 17 (Police) ou le 1055 (Gendarmerie).
-      </p>
     </section>
 
     <section class="bloc">
-      <h2>Organisation judiciaire</h2>
+      <h2>🚗 Importation de vehicules</h2>
+      <div class="carte">
+        <p style="margin-bottom: 10px;">L importation temporaire d un vehicule immatricule a l etranger est possible pour les binationaux et residents a l etranger, sous conditions d age et de cylindree du vehicule (les vehicules diesel et les vehicules trop recents ou trop anciens peuvent etre soumis a des restrictions specifiques).</p>
+        <p style="color: rgba(255,255,255,0.6); font-size: 13px;">⚠️ Chaque annee, des restrictions saisonnieres peuvent s appliquer sur certains ports pour les vehicules neufs ou recents — verifiez la reglementation en vigueur avant de reserver votre traversee avec un vehicule.</p>
+      </div>
+    </section>
+
+    <section class="bloc">
+      <h2>🔗 Ressources officielles</h2>
       <div class="grid-cartes">
         <div class="carte">
-          <h3>Tribunal (1er degre)</h3>
-          <p>Juridiction de premiere instance. Sections : civile, penale, affaires familiales, sociale, fonciere, commerciale, mineurs.</p>
+          <a href="https://www.douane.gov.dz" target="_blank" style="color:#4DD0E1;text-decoration:none;font-weight:bold;">Direction Generale des Douanes ↗</a>
+          <p style="margin-top:6px;">Site officiel — reglementation, formulaires et actualites douanieres.</p>
         </div>
         <div class="carte">
-          <h3>Cour d appel</h3>
-          <p>48 cours en Algerie. Statue en appel des decisions des tribunaux. Comprend un tribunal criminel (crimes, delits et contraventions connexes).</p>
-        </div>
-        <div class="carte">
-          <h3>Cour supreme</h3>
-          <p>Controle la bonne application de la loi et le respect des procedures par les juridictions inferieures.</p>
-        </div>
-        <div class="carte">
-          <h3>Tribunal administratif</h3>
-          <p>44 tribunaux. Competent pour les litiges impliquant l Etat, la wilaya, la commune ou un etablissement public.</p>
+          <a href="https://alces.douane.gov.dz" target="_blank" style="color:#4DD0E1;text-decoration:none;font-weight:bold;">Plateforme ALCES ↗</a>
+          <p style="margin-top:6px;">Titre de Passage en Douane (TPD) et demarches en ligne pour vehicules.</p>
         </div>
       </div>
-    </section>
-
-    <section class="bloc">
-      <h2>👨‍⚖️ Avocats, notaires et mediateurs</h2>
-      <div class="carte" style="margin-bottom: 0;">
-        <label for="selectWilayaJustice" style="display: block; margin-bottom: 10px; color: rgba(255,255,255,0.7); font-size: 13px;">
-          Selectionnez votre wilaya :
-        </label>
-        <select id="selectWilayaJustice" style="width: 100%; padding: 10px; border-radius: 8px; background: #0D1117; color: white; border: 1px solid rgba(255,255,255,0.15); font-size: 14px;">
-          <option value="">-- Choisir une wilaya --</option>
-          <option value="alger">Alger</option>
-          <option value="oran">Oran</option>
-          <option value="constantine">Constantine</option>
-          <option value="annaba">Annaba</option>
-          <option value="blida">Blida</option>
-        </select>
-        <div id="resultatJustice" style="margin-top: 16px; color: rgba(255,255,255,0.5); font-size: 13px; text-align: center; padding: 20px 0;">
-          Selectionnez une wilaya pour voir les professionnels disponibles.
-        </div>
-      </div>
-      <p style="color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 10px; font-style: italic;">
-        🔧 Annuaire en cours de construction. Vous etes avocat, notaire ou mediateur et souhaitez etre reference ? <a href="contact.html" style="color: #4DD0E1;">Contactez-nous</a>.
-      </p>
-    </section>
-
-    <section class="bloc">
-      <h2>Bon a savoir</h2>
-      <ul class="liste-conseils">
-        <li>L aide juridictionnelle (gratuite ou a frais reduits) est accessible sous conditions de ressources auprès du tribunal competent</li>
-        <li>Le notaire intervient pour les actes authentiques : actes de vente immobiliere, contrats de mariage, successions</li>
-        <li>Le mediateur de la Republique peut etre saisi pour resoudre un litige avec l administration sans passer par un tribunal</li>
-        <li>Pour la diaspora, certaines procedures peuvent etre engagees via le consulat algerien de votre pays de residence</li>
-      </ul>
     </section>
   </main>
 
@@ -174,16 +118,6 @@
     <p><a href="cgu.html">CGU</a> · <a href="contact.html">Contact</a></p>
   </footer>
 
-  <script>
-    document.getElementById("selectWilayaJustice").addEventListener("change", function () {
-      const resultat = document.getElementById("resultatJustice");
-      if (this.value === "") {
-        resultat.innerHTML = "Selectionnez une wilaya pour voir les professionnels disponibles.";
-        return;
-      }
-      resultat.innerHTML = "Annuaire a venir pour cette wilaya. Revenez bientot !";
-    });
-  </script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -209,6 +143,7 @@
       }
     });
   </script>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, query, where, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -253,8 +188,9 @@
         container.innerHTML = "<p style=\"color: rgba(255,255,255,0.4); text-align: center; padding: 20px 0;\">Actualites indisponibles pour le moment</p>";
       }
     }
-    chargerActualites("justice", "actualitesContainer");
+    chargerActualites("douane", "actualitesContainer");
   </script>
+
   <script src="recherche.js"></script>
   <script src="script.js"></script>
   <script src="traduction.js?v=6"></script>

@@ -47,6 +47,7 @@
   </header>
 
   <div class="menu-dropdown" id="menuDropdown">
+    <a href="douane.html">Douane</a>
     <a href="securite.html">Securite</a>
     <a href="sante.html">Sante</a>
     <a href="finance.html">Finance</a>
@@ -64,6 +65,10 @@
   <main class="page-content">
     <h1>🚨 Securite</h1>
     <p class="intro">Numeros d urgence, ambassades pour les ressortissants etrangers et conseils de comportement en situation d urgence en Algerie.</p>
+    <section class="bloc">
+      <h2>📰 Actualites Securite</h2>
+      <div id="actualitesContainer" class="grid-cartes"></div>
+    </section>
 
     <section class="bloc">
       <h2>Numeros d urgence nationaux</h2>
@@ -201,6 +206,52 @@
         window.location.href = "connexion.html";
       }
     });
+  </script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, query, where, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    const firebaseConfigActu = {
+      apiKey: "AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ",
+      appId: "1:223003656315:web:100de190b8b5e74ddae2de",
+      messagingSenderId: "223003656315",
+      projectId: "dzdiaspora-7260a",
+      authDomain: "dzdiaspora-7260a.firebaseapp.com",
+      storageBucket: "dzdiaspora-7260a.firebasestorage.app"
+    };
+    const appActu = initializeApp(firebaseConfigActu, "actu");
+    const dbActu = getFirestore(appActu);
+    function echapperHtmlActu(texte) {
+      const div = document.createElement("div");
+      div.textContent = texte == null ? "" : String(texte);
+      return div.innerHTML;
+    }
+    async function chargerActualites(categorie, containerId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      try {
+        const q = query(collection(dbActu, "flux_actualites"), where("categorie", "==", categorie), where("actif", "==", true), orderBy("date", "desc"), limit(6));
+        const snap = await getDocs(q);
+        if (snap.empty) {
+          container.innerHTML = "<p style=\"color: rgba(255,255,255,0.4); text-align: center; padding: 20px 0;\">Aucune actualite disponible pour le moment</p>";
+          return;
+        }
+        let html = "";
+        snap.forEach((doc) => {
+          const data = doc.data();
+          html += `
+            <a href="${echapperHtmlActu(data.lien)}" target="_blank" class="carte carte-lien" style="text-decoration:none;">
+              <h3>${echapperHtmlActu(data.titre)}</h3>
+              <p class="detail">${echapperHtmlActu((data.description || "").substring(0, 140))}...</p>
+              <p class="detail" style="opacity:0.5;">${echapperHtmlActu(data.source)}</p>
+            </a>
+          `;
+        });
+        container.innerHTML = html;
+      } catch (e) {
+        container.innerHTML = "<p style=\"color: rgba(255,255,255,0.4); text-align: center; padding: 20px 0;\">Actualites indisponibles pour le moment</p>";
+      }
+    }
+    chargerActualites("securite", "actualitesContainer");
   </script>
   <script src="recherche.js"></script>
   <script src="script.js"></script>
