@@ -456,6 +456,7 @@
               <button class="btn-non" onclick="refuserDemandePro(this)" data-id="${d.id}">❌ Refuser</button>
               <button onclick="envoyerEmailAcces(this)" data-email="${p.email||''}" data-nom="${p.prenom||''} ${p.nom||''}" style="background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">📧 Email accès</button>
               <button onclick="demanderPieces(this)" data-email="${p.email||''}" data-nom="${p.prenom||''} ${p.nom||''}" data-profession="${p.profession||''}" style="background:rgba(255,193,7,0.1);border:1px solid #FFC107;color:#FFC107;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">📎 Demander pièces</button>
+              <button class="btn-non" onclick="supprimerDemandePro(this)" data-id="${d.id}" data-nom="${p.prenom||''} ${p.nom||''}">🗑️ Supprimer</button>
             </div>
           </div>`;
         }).join('');
@@ -570,6 +571,18 @@
           } catch (mailErr) { /* email non bloquant */ }
         }
         await journaliserAction('Refus inscription pro', (data?.prenom || '') + ' ' + (data?.nom || '') + ' (' + (data?.email || '') + ')');
+        chargerDemandesPros();
+        chargerHistorique();
+      } catch(e) { alert('Erreur: ' + e.message); }
+    };
+
+    window.supprimerDemandePro = async function(btn) {
+      const id = btn.dataset?.id || btn;
+      const nom = btn.dataset?.nom || '';
+      if (!confirm('Supprimer definitivement cette demande (' + nom + ') ? Cette action est irreversible.')) return;
+      try {
+        await deleteDoc(doc(db, 'professionnels_demandes', id));
+        await journaliserAction('Suppression demande pro', nom);
         chargerDemandesPros();
         chargerHistorique();
       } catch(e) { alert('Erreur: ' + e.message); }
