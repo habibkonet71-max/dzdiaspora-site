@@ -333,9 +333,11 @@
 
       try {
         await addDoc(collection(db, collections[categorieActuelle]), donnees);
-        msgSucces.textContent = "✅ Votre annonce a ete publiee avec succes !";
+        msgSucces.textContent = "✅ Votre annonce a ete publiee avec succes ! Redirection vers vos annonces...";
         msgSucces.style.display = "block";
         document.getElementById("formAnnonce").reset();
+        window.scrollTo(0, 0);
+        setTimeout(() => { window.location.href = "annonces.html"; }, 2500);
       } catch (err) {
         msgErreur.textContent = "❌ Erreur lors de la publication. Veuillez reessayer.";
         msgErreur.style.display = "block";

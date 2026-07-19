@@ -348,7 +348,33 @@
       chargerAlertes();
       chargerAnnoncesAdmin('immobilier');
       chargerHistorique();
+      chargerStats();
       majMajInfo();
+    }
+
+    async function chargerStats() {
+      const grid = document.getElementById('stats-grid');
+      if (!grid) return;
+      try {
+        const [demandesSnap, avisSnap, immoSnap, vehiculeSnap, covoitSnap, serviceSnap] = await Promise.all([
+          getDocs(query(collection(db, 'professionnels_demandes'), where('statut', '==', 'en_attente'))),
+          getDocs(query(collection(db, 'avis_clients'), where('statut', '==', 'en_attente'))),
+          getDocs(collection(db, 'annonces_immobilier')),
+          getDocs(collection(db, 'annonces_vehicule')),
+          getDocs(collection(db, 'annonces_covoiturage')),
+          getDocs(collection(db, 'annonces_service')),
+        ]);
+        const totalAnnonces = immoSnap.size + vehiculeSnap.size + covoitSnap.size + serviceSnap.size;
+        grid.innerHTML = `
+          <div class="stat-card"><div class="stat-valeur" style="color:#FFC107;">${demandesSnap.size}</div><div class="stat-label">Demandes pro en attente</div></div>
+          <div class="stat-card"><div class="stat-valeur" style="color:#4DD0E1;">${avisSnap.size}</div><div class="stat-label">Avis en attente</div></div>
+          <div class="stat-card"><div class="stat-valeur" style="color:#A8E063;">${totalAnnonces}</div><div class="stat-label">Annonces publiees</div></div>
+        `;
+        const badgeDemandes = document.getElementById('badge-demandes-pro');
+        if (badgeDemandes) { badgeDemandes.style.display = demandesSnap.size > 0 ? 'inline-block' : 'none'; badgeDemandes.textContent = demandesSnap.size; }
+        const badgeAvis = document.getElementById('badge-avis');
+        if (badgeAvis) { badgeAvis.style.display = avisSnap.size > 0 ? 'inline-block' : 'none'; badgeAvis.textContent = avisSnap.size; }
+      } catch (e) { grid.innerHTML = '<p style="color:#ff6b6b;font-size:12px;">Erreur stats: ' + e.message + '</p>'; }
     }
 
     window.changerOnglet = function(nom) {
