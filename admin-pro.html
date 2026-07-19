@@ -20,6 +20,24 @@
     .admin-liens { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
     .admin-lien { padding:8px 14px; border-radius:10px; font-size:12px; font-weight:700; text-decoration:none; }
     .pin-ecran { position:fixed; top:0; left:0; width:100%; height:100%; background:#0D1117; z-index:9999; display:flex; align-items:center; justify-content:center; }
+    .cmd-header { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+    .btn-refresh { background:rgba(77,208,225,0.1); border:1px solid #4DD0E1; color:#4DD0E1; padding:9px 16px; border-radius:10px; font-size:12px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; }
+    .btn-refresh:disabled { opacity:0.5; cursor:not-allowed; }
+    .maj-info { color:rgba(255,255,255,0.4); font-size:11px; }
+    .onglets-nav { display:flex; gap:6px; overflow-x:auto; margin-bottom:20px; padding-bottom:4px; border-bottom:1px solid rgba(255,255,255,0.1); }
+    .onglet-btn { background:none; border:none; color:rgba(255,255,255,0.5); padding:10px 14px; font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap; border-bottom:2px solid transparent; }
+    .onglet-btn.actif { color:#4DD0E1; border-bottom:2px solid #4DD0E1; }
+    .onglet-badge { background:#D21034; color:white; border-radius:10px; padding:1px 7px; font-size:10px; margin-left:6px; }
+    .onglet-contenu { display:none; }
+    .onglet-contenu.actif { display:block; }
+    .barre-selection { display:flex; align-items:center; gap:10px; background:rgba(77,208,225,0.08); border:1px solid rgba(77,208,225,0.3); border-radius:10px; padding:10px 14px; margin-bottom:14px; display:none; }
+    .barre-selection.actif { display:flex; }
+    .btn-suppr-groupe { background:rgba(214,16,52,0.15); border:1px solid #D21034; color:#ff6b6b; padding:7px 14px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; margin-left:auto; }
+    .check-item { width:16px; height:16px; margin-right:8px; vertical-align:middle; cursor:pointer; }
+    .stat-card { background:#1C2333; border-radius:12px; padding:16px; text-align:center; border:1px solid rgba(255,255,255,0.08); }
+    .stat-valeur { font-size:26px; font-weight:800; }
+    .stat-label { color:rgba(255,255,255,0.5); font-size:11px; margin-top:4px; }
+    .stats-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:10px; margin-bottom:20px; }
   </style>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
@@ -58,12 +76,37 @@
       <a href="admin-rdv.html" class="admin-lien" style="background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;">📅 Gérer les RDV</a>
       <a href="https://console.firebase.google.com/project/dzdiaspora-7260a/firestore" target="_blank" class="admin-lien" style="background:rgba(255,152,0,0.1);border:1px solid #FF9800;color:#FF9800;">🔥 Firebase Console</a>
     </div>
+    <!-- POSTE DE COMMANDEMENT -->
+    <div class="cmd-header">
+      <span class="maj-info" id="maj-info">Derniere mise a jour : —</span>
+      <button class="btn-refresh" id="btn-refresh-tout" onclick="window.rafraichirTout()">🔄 Rafraichir tout</button>
+    </div>
+    <div class="stats-grid" id="stats-grid"></div>
+    <div class="onglets-nav">
+      <button class="onglet-btn actif" data-onglet="vue-ensemble" onclick="window.changerOnglet('vue-ensemble')">📊 Vue d'ensemble</button>
+      <button class="onglet-btn" data-onglet="demandes-pro" onclick="window.changerOnglet('demandes-pro')">👥 Demandes Pro<span class="onglet-badge" id="badge-demandes-pro" style="display:none;">0</span></button>
+      <button class="onglet-btn" data-onglet="annonces" onclick="window.changerOnglet('annonces')">📢 Annonces</button>
+      <button class="onglet-btn" data-onglet="avis-alertes" onclick="window.changerOnglet('avis-alertes')">⭐ Avis &amp; Alertes<span class="onglet-badge" id="badge-avis" style="display:none;">0</span></button>
+      <button class="onglet-btn" data-onglet="paiements" onclick="window.changerOnglet('paiements')">💳 Paiements</button>
+      <button class="onglet-btn" data-onglet="outils" onclick="window.changerOnglet('outils')">🛠️ Outils</button>
+      <button class="onglet-btn" data-onglet="historique" onclick="window.changerOnglet('historique')">🕐 Historique</button>
+    </div>
+
+    <div class="onglet-contenu actif" id="onglet-vue-ensemble">
+      <p style="color:rgba(255,255,255,0.5);font-size:13px;">Vue d'ensemble rapide de l'activite de la plateforme. Utilisez les onglets ci-dessus pour agir sur chaque section.</p>
+      <div id="apercu-recent"></div>
+    </div>
+
+    <div class="onglet-contenu" id="onglet-demandes-pro">
 
     <!-- 1. DEMANDES PROS EN ATTENTE -->
     <section class="bloc" style="border-color:rgba(255,193,7,0.4);">
       <h2 style="color:#FFC107;">📋 Demandes d'inscription pro en attente</h2>
       <div id="liste-demandes-attente"><p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Chargement...</p></div>
     </section>
+    </div>
+
+    <div class="onglet-contenu" id="onglet-avis-alertes">
 
     <!-- 2. AVIS CLIENTS A VALIDER -->
     <section class="bloc" style="border-color:rgba(77,208,225,0.4);">
@@ -100,6 +143,23 @@
       <button onclick="publierAlerte()" style="width:100%;padding:13px;background:#FFC107;color:#0D1117;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">📢 Publier l'alerte</button>
       <div id="liste-alertes-actives" style="margin-top:16px;"></div>
     </section>
+    </div>
+
+    <div class="onglet-contenu" id="onglet-annonces">
+      <div class="barre-selection" id="barre-selection-annonces">
+        <span id="compteur-selection">0 selectionnee(s)</span>
+        <button class="btn-suppr-groupe" onclick="window.supprimerAnnoncesSelection()">🗑️ Supprimer la selection</button>
+      </div>
+      <div class="onglets-nav" style="border-bottom:none;margin-bottom:14px;">
+        <button class="onglet-btn actif" data-cat-annonce="immobilier" onclick="window.changerCategorieAnnonceAdmin('immobilier')">🏠 Immobilier</button>
+        <button class="onglet-btn" data-cat-annonce="vehicule" onclick="window.changerCategorieAnnonceAdmin('vehicule')">🚗 Vehicule</button>
+        <button class="onglet-btn" data-cat-annonce="covoiturage" onclick="window.changerCategorieAnnonceAdmin('covoiturage')">🧳 Covoiturage</button>
+        <button class="onglet-btn" data-cat-annonce="service" onclick="window.changerCategorieAnnonceAdmin('service')">🔧 Service</button>
+      </div>
+      <div id="liste-annonces-admin"><p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Chargement...</p></div>
+    </div>
+
+    <div class="onglet-contenu" id="onglet-outils">
 
     <!-- 4. AJOUTER UN PRO -->
     <section class="bloc">
@@ -221,6 +281,23 @@
         <div id="em-succes" style="display:none;background:rgba(168,224,99,0.1);border:1px solid rgba(168,224,99,0.4);border-radius:10px;padding:12px;color:#A8E063;text-align:center;margin-bottom:12px;">✅ Email envoyé avec succès !</div>
         <button onclick="envoyerEmailGeneral()" style="width:100%;padding:13px;background:#4DD0E1;color:#0D1117;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">📧 Envoyer l'email</button>
       </section>
+    </div>
+
+    <div class="onglet-contenu" id="onglet-paiements">
+      <div id="stats-paiements" class="stats-grid"></div>
+      <h3 style="color:#4DD0E1;font-size:14px;margin:14px 0 8px;">💳 Paiements recents</h3>
+      <div id="liste-paiements"><p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Chargement...</p></div>
+      <h3 style="color:#A8E063;font-size:14px;margin:20px 0 8px;">🔁 Abonnements actifs</h3>
+      <div id="liste-abonnements"></div>
+      <h3 style="color:#ff6b6b;font-size:14px;margin:20px 0 8px;">🚨 Alertes trafic suspect</h3>
+      <div id="liste-alertes-suspectes"></div>
+    </div>
+
+    <div class="onglet-contenu" id="onglet-historique">
+      <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-bottom:12px;">Journal de toutes les actions administrateur (validation, refus, suppression...).</p>
+      <div id="liste-historique"><p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Chargement...</p></div>
+    </div>
+
   </main>
   </div>
 
@@ -232,6 +309,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, getDocs, getDoc, query, where, orderBy, limit, deleteDoc, doc, updateDoc, increment, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
@@ -268,7 +346,66 @@
       chargerDemandesPros();
       chargerAvisAttente();
       chargerAlertes();
+      chargerAnnoncesAdmin('immobilier');
+      chargerHistorique();
+      majMajInfo();
     }
+
+    window.changerOnglet = function(nom) {
+      document.querySelectorAll('.onglet-btn[data-onglet]').forEach((b) => b.classList.remove('actif'));
+      document.querySelector(`.onglet-btn[data-onglet="${nom}"]`)?.classList.add('actif');
+      document.querySelectorAll('.onglet-contenu').forEach((c) => c.classList.remove('actif'));
+      document.getElementById('onglet-' + nom)?.classList.add('actif');
+      if (nom === 'paiements') chargerPaiements();
+      if (nom === 'historique') chargerHistorique();
+    };
+
+    function majMajInfo() {
+      const el = document.getElementById('maj-info');
+      if (el) el.textContent = 'Derniere mise a jour : ' + new Date().toLocaleTimeString('fr-FR');
+    }
+
+    window.rafraichirTout = async function() {
+      const btn = document.getElementById('btn-refresh-tout');
+      if (btn) { btn.disabled = true; btn.textContent = '⏳ Actualisation...'; }
+      await Promise.all([
+        chargerDemandesPros(),
+        chargerAvisAttente(),
+        chargerAlertes(),
+        chargerAnnoncesAdmin(categorieAnnonceActive),
+        chargerHistorique(),
+      ]);
+      majMajInfo();
+      if (btn) { btn.disabled = false; btn.textContent = '🔄 Rafraichir tout'; }
+    };
+
+    // ===== HISTORIQUE ADMIN =====
+    async function journaliserAction(action, details) {
+      try {
+        await addDoc(collection(db, 'historique_admin'), {
+          action, details, admin: ADMIN, date: Timestamp.now(),
+        });
+      } catch (e) { /* silencieux, l historique ne doit jamais bloquer une action */ }
+    }
+
+    async function chargerHistorique() {
+      const container = document.getElementById('liste-historique');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(collection(db, 'historique_admin'), orderBy('date', 'desc'), limit(50)));
+        if (snap.empty) { container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune action enregistree</p>'; return; }
+        container.innerHTML = snap.docs.map((d) => {
+          const h = d.data();
+          const date = h.date?.toDate?.()?.toLocaleString('fr-FR') || '';
+          return `<div style="background:#0D1117;border-radius:8px;padding:10px 14px;margin-bottom:8px;border-left:3px solid #4DD0E1;">
+            <div style="color:#4DD0E1;font-size:12px;font-weight:700;">${h.action || ''}</div>
+            <div style="color:rgba(255,255,255,0.6);font-size:12px;">${h.details || ''}</div>
+            <div style="color:rgba(255,255,255,0.3);font-size:10px;">${date}</div>
+          </div>`;
+        }).join('');
+      } catch (e) { container.innerHTML = '<p style="color:#ff6b6b;">Erreur: ' + e.message + '</p>'; }
+    }
+
 
     // ===== DEMANDES PROS =====
     async function chargerDemandesPros() {
@@ -366,16 +503,50 @@
         const data = demandeSnap.data();
         await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
         await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'valide' });
-        alert('✅ Professionnel publié dans l\'annuaire !');
+        if (data.email) {
+          try {
+            emailjs.init('lj-ndl5zGAWGWkJqc');
+            await emailjs.send('service_pv5uh7i', 'template_e12y5yv', {
+              pro_nom: (data.prenom || '') + ' ' + (data.nom || ''),
+              pro_email: data.email,
+              secteur: 'Inscription validee — DZ Diaspora',
+              wilaya: '',
+              urgent: 'Non',
+              description: 'Votre inscription professionnelle a ete validee par notre equipe. Connectez-vous sur : https://dzdiaspora.online/espace-pro.html avec votre email et mot de passe. Bienvenue sur DZ Diaspora !',
+            });
+          } catch (mailErr) { /* email non bloquant */ }
+        }
+        await journaliserAction('Validation inscription pro', (data.prenom || '') + ' ' + (data.nom || '') + ' (' + (data.email || '') + ')');
+        alert('✅ Professionnel publié dans l\'annuaire, email envoyé !');
         chargerDemandesPros();
+        chargerHistorique();
       } catch(e) { alert('Erreur: ' + e.message); }
     };
 
     window.refuserDemandePro = async function(btn) {
       const id = btn.dataset?.id || btn;
       if (!confirm('Refuser cette demande ?')) return;
-      await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'refuse' });
-      chargerDemandesPros();
+      try {
+        const demandeSnap = await getDoc(doc(db, 'professionnels_demandes', id));
+        const data = demandeSnap.data();
+        await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'refuse' });
+        if (data?.email) {
+          try {
+            emailjs.init('lj-ndl5zGAWGWkJqc');
+            await emailjs.send('service_pv5uh7i', 'template_e12y5yv', {
+              pro_nom: (data.prenom || '') + ' ' + (data.nom || ''),
+              pro_email: data.email,
+              secteur: 'Inscription non retenue — DZ Diaspora',
+              wilaya: '',
+              urgent: 'Non',
+              description: 'Apres etude de votre dossier, nous ne sommes pas en mesure de valider votre inscription pour le moment. N hesitez pas a nous contacter pour plus d informations ou a soumettre a nouveau votre demande avec des pieces completes.',
+            });
+          } catch (mailErr) { /* email non bloquant */ }
+        }
+        await journaliserAction('Refus inscription pro', (data?.prenom || '') + ' ' + (data?.nom || '') + ' (' + (data?.email || '') + ')');
+        chargerDemandesPros();
+        chargerHistorique();
+      } catch(e) { alert('Erreur: ' + e.message); }
     };
 
     // ===== AVIS CLIENTS =====
@@ -447,6 +618,134 @@
             </div>`;
           }).join('');
       } catch(e) {}
+    }
+
+    // ===== ANNONCES (moderation + suppression groupee) =====
+    let categorieAnnonceActive = 'immobilier';
+    let selectionAnnonces = new Set();
+    const collectionsAnnonces = {
+      immobilier: 'annonces_immobilier',
+      vehicule: 'annonces_vehicule',
+      covoiturage: 'annonces_covoiturage',
+      service: 'annonces_service',
+    };
+
+    window.changerCategorieAnnonceAdmin = function(cat) {
+      categorieAnnonceActive = cat;
+      selectionAnnonces.clear();
+      document.querySelectorAll('.onglet-btn[data-cat-annonce]').forEach((b) => b.classList.remove('actif'));
+      document.querySelector(`.onglet-btn[data-cat-annonce="${cat}"]`)?.classList.add('actif');
+      chargerAnnoncesAdmin(cat);
+    };
+
+    async function chargerAnnoncesAdmin(cat) {
+      const container = document.getElementById('liste-annonces-admin');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(collection(db, collectionsAnnonces[cat]), orderBy('date_publication', 'desc'), limit(50)));
+        if (snap.empty) { container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune annonce dans cette categorie</p>'; return; }
+        container.innerHTML = snap.docs.map((d) => {
+          const a = d.data();
+          const date = a.date_publication?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          return `<div class="card-attente" style="display:flex;align-items:flex-start;gap:10px;">
+            <input type="checkbox" class="check-item" data-id="${d.id}" onchange="window.majSelectionAnnonce(this)">
+            <div style="flex:1;">
+              <div style="color:white;font-size:14px;font-weight:700;">${a.identite || 'Anonyme'}</div>
+              <div style="color:rgba(255,255,255,0.6);font-size:12px;">${(a.description || '').substring(0, 150)}</div>
+              <div style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:4px;">📞 ${a.contact || '—'} | Le ${date}</div>
+              <button class="btn-non" style="margin-top:8px;" onclick="window.supprimerAnnonceUnique('${cat}', '${d.id}')">🗑️ Supprimer</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch (e) { container.innerHTML = '<p style="color:#ff6b6b;">Erreur: ' + e.message + '</p>'; }
+    }
+
+    window.majSelectionAnnonce = function(chk) {
+      if (chk.checked) selectionAnnonces.add(chk.dataset.id);
+      else selectionAnnonces.delete(chk.dataset.id);
+      const barre = document.getElementById('barre-selection-annonces');
+      const compteur = document.getElementById('compteur-selection');
+      if (selectionAnnonces.size > 0) {
+        barre.classList.add('actif');
+        compteur.textContent = selectionAnnonces.size + ' selectionnee(s)';
+      } else {
+        barre.classList.remove('actif');
+      }
+    };
+
+    window.supprimerAnnonceUnique = async function(cat, id) {
+      if (!confirm('Supprimer cette annonce ?')) return;
+      try {
+        await deleteDoc(doc(db, collectionsAnnonces[cat], id));
+        await journaliserAction('Suppression annonce', `Categorie: ${cat}, ID: ${id}`);
+        chargerAnnoncesAdmin(cat);
+      } catch (e) { alert('Erreur: ' + e.message); }
+    };
+
+    window.supprimerAnnoncesSelection = async function() {
+      if (selectionAnnonces.size === 0) return;
+      if (!confirm(`Supprimer les ${selectionAnnonces.size} annonces selectionnees ?`)) return;
+      try {
+        for (const id of selectionAnnonces) {
+          await deleteDoc(doc(db, collectionsAnnonces[categorieAnnonceActive], id));
+        }
+        await journaliserAction('Suppression groupee annonces', `Categorie: ${categorieAnnonceActive}, ${selectionAnnonces.size} annonces`);
+        selectionAnnonces.clear();
+        document.getElementById('barre-selection-annonces').classList.remove('actif');
+        chargerAnnoncesAdmin(categorieAnnonceActive);
+      } catch (e) { alert('Erreur: ' + e.message); }
+    };
+
+    // ===== PAIEMENTS (Stripe + alertes suspectes) =====
+    async function chargerPaiements() {
+      const container = document.getElementById('liste-paiements');
+      const containerAbo = document.getElementById('liste-abonnements');
+      const containerAlertes = document.getElementById('liste-alertes-suspectes');
+      const containerStats = document.getElementById('stats-paiements');
+      if (!container) return;
+      container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Chargement des donnees Stripe...</p>';
+      try {
+        const functions = getFunctions(app);
+        const obtenir = httpsCallable(functions, 'obtenirDonneesPaiements');
+        const result = await obtenir();
+        const { paiements, abonnements, alertesSuspectes } = result.data;
+
+        const totalMois = paiements.filter((p) => p.statut === 'succeeded').reduce((s, p) => s + p.montant, 0);
+        if (containerStats) {
+          containerStats.innerHTML = `
+            <div class="stat-card"><div class="stat-valeur" style="color:#A8E063;">${totalMois.toFixed(2)}€</div><div class="stat-label">Total recent</div></div>
+            <div class="stat-card"><div class="stat-valeur" style="color:#4DD0E1;">${abonnements.filter((a) => a.statut === 'active').length}</div><div class="stat-label">Abonnements actifs</div></div>
+            <div class="stat-card"><div class="stat-valeur" style="color:#FFC107;">${paiements.length}</div><div class="stat-label">Paiements recents</div></div>
+          `;
+        }
+
+        container.innerHTML = paiements.length === 0 ? '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucun paiement</p>' :
+          paiements.map((p) => `<div class="card-avis">
+            <div style="color:${p.statut === 'succeeded' ? '#A8E063' : '#ff6b6b'};font-weight:700;">${p.montant.toFixed(2)} ${p.devise.toUpperCase()} — ${p.statut}</div>
+            <div style="color:white;font-size:12px;">${p.email}</div>
+            <div style="color:rgba(255,255,255,0.4);font-size:11px;">${new Date(p.date).toLocaleString('fr-FR')} ${p.rembourse ? '(rembourse)' : ''}</div>
+          </div>`).join('');
+
+        if (containerAbo) {
+          containerAbo.innerHTML = abonnements.length === 0 ? '<p style="color:rgba(255,255,255,0.3);font-size:12px;">Aucun abonnement</p>' :
+            abonnements.map((a) => `<div class="card-avis">
+              <div style="color:${a.statut === 'active' ? '#A8E063' : '#ff6b6b'};font-weight:700;">${a.montant.toFixed(2)}€ / ${a.intervalle} — ${a.statut}${a.annule ? ' (annulation programmee)' : ''}</div>
+              <div style="color:rgba(255,255,255,0.4);font-size:11px;">Prochaine echeance : ${a.prochaine_echeance ? new Date(a.prochaine_echeance).toLocaleDateString('fr-FR') : '—'}</div>
+            </div>`).join('');
+        }
+
+        if (containerAlertes) {
+          containerAlertes.innerHTML = alertesSuspectes.length === 0 ? '<p style="color:rgba(255,255,255,0.3);font-size:12px;">Aucune alerte recente ✅</p>' :
+            alertesSuspectes.map((al) => `<div class="card-alerte" style="border-left-color:#D21034;">
+              <div>
+                <span style="color:#ff6b6b;font-size:11px;font-weight:700;">${al.type}</span>
+                <div style="color:white;font-size:12px;">${al.description}</div>
+              </div>
+            </div>`).join('');
+        }
+      } catch (e) {
+        container.innerHTML = '<p style="color:#ff6b6b;">Erreur chargement paiements: ' + (e.message || e) + '</p>';
+      }
     }
 
     // Remplir le formulaire avec une alerte existante
