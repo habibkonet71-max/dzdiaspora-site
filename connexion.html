@@ -212,6 +212,27 @@
       }
     });
 
+    document.getElementById("lienMotDePasseOublie").addEventListener("click", async function (e) {
+      e.preventDefault();
+      const email = document.getElementById("emailConnexion").value;
+      const msgErreur = document.getElementById("msgErreur");
+      const msgSucces = document.getElementById("msgSucces");
+      if (!email) {
+        msgErreur.textContent = "Veuillez saisir votre email dans le champ ci-dessus avant de cliquer.";
+        msgErreur.style.display = "block";
+        return;
+      }
+      try {
+        await sendPasswordResetEmail(auth, email);
+        msgSucces.textContent = "✅ Un email de reinitialisation a ete envoye a " + email;
+        msgSucces.style.display = "block";
+        msgErreur.style.display = "none";
+      } catch (err) {
+        msgErreur.textContent = "❌ " + traduireErreur(err.code);
+        msgErreur.style.display = "block";
+      }
+    });
+
         function traduireErreur(code) {
       const erreurs = {
         "auth/email-already-in-use": "Cet email est deja utilise.",
