@@ -88,24 +88,23 @@
     <div class="tabs">
       <button class="tab-btn active" onclick="changerTab('deposer')">📋 Deposer un objet trouve</button>
       <button class="tab-btn" onclick="changerTab('rechercher')">🔎 Rechercher mon objet</button>
-      <button class="tab-btn" onclick="changerTab('liste')">📜 Objets recents</button>
     </div>
 
     <!-- TAB 1 : DEPOSER -->
     <div id="tab-deposer" class="tab-content active">
       <div class="code-secret-info">
-        🔐 <strong>Comment fonctionne le code secret ?</strong><br>
-        Choisissez un mot ou code que SEUL le proprietaire de l objet peut connaitre (ex: couleur interieure du sac, prenom grave, autocollant...). 
-        Le proprietaire devra taper exactement ce code pour voir vos coordonnees.
+        🤖 <strong>Comment ca marche ?</strong><br>
+        Exemple : Jean trouve un sac avec des papiers d identite. Il depose une fiche et choisit "Papiers d identite" comme verification — la question posee sera automatiquement "Quelle est la date de naissance et la date de validite du document ?".<br>
+        Martine, qui a perdu son sac, consulte la liste, filtre par lieu et date, trouve la fiche de Jean, clique sur "Prouve-le", tape sa date de naissance et la date de validite. Si c est correct, les coordonnees de Jean s affichent immediatement.<br>
+        <strong style="color:#FFC107;">⚠️ 3 tentatives maximum</strong> : au-dela, le bouton "Prouve-le" est bloque pour eviter les abus.<br>
+        <span style="color:rgba(255,255,255,0.4);">Besoin d aide ? Le bouton Helliot Slem en bas de page peut vous guider.</span>
       </div>
-
       <div class="message-succes" id="succes-depot">
         ✅ Votre fiche a ete enregistree avec succes ! Merci de votre geste.
       </div>
-
       <div class="form-group">
         <label>Type d objet *</label>
-        <select id="type-objet">
+        <select id="type-objet" onchange="window.majQuestionVerification()">
           <option value="">-- Selectionnez --</option>
           <option value="document">📄 Document (CNI, passeport, permis de conduire, carte consulaire...)</option>
           <option value="sac">👜 Sac, cabas, valise, portefeuille</option>
@@ -115,18 +114,23 @@
           <option value="autre">📦 Autre objet</option>
         </select>
       </div>
-
       <div class="form-group">
         <label>Description de l objet *</label>
         <textarea id="description-objet" placeholder="Ex: Sac a main rouge en cuir, contenant une carte d identite au nom de Fatima B., une carte bancaire CIB et des cles. Trouve le 2 juillet 2026 devant la gare de Constantine."></textarea>
       </div>
-
       <div class="form-group">
         <label>Lieu ou l objet a ete trouve *</label>
         <input type="text" id="lieu-trouve" placeholder="Ex: Gare routiere de Constantine, aeroport d Alger, mosquee El Kebir Oran...">
       </div>
-
       <div class="form-group">
+        <label>Pays *</label>
+        <select id="pays-objet" onchange="window.togglePaysObjet()">
+          <option value="Algerie">🇩🇿 Algerie</option>
+          <option value="France">🇫🇷 France</option>
+          <option value="Autre">🌍 Autre pays</option>
+        </select>
+      </div>
+      <div class="form-group" id="groupe-wilaya-objet">
         <label>Wilaya *</label>
         <select id="wilaya-objet">
           <option value="">-- Wilaya --</option>
@@ -139,11 +143,28 @@
           <option>Tamanrasset</option><option>Adrar</option><option>Autre</option>
         </select>
       </div>
-
+      <div class="form-group" id="groupe-ville-objet" style="display:none;">
+        <label>Ville *</label>
+        <input type="text" id="ville-objet" placeholder="Ex: Paris, Marseille, Lyon...">
+      </div>
       <div class="form-group">
-        <label>🔐 Code secret (signe distinctif connu du seul proprietaire) *</label>
-        <input type="text" id="code-secret" placeholder="Ex: couleur de la doublure, mot grave, autocollant..." maxlength="50">
-        <p style="color:rgba(255,255,255,0.35);font-size:11px;margin-top:4px;">Ce code ne sera JAMAIS affiche publiquement. Seul quelqu un qui le connait verra vos coordonnees.</p>
+        <label>🔐 Type de verification *</label>
+        <select id="type-verification" onchange="window.majQuestionVerification()">
+          <option value="papiers_id">📄 Papiers d identite</option>
+          <option value="telephone">📱 Telephone / appareil electronique</option>
+          <option value="sac_bagage">👜 Sac / bagage</option>
+          <option value="cle">🔑 Cles</option>
+          <option value="autre">📦 Autre (question libre)</option>
+        </select>
+      </div>
+      <div class="form-group" id="groupe-question-libre" style="display:none;">
+        <label>Votre question de verification *</label>
+        <input type="text" id="question-libre" placeholder="Ex: Quelle est la marque inscrite a l interieur ?" maxlength="150">
+      </div>
+      <div class="form-group">
+        <label id="label-reponse-verification">🔐 Reponse attendue *</label>
+        <input type="text" id="reponse-verification" placeholder="La reponse exacte que seul le proprietaire connait" maxlength="100">
+        <p style="color:rgba(255,255,255,0.35);font-size:11px;margin-top:4px;">Cette reponse ne sera JAMAIS affichee publiquement.</p>
       </div>
 
       <div style="background:rgba(255,255,255,0.03);border-radius:10px;padding:14px;margin-bottom:16px;">
@@ -165,17 +186,17 @@
       <button class="btn-submit" onclick="deposerObjet()">📋 Deposer la fiche</button>
     </div>
 
-    <!-- TAB 2 : RECHERCHER -->
+    <!-- TAB 2 : RECHERCHER (fusionne avec liste + Prouve-le) -->
     <div id="tab-rechercher" class="tab-content">
       <div class="code-secret-info">
         🔎 <strong>Comment retrouver votre objet ?</strong><br>
-        Si quelqu un a depose une fiche pour votre objet, entrez le <strong>signe distinctif secret</strong> que vous seul connaissez. 
-        Si le code correspond, les coordonnees du depositaire s affichent.
+        Filtrez par type et par lieu, parcourez les fiches, et cliquez sur <strong>"Prouve-le"</strong> sur celle qui correspond a votre objet perdu.
+        Vous devrez repondre a la question posee par la personne qui l a trouve.
       </div>
 
       <div class="form-group">
         <label>Type d objet perdu</label>
-        <select id="type-recherche">
+        <select id="type-recherche" onchange="window.chargerListeObjets()">
           <option value="">-- Tous les types --</option>
           <option value="document">📄 Document</option>
           <option value="sac">👜 Sac / portefeuille</option>
@@ -187,40 +208,34 @@
       </div>
 
       <div class="form-group">
+        <label>Pays</label>
+        <select id="pays-recherche" onchange="window.togglePaysRecherche()">
+          <option value="">-- Tous les pays --</option>
+          <option value="Algerie">🇩🇿 Algerie</option>
+          <option value="France">🇫🇷 France</option>
+          <option value="Autre">🌍 Autre pays</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="groupe-wilaya-recherche" style="display:none;">
         <label>Wilaya</label>
-        <select id="wilaya-recherche">
+        <select id="wilaya-recherche" onchange="window.chargerListeObjets()">
           <option value="">-- Toutes les wilayas --</option>
           <option>Alger</option><option>Oran</option><option>Constantine</option>
           <option>Annaba</option><option>Blida</option><option>Bejaia</option>
           <option>Tizi Ouzou</option><option>Setif</option><option>Batna</option>
-          <option>Tlemcen</option><option>Autre</option>
+          <option>Tlemcen</option><option>Mostaganem</option><option>Sidi Bel Abbes</option>
+          <option>Skikda</option><option>Guelma</option><option>Medea</option>
+          <option>Mascara</option><option>Ghardaia</option><option>Ouargla</option>
+          <option>Tamanrasset</option><option>Adrar</option><option>Autre</option>
         </select>
       </div>
 
-      <div class="form-group">
-        <label>🔐 Votre code secret (signe distinctif) *</label>
-        <input type="text" id="code-recherche" placeholder="Tapez le signe distinctif que vous seul connaissez..." maxlength="50">
+      <div class="form-group" id="groupe-ville-recherche" style="display:none;">
+        <label>Ville</label>
+        <input type="text" id="ville-recherche" placeholder="Ex: Paris, Marseille..." oninput="window.chargerListeObjets()">
       </div>
 
-      <div class="message-erreur" id="erreur-recherche">
-        ❌ Aucun objet trouve correspondant a ce code. Verifiez l orthographe ou contactez-nous.
-      </div>
-
-      <button class="btn-submit green" onclick="rechercherObjet()">🔎 Rechercher mon objet</button>
-
-      <div class="resultat-recherche" id="resultat-recherche" style="display:none;">
-        <div class="contact-revele">
-          <h3>✅ Objet trouve ! Contactez le depositaire :</h3>
-          <div id="info-contact" style="margin-top:12px;"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 3 : LISTE -->
-    <div id="tab-liste" class="tab-content">
-      <p style="color:rgba(255,255,255,0.5);font-size:13px;margin-bottom:16px;">
-        Liste des objets trouves recemment. Les coordonnees de contact sont masquees — utilisez l onglet "Rechercher" avec votre code secret pour les afficher.
-      </p>
       <div id="liste-objets">
         <p style="color:rgba(255,255,255,0.3);text-align:center;padding:30px;">Chargement...</p>
       </div>
@@ -271,33 +286,71 @@
     window.signOutUser = async function() { await signOut(auth); window.location.href = 'connexion.html'; };
 
     // DEPOSER UN OBJET
+    window.togglePaysObjet = function() {
+      const pays = document.getElementById('pays-objet').value;
+      document.getElementById('groupe-wilaya-objet').style.display = pays === 'Algerie' ? 'block' : 'none';
+      document.getElementById('groupe-ville-objet').style.display = pays === 'Algerie' ? 'none' : 'block';
+    };
+
+    window.majQuestionVerification = function() {
+      const typeVerif = document.getElementById('type-verification').value;
+      const groupeLibre = document.getElementById('groupe-question-libre');
+      const labelReponse = document.getElementById('label-reponse-verification');
+      const questions = {
+        papiers_id: 'Reponse attendue (date de naissance + date de validite) *',
+        telephone: 'Reponse attendue (etat ecran, couleur coque, marques) *',
+        sac_bagage: 'Reponse attendue (contenu ou detail distinctif) *',
+        cle: 'Reponse attendue (detail du porte-cles) *',
+        autre: 'Reponse attendue *',
+      };
+      groupeLibre.style.display = typeVerif === 'autre' ? 'block' : 'none';
+      labelReponse.textContent = '🔐 ' + (questions[typeVerif] || 'Reponse attendue *');
+    };
+
     window.deposerObjet = async function() {
       const type = document.getElementById('type-objet').value;
       const description = document.getElementById('description-objet').value;
       const lieu = document.getElementById('lieu-trouve').value;
-      const wilaya = document.getElementById('wilaya-objet').value;
-      const code = document.getElementById('code-secret').value.trim().toLowerCase();
+      const pays = document.getElementById('pays-objet').value;
+      const wilaya = pays === 'Algerie' ? document.getElementById('wilaya-objet').value : '';
+      const ville = pays !== 'Algerie' ? document.getElementById('ville-objet').value : '';
+      const typeVerification = document.getElementById('type-verification').value;
+      const questionLibre = document.getElementById('question-libre').value.trim();
+      const reponse = document.getElementById('reponse-verification').value.trim().toLowerCase();
       const nom = document.getElementById('contact-nom').value;
       const tel = document.getElementById('contact-tel').value;
       const email = document.getElementById('contact-email').value;
 
-      if (!type || !description || !lieu || !wilaya || !code || !nom || !email) {
+      if (!type || !description || !lieu || !pays || (pays === 'Algerie' && !wilaya) || (pays !== 'Algerie' && !ville) || !typeVerification || (typeVerification === 'autre' && !questionLibre) || !reponse || !nom || !email) {
         alert('Veuillez remplir tous les champs obligatoires (*)');
         return;
       }
+
+      const QUESTIONS_TYPE = {
+        papiers_id: 'Quelle est la date de naissance et la date de validite du document ?',
+        telephone: 'Decrivez l etat de l ecran, la couleur de la coque et les marques distinctives.',
+        sac_bagage: 'Decrivez le contenu ou un detail distinctif (couture, etiquette, marque interieure...).',
+        cle: 'Decrivez le porte-cles ou un detail distinctif des cles.',
+      };
+      const question = typeVerification === 'autre' ? questionLibre : QUESTIONS_TYPE[typeVerification];
 
       try {
         const refPublic = await addDoc(collection(db, 'objets_trouves'), {
           type,
           description,
           lieu,
+          pays,
           wilaya,
+          ville,
+          type_verification: typeVerification,
+          question,
           date: Timestamp.now(),
           actif: true
         });
+
         await addDoc(collection(db, 'objets_trouves_prive'), {
           objet_id: refPublic.id,
-          code_secret: code,
+          reponse_attendue: reponse,
           contact_nom: nom,
           contact_tel: tel,
           contact_email: email,
@@ -307,7 +360,7 @@
 
         document.getElementById('succes-depot').style.display = 'block';
         // Vider le formulaire
-        ['type-objet','description-objet','lieu-trouve','wilaya-objet','code-secret','contact-nom','contact-tel','contact-email'].forEach(id => {
+        ['type-objet','description-objet','lieu-trouve','wilaya-objet','ville-objet','type-verification','question-libre','reponse-verification','contact-nom','contact-tel','contact-email'].forEach(id => {
           const el = document.getElementById(id);
           if (el) el.value = '';
         });
@@ -317,76 +370,116 @@
       }
     };
 
-    // RECHERCHER PAR CODE SECRET
-    window.rechercherObjet = async function() {
-      const code = document.getElementById('code-recherche').value.trim().toLowerCase();
-      if (!code) { alert('Entrez votre code secret'); return; }
-      document.getElementById('resultat-recherche').style.display = 'none';
-      document.getElementById('erreur-recherche').style.display = 'none';
-      try {
-        const rechercher = httpsCallable(functions, 'rechercherObjetTrouve');
-        const result = await rechercher({ code });
-        const resultats = result.data.resultats || [];
-        if (resultats.length === 0) {
-          document.getElementById('erreur-recherche').style.display = 'block';
-          return;
-        }
-        let html = '';
-        resultats.forEach(d => {
-          html += `
-            <div style="margin-bottom:16px;padding:14px;background:rgba(168,224,99,0.05);border-radius:10px;">
-              <p style="color:white;font-weight:bold;font-size:15px;">${d.type === 'document' ? '📄' : d.type === 'sac' ? '👜' : d.type === 'electronique' ? '📱' : d.type === 'cle' ? '🔑' : '📦'} ${d.description}</p>
-              <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:4px;">📍 ${d.lieu} — ${d.wilaya}</p>
-              <div style="margin-top:14px;padding:12px;background:rgba(168,224,99,0.1);border-radius:8px;">
-                <p style="color:#A8E063;font-weight:bold;font-size:13px;">👤 ${d.contact_nom}</p>
-                ${d.contact_tel ? `<p style="color:white;font-size:14px;margin-top:6px;">📞 <a href="tel:${d.contact_tel}" style="color:#4DD0E1;">${d.contact_tel}</a></p>` : ''}
-                <p style="color:white;font-size:14px;margin-top:4px;">✉️ <a href="mailto:${d.contact_email}" style="color:#4DD0E1;">${d.contact_email}</a></p>
-              </div>
-            </div>`;
-        });
-        document.getElementById('info-contact').innerHTML = html;
-        document.getElementById('resultat-recherche').style.display = 'block';
-      } catch(e) {
-        document.getElementById('erreur-recherche').style.display = 'block';
-      }
+    // TOGGLE PAYS RECHERCHE
+    window.togglePaysRecherche = function() {
+      const pays = document.getElementById('pays-recherche').value;
+      document.getElementById('groupe-wilaya-recherche').style.display = pays === 'Algerie' ? 'block' : 'none';
+      document.getElementById('groupe-ville-recherche').style.display = (pays && pays !== 'Algerie') ? 'block' : 'none';
+      window.chargerListeObjets();
     };
 
-    // LISTE DES OBJETS RECENTS (sans contact)
-    async function chargerListe() {
+    const QUESTIONS_AFFICHAGE = {
+      papiers_id: 'Quelle est la date de naissance et la date de validite du document ?',
+      telephone: 'Decrivez l etat de l ecran, la couleur de la coque et les marques distinctives.',
+      sac_bagage: 'Decrivez le contenu ou un detail distinctif.',
+      cle: 'Decrivez le porte-cles ou un detail distinctif des cles.',
+    };
+
+    // LISTE FILTRABLE DES OBJETS + BOUTON PROUVE-LE
+    window.chargerListeObjets = async function() {
+      const container = document.getElementById('liste-objets');
+      const typeFiltre = document.getElementById('type-recherche')?.value || '';
+      const paysFiltre = document.getElementById('pays-recherche')?.value || '';
+      const wilayaFiltre = document.getElementById('wilaya-recherche')?.value || '';
+      const villeFiltre = document.getElementById('ville-recherche')?.value.trim().toLowerCase() || '';
       try {
-        const q = query(collection(db, 'objets_trouves'), where('actif', '==', true), orderBy('date', 'desc'), limit(20));
+        let q = query(collection(db, 'objets_trouves'), where('actif', '==', true));
         const snap = await getDocs(q);
-        const container = document.getElementById('liste-objets');
 
         if (snap.empty) {
           container.innerHTML = '<p style="color:rgba(255,255,255,0.3);text-align:center;padding:30px;">Aucun objet enregistre pour le moment.</p>';
           return;
         }
 
-        let html = '';
         const badges = { document: 'badge-document', sac: 'badge-sac', electronique: 'badge-electronique', cle: 'badge-cle', bijou: 'badge-electronique', autre: 'badge-autre' };
         const emojis = { document: '📄', sac: '👜', electronique: '📱', cle: '🔑', bijou: '💍', autre: '📦' };
         const labels = { document: 'Document', sac: 'Sac / Portefeuille', electronique: 'Electronique', cle: 'Cles', bijou: 'Bijou', autre: 'Autre' };
 
-        snap.forEach(doc => {
+        let docs = snap.docs.filter(doc => {
+          const d = doc.data();
+          if (typeFiltre && d.type !== typeFiltre) return false;
+          if (paysFiltre && d.pays !== paysFiltre) return false;
+          if (wilayaFiltre && d.wilaya !== wilayaFiltre) return false;
+          if (villeFiltre && !(d.ville || '').toLowerCase().includes(villeFiltre)) return false;
+          return true;
+        });
+        docs.sort((a, b) => (b.data().date?.toMillis?.() || 0) - (a.data().date?.toMillis?.() || 0));
+
+        if (docs.length === 0) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);text-align:center;padding:30px;">Aucun objet ne correspond a ces filtres.</p>';
+          return;
+        }
+
+        let html = '';
+        docs.forEach(doc => {
           const d = doc.data();
           const date = d.date?.toDate ? d.date.toDate().toLocaleDateString('fr-FR') : 'Date inconnue';
+          const lieuComplet = d.pays === 'Algerie' ? (d.wilaya || '') : (d.ville || '') + (d.pays ? ', ' + d.pays : '');
+          const question = d.question || QUESTIONS_AFFICHAGE[d.type_verification] || 'Question de verification';
           html += `
-            <div class="objet-card">
+            <div class="objet-card" id="carte-${doc.id}">
               <span class="badge ${badges[d.type] || 'badge-autre'}">${emojis[d.type] || '📦'} ${labels[d.type] || 'Autre'}</span>
               <p style="color:white;font-size:14px;line-height:1.5;">${d.description}</p>
-              <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:6px;">📍 ${d.lieu} — ${d.wilaya} &nbsp;|&nbsp; 📅 ${date}</p>
-              <p style="color:rgba(77,208,225,0.7);font-size:11px;margin-top:8px;font-style:italic;">🔐 Pour contacter le depositaire, utilisez l onglet "Rechercher" avec votre code secret.</p>
+              <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:6px;">📍 ${d.lieu} — ${lieuComplet} &nbsp;|&nbsp; 📅 ${date}</p>
+              <div style="margin-top:10px;padding:10px;background:rgba(255,255,255,0.03);border-radius:8px;">
+                <p style="color:#4DD0E1;font-size:12px;font-weight:600;margin-bottom:6px;">❓ ${question}</p>
+                <input type="text" id="reponse-${doc.id}" placeholder="Votre reponse..." style="width:100%;padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.15);background:#0D1117;color:white;box-sizing:border-box;margin-bottom:8px;">
+                <button id="btn-prouve-${doc.id}" onclick="window.prouverObjet('${doc.id}')" style="width:100%;padding:9px;background:#A8E063;color:#0D1117;border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;">✅ Prouve-le</button>
+                <div id="resultat-${doc.id}" style="margin-top:8px;"></div>
+              </div>
             </div>`;
         });
 
         container.innerHTML = html;
       } catch(e) {
-        document.getElementById('liste-objets').innerHTML = '<p style="color:rgba(255,255,255,0.3);text-align:center;">Chargement impossible.</p>';
+        container.innerHTML = '<p style="color:#ff6b6b;text-align:center;padding:20px;">Erreur: ' + e.message + '</p>';
       }
-    }
+    };
 
-    chargerListe();
+    window.prouverObjet = async function(objetId) {
+      const input = document.getElementById('reponse-' + objetId);
+      const btn = document.getElementById('btn-prouve-' + objetId);
+      const resultatDiv = document.getElementById('resultat-' + objetId);
+      const reponse = input.value.trim();
+      if (!reponse) { resultatDiv.innerHTML = '<p style="color:#ff6b6b;font-size:12px;">Entrez une reponse</p>'; return; }
+      btn.disabled = true;
+      btn.textContent = '⏳ Verification...';
+      try {
+        const verifier = httpsCallable(functions, 'verifierReponseObjet');
+        const result = await verifier({ objetId, reponse });
+        const data = result.data;
+        if (data.succes) {
+          resultatDiv.innerHTML = `
+            <div style="background:rgba(168,224,99,0.1);border:1px solid rgba(168,224,99,0.4);border-radius:8px;padding:10px;margin-top:6px;">
+              <p style="color:#A8E063;font-weight:bold;font-size:13px;">✅ ${data.contact_nom}</p>
+              ${data.contact_tel ? `<p style="color:white;font-size:13px;margin-top:4px;">📞 <a href="tel:${data.contact_tel}" style="color:#4DD0E1;">${data.contact_tel}</a></p>` : ''}
+              <p style="color:white;font-size:13px;margin-top:4px;">✉️ <a href="mailto:${data.contact_email}" style="color:#4DD0E1;">${data.contact_email}</a></p>
+            </div>`;
+          btn.style.display = 'none';
+        } else {
+          resultatDiv.innerHTML = '<p style="color:#ff6b6b;font-size:12px;">❌ Reponse incorrecte. ' + (data.tentatives_restantes || 0) + ' tentative(s) restante(s).</p>';
+          btn.disabled = false;
+          btn.textContent = '✅ Prouve-le';
+        }
+      } catch(e) {
+        resultatDiv.innerHTML = '<p style="color:#ff6b6b;font-size:12px;">❌ ' + (e.message || 'Trop de tentatives. Reessayez plus tard.') + '</p>';
+        btn.disabled = true;
+        btn.style.opacity = '0.4';
+        btn.textContent = '🚫 Bloque';
+      }
+    };
+
+    chargerListeObjets();
   </script>
 
   <script>
@@ -395,7 +488,7 @@
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       event.target.classList.add('active');
       document.getElementById('tab-' + tab).classList.add('active');
-      if (tab === 'liste') chargerListe();
+      if (tab === 'rechercher') window.chargerListeObjets();
     };
   </script>
 
