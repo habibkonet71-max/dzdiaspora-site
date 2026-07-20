@@ -436,6 +436,7 @@
                 <input type="text" id="reponse-${doc.id}" placeholder="Votre reponse..." style="width:100%;padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.15);background:#0D1117;color:white;box-sizing:border-box;margin-bottom:8px;">
                 <button id="btn-prouve-${doc.id}" onclick="window.prouverObjet('${doc.id}')" style="width:100%;padding:9px;background:#A8E063;color:#0D1117;border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;">✅ Prouve-le</button>
                 <button onclick="window.supprimerObjet('${doc.id}')" style="width:100%;padding:7px;margin-top:6px;background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;border-radius:8px;font-weight:700;font-size:11px;cursor:pointer;">🗑️ C est mon objet, je le retire</button>
+                <button onclick="window.ouvrirModalRestitution('${doc.id}', 'deposant')" style="width:100%;padding:7px;margin-top:6px;background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;border-radius:8px;font-weight:700;font-size:11px;cursor:pointer;">🧾 Je suis le deposant, remplir ma fiche</button>
                 <div id="resultat-${doc.id}" style="margin-top:8px;"></div>
               </div>
             </div>`;
@@ -465,6 +466,7 @@
               <p style="color:#A8E063;font-weight:bold;font-size:13px;">✅ ${data.contact_nom}</p>
               ${data.contact_tel ? `<p style="color:white;font-size:13px;margin-top:4px;">📞 <a href="tel:${data.contact_tel}" style="color:#4DD0E1;">${data.contact_tel}</a></p>` : ''}
               <p style="color:white;font-size:13px;margin-top:4px;">✉️ <a href="mailto:${data.contact_email}" style="color:#4DD0E1;">${data.contact_email}</a></p>
+              <button onclick="window.ouvrirModalRestitution('${objetId}', 'proprietaire')" style="width:100%;padding:8px;margin-top:8px;background:#4DD0E1;color:#0D1117;border:none;border-radius:8px;font-weight:700;font-size:11px;cursor:pointer;">🧾 Remplir ma fiche de restitution</button>
             </div>`;
           btn.style.display = 'none';
         } else {
@@ -494,6 +496,53 @@
       }
     };
 
+
+    let restitutionObjetId = null;
+    let restitutionRole = null;
+
+    window.ouvrirModalRestitution = function(objetId, role) {
+      restitutionObjetId = objetId;
+      restitutionRole = role;
+      const label = document.getElementById('restitution-role-label');
+      label.textContent = role === 'proprietaire' ? 'Vous recuperez l objet — remplissez vos informations.' : 'Vous restituez l objet — remplissez vos informations.';
+      document.getElementById('modal-restitution').style.display = 'flex';
+    };
+
+    window.fermerModalRestitution = function() {
+      document.getElementById('modal-restitution').style.display = 'none';
+      ['restit-nom','restit-tel','restit-email','restit-lieu'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('restit-accepte').checked = false;
+    };
+
+    window.envoyerRestitution = async function() {
+      const nom = document.getElementById('restit-nom').value.trim();
+      const tel = document.getElementById('restit-tel').value.trim();
+      const email = document.getElementById('restit-email').value.trim();
+      const lieu = document.getElementById('restit-lieu').value.trim();
+      const mode = document.getElementById('restit-mode').value;
+      const accepte = document.getElementById('restit-accepte').checked;
+
+      if (!nom || !tel || !email || !lieu || !accepte) {
+        alert('Veuillez remplir tous les champs et accepter les conditions.');
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, 'restitutions_objets'), {
+          objet_id: restitutionObjetId,
+          role: restitutionRole,
+          nom, tel, email, lieu,
+          mode_contact: mode,
+          accepte_conditions: true,
+          date: Timestamp.now(),
+        });
+        alert('✅ Votre fiche a ete enregistree. Merci !');
+        window.fermerModalRestitution();
+      } catch (e) {
+        alert('❌ Erreur lors de l enregistrement: ' + e.message);
+      }
+    };
+
     chargerListeObjets();
   </script>
 
@@ -510,5 +559,48 @@
   <script src="script.js"></script>
   <script src="traduction.js?v=6"></script>
   <script src="depannage.js"></script>
+  <!-- MODAL FICHE DE RESTITUTION -->
+  <div id="modal-restitution" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);z-index:9998;align-items:center;justify-content:center;padding:16px;">
+    <div style="background:#1C2333;border-radius:16px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;padding:24px;">
+      <h2 style="color:#4DD0E1;font-size:18px;margin-bottom:6px;">🧾 Fiche de restitution</h2>
+      <p id="restitution-role-label" style="color:rgba(255,255,255,0.5);font-size:13px;margin-bottom:16px;"></p>
+      <div style="background:rgba(255,193,7,0.08);border:1px solid rgba(255,193,7,0.3);border-radius:10px;padding:12px;margin-bottom:16px;font-size:12px;color:rgba(255,255,255,0.7);">
+        ⚠️ Pour votre securite, organisez la remise dans un lieu public ou par voie postale. DZ Diaspora se degage de toute responsabilite une fois le contact etabli entre les parties.
+      </div>
+      <div class="form-group">
+        <label>Nom complet *</label>
+        <input type="text" id="restit-nom" placeholder="Votre nom et prenom">
+      </div>
+      <div class="form-group">
+        <label>Telephone *</label>
+        <input type="tel" id="restit-tel" placeholder="+213 ou +33...">
+      </div>
+      <div class="form-group">
+        <label>Email *</label>
+        <input type="email" id="restit-email" placeholder="votre@email.com">
+      </div>
+      <div class="form-group">
+        <label>Lieu de recuperation propose *</label>
+        <input type="text" id="restit-lieu" placeholder="Ex: Gare centrale, bureau de poste...">
+      </div>
+      <div class="form-group">
+        <label>Mode de contact prefere *</label>
+        <select id="restit-mode">
+          <option value="telephone">📞 Telephone</option>
+          <option value="email">✉️ Email</option>
+          <option value="en_personne">🤝 En personne</option>
+          <option value="intermediaire">👥 Via un intermediaire</option>
+        </select>
+      </div>
+      <div class="form-group" style="display:flex;align-items:flex-start;gap:8px;">
+        <input type="checkbox" id="restit-accepte" style="margin-top:4px;">
+        <label for="restit-accepte" style="font-size:12px;color:rgba(255,255,255,0.6);">J ai pris connaissance des conditions de securite et je suis seul responsable de mes declarations. *</label>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px;">
+        <button onclick="window.fermerModalRestitution()" style="flex:1;padding:12px;background:rgba(255,255,255,0.1);color:white;border:none;border-radius:10px;font-weight:700;cursor:pointer;">Annuler</button>
+        <button onclick="window.envoyerRestitution()" style="flex:2;padding:12px;background:#4DD0E1;color:#0D1117;border:none;border-radius:10px;font-weight:700;cursor:pointer;">Valider ma fiche</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
