@@ -73,7 +73,7 @@
     document.body.appendChild(btn);
     document.body.appendChild(fenetre);
 
-    function afficherMessage(texte, estUtilisateur, sources) {
+    function afficherMessage(texte, estUtilisateur, sources, lienSecours) {
       const div = document.getElementById("karina-messages");
       const msg = document.createElement("div");
       msg.className = "karina-msg " + (estUtilisateur ? "user" : "bot");
@@ -83,6 +83,15 @@
         src.style.cssText = "font-size:10px;opacity:0.6;margin-top:4px;";
         src.textContent = "📌 " + sources.join(", ");
         msg.appendChild(src);
+      }
+      if (lienSecours && lienSecours.url) {
+        const lien = document.createElement("a");
+        lien.href = lienSecours.url;
+        lien.target = "_blank";
+        lien.textContent = "🔗 " + (lienSecours.label || "Voir la page");
+        lien.style.cssText = "display:inline-block;margin-top:6px;color:#0D1117;background:#4DD0E1;padding:5px 10px;border-radius:8px;font-size:11px;font-weight:700;text-decoration:none;";
+        msg.appendChild(document.createElement("br"));
+        msg.appendChild(lien);
       }
       div.appendChild(msg);
       div.scrollTop = div.scrollHeight;
@@ -101,7 +110,7 @@
         const demander = fb.httpsCallable(fb.instance, "demanderAssistant");
         const result = await demander({ question });
         const sources = (result.data.sources || []).map((s) => s.titre).filter(Boolean);
-        afficherMessage(result.data.reponse || "Je n ai pas pu generer de reponse.", false, sources);
+        afficherMessage(result.data.reponse || "Je n ai pas pu generer de reponse.", false, sources, result.data.lien_secours);
       } catch (e) {
         afficherMessage("Une erreur est survenue lors de la communication avec l assistant.", false);
       }
