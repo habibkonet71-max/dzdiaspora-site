@@ -21,11 +21,14 @@
     .sig-box { background:#1C2333; border-radius:12px; padding:16px; border:1px solid rgba(77,208,225,0.3); margin-bottom:14px; }
 
     /* IMPRESSION */
+    @page { size: A4; margin: 15mm; }
     @media print {
-      body { background:white !important; color:black !important; }
+      html, body { height:auto !important; background:white !important; color:black !important; }
       .no-print { display:none !important; }
       .contrat-imprimable { display:block !important; }
       header, footer { display:none !important; }
+      .cnt-header { display:block !important; }
+      .cnt-header > div { display:block !important; width:100% !important; margin-bottom:10px; }
     }
     .contrat-imprimable { display:none; }
 
