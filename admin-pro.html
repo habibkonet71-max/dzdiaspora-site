@@ -137,6 +137,12 @@
       <div id="liste-avis-attente"><p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Chargement...</p></div>
     </section>
 
+    <!-- 2bis. AVIS PUBLIES -->
+    <section class="bloc" style="border-color:rgba(168,224,99,0.4);">
+      <h2 style="color:#A8E063;">⭐ Avis publiés</h2>
+      <div id="liste-avis-publies"><p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Chargement...</p></div>
+    </section>
+
     <!-- 3. ALERTES TRANSPORT -->
     <section class="bloc" style="border-color:rgba(255,193,7,0.4);">
       <h2 style="color:#FFC107;">📢 Publier une alerte transport</h2>
@@ -368,6 +374,7 @@
     function chargerTout() {
       chargerDemandesPros();
       chargerAvisAttente();
+      chargerAvisPublies();
       chargerAlertes();
       chargerAnnoncesAdmin('immobilier');
       chargerHistorique();
@@ -420,6 +427,7 @@
       await Promise.all([
         chargerDemandesPros(),
         chargerAvisAttente(),
+        chargerAvisPublies(),
         chargerAlertes(),
         chargerAnnoncesAdmin(categorieAnnonceActive),
         chargerHistorique(),
@@ -644,20 +652,23 @@
       } catch(e) { container.innerHTML = '<p style="color:#ff6b6b;">Erreur: '+e.message+'</p>'; }
     }
 
+    async function recalculerNoteMoyenne(proId) {
+      if (!proId) return;
+      const snap = await getDocs(query(collection(db, 'avis_clients'), where('pro_id','==',proId), where('statut','==','publie')));
+      const notes = snap.docs.map(d => d.data().note || 0);
+      const moyenne = notes.length ? Math.round((notes.reduce((a,b) => a+b, 0) / notes.length) * 10) / 10 : 0;
+      await updateDoc(doc(db, 'professionnels', proId), { note_moyenne: moyenne, nb_avis: notes.length });
+    }
+
     window.validerAvis = async function(btn) {
       const id = btn.dataset?.id || btn;
       const proId = btn.dataset?.proid || '';
-      const note = parseInt(btn.dataset?.note || 0);
       try {
         await updateDoc(doc(db, 'avis_clients', id), { statut: 'publie', date_validation: Timestamp.now() });
-        if (proId) {
-          const snap = await getDocs(query(collection(db, 'avis_clients'), where('pro_id','==',proId), where('statut','==','publie')));
-          const notes = snap.docs.map(d => d.data().note || 0);
-          const moyenne = notes.reduce((a,b) => a+b, 0) / notes.length;
-          await updateDoc(doc(db, 'professionnels', proId), { note_moyenne: Math.round(moyenne*10)/10, nb_avis: notes.length });
-        }
+        await recalculerNoteMoyenne(proId);
         alert('✅ Avis publié !');
         chargerAvisAttente();
+        chargerAvisPublies();
       } catch(e) { alert('Erreur: '+e.message); }
     };
 
@@ -666,6 +677,37 @@
       if (!confirm('Supprimer cet avis ?')) return;
       await deleteDoc(doc(db, 'avis_clients', id));
       chargerAvisAttente();
+    };
+
+    async function chargerAvisPublies() {
+      const container = document.getElementById('liste-avis-publies');
+      try {
+        const snap = await getDocs(query(collection(db, 'avis_clients'), where('statut','==','publie'), orderBy('date','desc')));
+        if (snap.empty) { container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucun avis publié</p>'; return; }
+        container.innerHTML = snap.docs.map(d => {
+          const a = d.data();
+          const date = a.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+          return `<div class="card-avis">
+            <div style="color:#FFC107;font-size:14px;">${'⭐'.repeat(a.note||0)} ${a.note}/5</div>
+            <div style="color:white;font-weight:700;">${a.nom||''} — ${a.pays||''}</div>
+            <div style="color:#4DD0E1;font-size:11px;">Pour : ${a.pro_nom||''}</div>
+            <div style="color:rgba(255,255,255,0.6);font-size:12px;margin-top:4px;">"${a.texte||''}"</div>
+            <div style="color:rgba(255,255,255,0.3);font-size:10px;">Le ${date}</div>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <button class="btn-non" onclick="supprimerAvisPublie(this)" data-id="${d.id}" data-proid="${a.pro_id||''}">❌ Retirer</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { container.innerHTML = '<p style="color:#ff6b6b;">Erreur: '+e.message+'</p>'; }
+    }
+
+    window.supprimerAvisPublie = async function(btn) {
+      const id = btn.dataset?.id || btn;
+      const proId = btn.dataset?.proid || '';
+      if (!confirm('Retirer cet avis publié ? La note moyenne du professionnel sera recalculée.')) return;
+      await deleteDoc(doc(db, 'avis_clients', id));
+      await recalculerNoteMoyenne(proId);
+      chargerAvisPublies();
     };
 
     // ===== ALERTES =====
