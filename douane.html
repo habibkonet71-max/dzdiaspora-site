@@ -131,31 +131,6 @@
     <p><a href="cgu.html">CGU</a> · <a href="contact.html">Contact</a></p>
   </footer>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    const firebaseConfig = {
-      apiKey: "AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ",
-      appId: "1:223003656315:web:100de190b8b5e74ddae2de",
-      messagingSenderId: "223003656315",
-      projectId: "dzdiaspora-7260a",
-      authDomain: "dzdiaspora-7260a.firebaseapp.com",
-      storageBucket: "dzdiaspora-7260a.firebasestorage.app"
-    };
-    const EMAILS_ADMIN = ["kourrak.habib@hotmail.com"];
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.href = "connexion.html";
-        return;
-      }
-      const estAdmin = EMAILS_ADMIN.includes(user.email);
-      if (!user.emailVerified && !estAdmin) {
-        window.location.href = "connexion.html";
-      }
-    });
-  </script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";

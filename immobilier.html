@@ -160,7 +160,6 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, getDocs, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ",
@@ -173,18 +172,6 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const auth = getAuth(app);
-    const EMAILS_ADMIN = ["kourrak.habib@hotmail.com"];
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.href = "connexion.html";
-        return;
-      }
-      const estAdmin = EMAILS_ADMIN.includes(user.email);
-      if (!user.emailVerified && !estAdmin) {
-        window.location.href = "connexion.html";
-      }
-    });
 
     function echapperHtmlActu(texte) {
       const div = document.createElement("div");
