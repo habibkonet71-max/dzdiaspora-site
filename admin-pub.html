@@ -77,6 +77,11 @@
     <div id="listeCommandes">
       <div style="text-align:center;color:rgba(255,255,255,0.3);padding:40px;">⏳ Chargement...</div>
     </div>
+
+    <h2 style="margin-top:32px;">📩 Demandes de devis</h2>
+    <div id="listeDevis">
+      <div style="text-align:center;color:rgba(255,255,255,0.3);padding:40px;">⏳ Chargement...</div>
+    </div>
   </main>
   </div>
 
@@ -115,6 +120,7 @@
       document.getElementById('contenu-admin').style.display = 'block';
       if (btn) btn.innerHTML = '<button onclick="window.signOutUser()" style="background:rgba(214,16,52,0.15);border:1px solid #D61034;color:#ff6b6b;padding:5px 12px;border-radius:14px;font-size:12px;cursor:pointer;">🚪 Admin</button>';
       await chargerCommandes();
+      await chargerDevis();
     });
 
     window.signOutUser = async () => { await signOut(auth); location.reload(); };
@@ -213,6 +219,53 @@
       const notes = document.getElementById('notes-'+id)?.value;
       await updateDoc(doc(db, 'commandes_pub', id), { tarif: tarif ? Number(tarif) : null, notes });
       alert('✅ Sauvegardé !');
+    };
+
+    let tousDevis = [];
+
+    async function chargerDevis() {
+      const q = query(collection(db, 'demandes_pub'), orderBy('date', 'desc'));
+      const snap = await getDocs(q);
+      tousDevis = snap.docs.map(d => ({id: d.id, ...d.data()}));
+      afficherDevis();
+    }
+
+    function afficherDevis() {
+      const container = document.getElementById('listeDevis');
+      if (tousDevis.length === 0) { container.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);padding:40px;">Aucune demande de devis</div>'; return; }
+      container.innerHTML = tousDevis.map(d => {
+        const date = d.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
+        const statut = d.statut || 'nouveau';
+        const badgeClass = statut === 'nouveau' ? 'statut-attente' : statut === 'traite' ? 'statut-valide' : 'statut-refuse';
+        const badgeLabel = statut === 'nouveau' ? '🆕 Nouveau' : statut === 'traite' ? '✅ Traité' : '❌ Sans suite';
+        return `
+        <div class="commande-carte" id="devis-${d.id}">
+          <div class="commande-header">
+            <div>
+              <div style="color:white;font-weight:700;font-size:15px;">${d.nom || ''}</div>
+              <div style="color:rgba(255,255,255,0.4);font-size:12px;">${d.email || ''} · ${date}</div>
+            </div>
+            <span class="statut-badge ${badgeClass}">${badgeLabel}</span>
+          </div>
+          <div class="commande-info">
+            <div class="info-item"><div class="info-label">Format souhaité</div><div class="info-val">${d.format || '—'}</div></div>
+            <div class="info-item"><div class="info-label">Budget</div><div class="info-val">${d.budget || '—'}</div></div>
+          </div>
+          ${d.message ? `<div style="background:#0D1117;border-radius:8px;padding:10px;font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:10px;">${d.message}</div>` : ''}
+          <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+            ${statut !== 'traite' ? `<button class="btn-valider" onclick="changerStatutDevis('${d.id}','traite')">✅ Marquer traité</button>` : ''}
+            ${statut !== 'sans_suite' ? `<button class="btn-refuser" onclick="changerStatutDevis('${d.id}','sans_suite')">❌ Sans suite</button>` : ''}
+            ${d.email ? `<a href="mailto:${d.email}" style="background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;">✉️ Répondre</a>` : ''}
+            ${d.tel ? `<a href="tel:${d.tel}" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;">📞 Appeler</a>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    window.changerStatutDevis = async function(id, statut) {
+      await updateDoc(doc(db, 'demandes_pub', id), { statut, date_maj: Timestamp.now() });
+      tousDevis = tousDevis.map(d => d.id === id ? {...d, statut} : d);
+      afficherDevis();
     };
 
     document.getElementById('menuBtn')?.addEventListener('click', () => document.getElementById('menuDropdown')?.classList.toggle('open'));
