@@ -336,6 +336,7 @@
         return;
       }
       if (!nom || !email || !message) { alert('Veuillez remplir les champs obligatoires (*)'); return; }
+      if (!window._selections.support) { alert('Veuillez choisir un support (site, app ou les deux)'); return; }
       if (!window._selections.format) { alert('Veuillez choisir un format publicitaire'); return; }
       if (!window._selections.duree) { alert('Veuillez choisir une durée'); return; }
       if (window._pagesChoisies.length === 0) { alert('Veuillez choisir au moins une page cible'); return; }
@@ -353,6 +354,7 @@
           nom, email,
           tel: document.getElementById('p-tel').value.trim(),
           pays: document.getElementById('p-pays').value,
+          support: window._selections.support,
           format: window._selections.format,
           frequence: window._selections.frequence || 'continu',
           duree: window._selections.duree,
