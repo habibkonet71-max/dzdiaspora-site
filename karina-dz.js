@@ -112,7 +112,7 @@
         const sources = (result.data.sources || []).map((s) => s.titre).filter(Boolean);
         afficherMessage(result.data.reponse || "Je n ai pas pu generer de reponse.", false, sources, result.data.lien_secours);
       } catch (e) {
-        afficherMessage("Une erreur est survenue lors de la communication avec l assistant.", false);
+        afficherMessage("Karina n arrive pas a repondre pour le moment. Reessayez dans un instant, ou signalez le probleme via le bouton ⚠️ ci-dessus.", false);
       }
     }
 
