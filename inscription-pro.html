@@ -167,6 +167,20 @@
       </div>
 
       <div class="form-group">
+        <label>Mode de paiement *</label>
+        <div style="display:flex;gap:10px;">
+          <label style="flex:1;display:flex;align-items:center;gap:8px;cursor:pointer;background:#0D1117;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);">
+            <input type="radio" name="mode_paiement" value="carte" id="paiement-carte" checked style="width:auto;cursor:pointer;">
+            <span>💳 Carte bancaire</span>
+          </label>
+          <label style="flex:1;display:flex;align-items:center;gap:8px;cursor:pointer;background:#0D1117;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);">
+            <input type="radio" name="mode_paiement" value="virement_bancaire" id="paiement-virement" style="width:auto;cursor:pointer;">
+            <span>🏦 Virement bancaire</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
         <label>
           <input type="checkbox" id="cgu" style="width:auto;margin-right:8px;">
           <span id="lbl-cgu">J accepte les <a href="cgu.html" style="color:#4DD0E1;">CGU</a> de DZ Diaspora *</span>
@@ -228,11 +242,15 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
     const cfg = { apiKey:"AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ", appId:"1:223003656315:web:100de190b8b5e74ddae2de", messagingSenderId:"223003656315", projectId:"dzdiaspora-7260a", authDomain:"dzdiaspora-7260a.firebaseapp.com", storageBucket:"dzdiaspora-7260a.firebasestorage.app" };
     const app = initializeApp(cfg);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const functions = getFunctions(app);
+    let currentUser = null;
     onAuthStateChanged(auth, (user) => {
+      currentUser = user;
       const btn = document.getElementById('auth-btn-header');
       if (!btn) return;
       btn.innerHTML = user ? '<button onclick="window.signOutUser()" style="background:rgba(214,16,52,0.15);border:1px solid #D61034;color:#ff6b6b;padding:5px 12px;border-radius:14px;font-size:12px;cursor:pointer;font-weight:bold;">🚪 '+user.email.split('@')[0]+'</button>' : '<a href="connexion.html" style="background:rgba(77,208,225,0.15);border:1px solid #4DD0E1;color:#4DD0E1;padding:5px 12px;border-radius:14px;font-size:12px;font-weight:bold;text-decoration:none;">👤 Connexion</a>';
@@ -245,6 +263,7 @@
     document.getElementById('menuBtn').addEventListener('click', () => document.getElementById('menuDropdown').classList.toggle('open'));
 
     window.envoyerDemande = async function() {
+      if (window._envoiEnCours) return;
       const requis = ['profession','nom','prenom','wilaya','adresse','telephone','email'];
       for (const id of requis) {
         if (!document.getElementById(id).value.trim()) {
@@ -253,6 +272,14 @@
         }
       }
       if (!document.getElementById('cgu').checked) { alert('Acceptez les CGU pour continuer'); return; }
+      const modePaiement = document.querySelector('input[name="mode_paiement"]:checked')?.value || 'carte';
+      if (modePaiement === 'carte' && !currentUser) {
+        alert('Connectez-vous avant de payer par carte, ou choisissez le virement bancaire.');
+        return;
+      }
+      window._envoiEnCours = true;
+      const btn = document.getElementById('btn-envoyer');
+      if (btn) btn.disabled = true;
       try {
         await addDoc(collection(db, 'professionnels_demandes'), {
           profession: document.getElementById('profession').value,
@@ -267,6 +294,7 @@
           ordre: document.getElementById('ordre').value.trim(),
           presentation: document.getElementById('presentation').value.trim(),
           abonnement: document.getElementById('abonnement').value,
+          mode_paiement: modePaiement,
           notifications: {
             email: document.getElementById('notif-email').checked,
             push: document.getElementById('notif-push').checked,
@@ -274,15 +302,9 @@
             sms: document.getElementById('notif-sms').checked,
           },
           statut: 'en_attente',
-          notifications: {
-            email: document.getElementById('notif-email').checked,
-            push: document.getElementById('notif-push').checked,
-            whatsapp: document.getElementById('notif-whatsapp').checked,
-            sms: document.getElementById('notif-sms').checked,
-          },
           date: Timestamp.now()
         });
-        document.getElementById('msgSucces').style.display = 'block';
+
         try {
           emailjs.init('lj-ndl5zGAWGWkJqc');
           const nomPro = (document.getElementById('prenom')?.value||'') + ' ' + (document.getElementById('nom')?.value||'');
@@ -290,11 +312,35 @@
           if (emailPro) await emailjs.send('service_pv5uh7i', 'template_gum64zs', {
             email_dest: emailPro, destinataire: nomPro.trim()||'Professionnel',
             sujet: 'Demande inscription reçue — DZ Diaspora',
-            message: 'Votre demande a bien été reçue. Notre équipe vous contacte sous 48h pour validation et paiement.\n\nkourrak.habib@hotmail.com | +213 (0) 799 87 28 90',
+            message: modePaiement === 'carte'
+              ? 'Votre demande a bien été reçue. Vous allez être redirigé vers le paiement en ligne.\n\nkourrak.habib@hotmail.com | +213 (0) 799 87 28 90'
+              : 'Votre demande a bien été reçue. Notre équipe vous contacte sous 48h pour validation et paiement.\n\nkourrak.habib@hotmail.com | +213 (0) 799 87 28 90',
           });
         } catch(e) { console.log('Email non envoyé:', e); }
+
+        const msg = document.getElementById('msgSucces');
+        if (modePaiement === 'carte') {
+          try {
+            const typeAbonnement = document.getElementById('abonnement').value.startsWith('mensuel') ? 'mensuel' : 'annuel';
+            const creer = httpsCallable(functions, 'creerSessionProMetier');
+            const result = await creer({ typeAbonnement });
+            if (result.data.url) { window.location.href = result.data.url; return; }
+          } catch(e) {
+            console.log('Erreur creation paiement:', e);
+            alert('Votre demande a ete enregistree, mais la creation du paiement a echoue. Notre equipe vous recontactera, ou reessayez depuis la page Abonnement.');
+          }
+          msg.textContent = '✅ Demande enregistree ! Finalisez votre paiement dans la page ouverte.';
+        } else {
+          msg.textContent = '✅ Votre demande a ete envoyee ! Notre equipe vous contactera sous 48h pour validation et paiement.';
+        }
+        msg.style.display = 'block';
         window.scrollTo(0, 0);
-      } catch(e) { alert('Erreur. Reessayez.'); }
+      } catch(e) {
+        alert('Erreur. Reessayez.');
+      } finally {
+        window._envoiEnCours = false;
+        if (btn) btn.disabled = false;
+      }
     };
   </script>
 

@@ -227,7 +227,7 @@
           message: msg,
           date: Timestamp.now(),
         });
-        await updateDoc(doc(db, 'demandes_clients', demandeId), { reponses: increment(1), statut: 'repondue' });
+        await updateDoc(doc(db, 'demandes_clients', demandeId), { reponses: increment(1) });
         mesReponses.add(demandeId);
         document.getElementById('reply-'+demandeId).style.display = 'none';
         alert('✅ Réponse envoyée ! Le client va vous contacter.');

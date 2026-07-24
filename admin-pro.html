@@ -551,7 +551,16 @@
       try {
         const demandeSnap = await getDoc(doc(db, 'professionnels_demandes', id));
         const data = demandeSnap.data();
-        await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
+        if (data.email) {
+          const existant = await getDocs(query(collection(db, 'professionnels'), where('email', '==', data.email)));
+          if (!existant.empty) {
+            await updateDoc(existant.docs[0].ref, {...data, statut: 'valide', date_validation: Timestamp.now()});
+          } else {
+            await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
+          }
+        } else {
+          await addDoc(collection(db, 'professionnels'), {...data, statut: 'valide', date_validation: Timestamp.now()});
+        }
         await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'valide' });
         if (data.email) {
           try {
