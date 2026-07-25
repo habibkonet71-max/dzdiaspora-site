@@ -540,7 +540,7 @@
           alert('✅ Restitution validee. Reference : ' + resultat.data.reference);
           window.open('recap-restitution.html?ref=' + encodeURIComponent(resultat.data.reference), '_blank');
         } else {
-          alert('✅ Votre fiche a ete enregistree. Le document recapitulatif sera disponible une fois que l autre partie aura aussi valide sa fiche.');
+          alert('✅ Votre fiche a ete enregistree. Reference : ' + resultat.data.reference + '\n\nNotez-la : le document recapitulatif sera disponible sur recap-restitution.html?ref=' + resultat.data.reference + ' une fois que l autre partie aura aussi valide sa fiche.');
         }
         window.fermerModalRestitution();
       } catch (e) {
