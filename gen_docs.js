@@ -37,14 +37,14 @@ function chk(fr, ar) {
 const plaquette = new Document({sections:[{properties:{page:{margin:{top:1440,bottom:1440,left:1440,right:1440}}}, children:[
   tbl([row([
     cel([p("🇩🇿 DZ DIASPORA",{size:32,bold:true,color:BLANC}), p("Premier Portail Numérique de la Diaspora Algérienne",{size:15,color:"A8E063"}), p("بوابة الجالية الجزائرية الرقمية الأولى",{size:15,color:"A8E063",ar:true,align:AlignmentType.RIGHT})], VERT, 5500),
-    cel([p("NET-HABITA",{size:18,bold:true,color:BLANC,align:AlignmentType.CENTER}), p("SIRET : 488 470 584 00043",{size:13,color:BLANC,align:AlignmentType.CENTER}), p("kourrak.habib@hotmail.com",{size:13,color:BLANC,align:AlignmentType.CENTER}), p("+213 (0) 799 87 28 90",{size:16,bold:true,color:BLANC,align:AlignmentType.CENTER})], ROUGE, 3500),
+    cel([p("kourrak.habib@hotmail.com",{size:13,color:BLANC,align:AlignmentType.CENTER}), p("+213 (0) 799 87 28 90",{size:16,bold:true,color:BLANC,align:AlignmentType.CENTER})], ROUGE, 3500),
   ])]),
   new Paragraph({spacing:{before:200},children:[new TextRun({text:""})]}),
   p("PRÉSENTATION DU PORTAIL  /  تقديم البوابة",{size:24,bold:true,color:VERT,align:AlignmentType.CENTER}),
   sep(),
   tbl([row([
-    cel([p("DZ Diaspora est le premier portail numérique dédié aux 8 millions d'algériens établis à l'étranger. Notre mission : connecter la diaspora aux professionnels de confiance en Algérie."), p("🌐 habibkonet71-max.github.io/dzdiaspora-site",{size:15,color:VERT}), p("📱 Application Android : DZ Diaspora",{size:15,color:VERT})], "F0FFF0", 4500),
-    cel([p("DZ Diaspora هي أول بوابة رقمية لـ 8 ملايين جزائري في الخارج.",{ar:true,align:AlignmentType.RIGHT}), p("habibkonet71-max.github.io/dzdiaspora-site 🌐",{size:15,color:VERT,align:AlignmentType.RIGHT}), p("تطبيق أندرويد: DZ Diaspora 📱",{size:15,color:VERT,ar:true,align:AlignmentType.RIGHT})], "FFF8E1", 4500),
+    cel([p("DZ Diaspora est le premier portail numérique dédié aux 8 millions d'algériens établis à l'étranger. Notre mission : connecter la diaspora aux professionnels de confiance en Algérie."), p("🌐 dzdiaspora.online",{size:15,color:VERT}), p("📱 Application Android : DZ Diaspora",{size:15,color:VERT})], "F0FFF0", 4500),
+    cel([p("DZ Diaspora هي أول بوابة رقمية لـ 8 ملايين جزائري في الخارج.",{ar:true,align:AlignmentType.RIGHT}), p("dzdiaspora.online 🌐",{size:15,color:VERT,align:AlignmentType.RIGHT}), p("تطبيق أندرويد: DZ Diaspora 📱",{size:15,color:VERT,ar:true,align:AlignmentType.RIGHT})], "FFF8E1", 4500),
   ])]),
   new Paragraph({spacing:{before:200},children:[new TextRun({text:""})]}),
   sep(),
@@ -82,8 +82,8 @@ const plaquette = new Document({sections:[{properties:{page:{margin:{top:1440,bo
 // CONTRAT
 const contrat = new Document({sections:[{properties:{page:{margin:{top:1440,bottom:1440,left:1800,right:1440}}}, children:[
   tbl([row([
-    cel([p("🇩🇿 DZ DIASPORA",{size:28,bold:true,color:BLANC}), p("Portail Numérique — NET-HABITA",{size:14,color:"A8E063"})], VERT, 5000),
-    cel([p("DZ DIASPORA 🇩🇿",{size:28,bold:true,color:BLANC,ar:true,align:AlignmentType.RIGHT}), p("بوابة رقمية — NET-HABITA",{size:14,color:"FFC107",ar:true,align:AlignmentType.RIGHT})], ROUGE, 4000),
+    cel([p("🇩🇿 DZ DIASPORA",{size:28,bold:true,color:BLANC}), p("Portail Numérique",{size:14,color:"A8E063"})], VERT, 5000),
+    cel([p("DZ DIASPORA 🇩🇿",{size:28,bold:true,color:BLANC,ar:true,align:AlignmentType.RIGHT}), p("بوابة رقمية",{size:14,color:"FFC107",ar:true,align:AlignmentType.RIGHT})], ROUGE, 4000),
   ])]),
   new Paragraph({spacing:{before:200},children:[new TextRun({text:""})]}),
   p("CONTRAT D'ABONNEMENT PROFESSIONNEL",{size:24,bold:true,color:VERT,align:AlignmentType.CENTER}),
@@ -91,7 +91,7 @@ const contrat = new Document({sections:[{properties:{page:{margin:{top:1440,bott
   p("DOUBLE EXEMPLAIRE  /  نسختان",{size:18,color:ROUGE,align:AlignmentType.CENTER}),
   sep(),
   p("PARTIE 1 — DZ DIASPORA (Éditeur)  /  الطرف الأول",{size:18,bold:true,color:ROUGE}),
-  tbl([row([cel([p("NET-HABITA — Kourrak Habib | SIRET : 488 470 584 00043 | Toulouse, France"), p("kourrak.habib@hotmail.com | +213 (0) 799 87 28 90")],"F0FFF0")])]),
+  tbl([row([cel([p("Kourrak Habib | Toulouse, France"), p("kourrak.habib@hotmail.com | +213 (0) 799 87 28 90")],"F0FFF0")])]),
   new Paragraph({spacing:{before:150},children:[new TextRun({text:""})]}),
   p("PARTIE 2 — LE PROFESSIONNEL  /  الطرف الثاني — المهني",{size:20,bold:true,color:ROUGE}),
   new Paragraph({spacing:{before:100},children:[new TextRun({text:""})]}),
@@ -150,7 +150,7 @@ const contrat = new Document({sections:[{properties:{page:{margin:{top:1440,bott
   new Paragraph({spacing:{before:100},children:[new TextRun({text:""})]}),
   tbl([row([
     cel([p("Fait à / حُرِّر في : _______________________"), p("Le / بتاريخ : ___________________________"), new Paragraph({spacing:{before:200},children:[new TextRun({text:""})]}), p("Signature et cachet du Professionnel / توقيع وختم المهني",{bold:true,color:VERT}), new Paragraph({spacing:{before:300},children:[new TextRun({text:""})]}), p("________________________________")],"F9F9F9",4500),
-    cel([p("Pour DZ Diaspora / لـ DZ Diaspora",{bold:true,color:ROUGE}), p("NET-HABITA — Kourrak Habib"), new Paragraph({spacing:{before:200},children:[new TextRun({text:""})]}), p("Signature / التوقيع",{bold:true,color:ROUGE}), new Paragraph({spacing:{before:300},children:[new TextRun({text:""})]}), p("________________________________"), p("Kourrak Habib")],null,4500),
+    cel([p("Pour DZ Diaspora / لـ DZ Diaspora",{bold:true,color:ROUGE}), p("Kourrak Habib"), new Paragraph({spacing:{before:200},children:[new TextRun({text:""})]}), p("Signature / التوقيع",{bold:true,color:ROUGE}), new Paragraph({spacing:{before:300},children:[new TextRun({text:""})]}), p("________________________________"), p("Kourrak Habib")],null,4500),
   ])]),
   new Paragraph({spacing:{before:200},children:[new TextRun({text:""})]}),
   p("⚠️ Contrat en double exemplaire — Un exemplaire remis au professionnel, l'autre conservé par DZ Diaspora.",{size:14,color:GRIS,align:AlignmentType.CENTER}),
