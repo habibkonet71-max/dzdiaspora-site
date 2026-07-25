@@ -113,6 +113,7 @@
       <button class="onglet-btn" data-onglet="paiements" onclick="window.changerOnglet('paiements')">💳 Paiements</button>
       <button class="onglet-btn" data-onglet="outils" onclick="window.changerOnglet('outils')">🛠️ Outils</button>
       <button class="onglet-btn" data-onglet="historique" onclick="window.changerOnglet('historique')">🕐 Historique</button>
+      <button class="onglet-btn" data-onglet="transactions" onclick="window.changerOnglet('transactions')">🧾 Transactions</button>
     </div>
 
     <div class="onglet-contenu actif" id="onglet-vue-ensemble">
@@ -327,6 +328,11 @@
       <div id="liste-historique"><p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Chargement...</p></div>
     </div>
 
+    <div class="onglet-contenu" id="onglet-transactions">
+      <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-bottom:12px;">Historique centralise de toutes les transactions et demarches (restitutions d'objets, RDV, inscriptions pro, paiements Stripe) — usage interne uniquement.</p>
+      <div id="liste-transactions"><p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Chargement...</p></div>
+    </div>
+
   </main>
   </div>
 
@@ -431,6 +437,7 @@
         chargerAlertes(),
         chargerAnnoncesAdmin(categorieAnnonceActive),
         chargerHistorique(),
+        chargerTransactions(),
       ]);
       majMajInfo();
       if (btn) { btn.disabled = false; btn.textContent = '🔄 Rafraichir tout'; }
@@ -457,6 +464,31 @@
           return `<div style="background:#0D1117;border-radius:8px;padding:10px 14px;margin-bottom:8px;border-left:3px solid #4DD0E1;">
             <div style="color:#4DD0E1;font-size:12px;font-weight:700;">${h.action || ''}</div>
             <div style="color:rgba(255,255,255,0.6);font-size:12px;">${h.details || ''}</div>
+            <div style="color:rgba(255,255,255,0.3);font-size:10px;">${date}</div>
+          </div>`;
+        }).join('');
+      } catch (e) { container.innerHTML = '<p style="color:#ff6b6b;">Erreur: ' + e.message + '</p>'; }
+    }
+
+    // ===== HISTORIQUE TRANSACTIONS (lecture seule, ecriture Cloud Functions uniquement) =====
+    const COULEURS_TYPE_TRANSACTION = {
+      restitution_objet: '#A8E063', rdv: '#4DD0E1', inscription_pro: '#FFA726', paiement_stripe: '#FFC107',
+    };
+
+    async function chargerTransactions() {
+      const container = document.getElementById('liste-transactions');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(collection(db, 'historique_transactions_admin'), orderBy('date', 'desc'), limit(50)));
+        if (snap.empty) { container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune transaction enregistree</p>'; return; }
+        container.innerHTML = snap.docs.map((d) => {
+          const t = d.data();
+          const date = t.date?.toDate?.()?.toLocaleString('fr-FR') || '';
+          const couleur = COULEURS_TYPE_TRANSACTION[t.type] || '#888';
+          return `<div style="background:#0D1117;border-radius:8px;padding:10px 14px;margin-bottom:8px;border-left:3px solid ${couleur};">
+            <div style="color:${couleur};font-size:11px;font-weight:700;">${t.type || ''}</div>
+            <div style="color:rgba(255,255,255,0.7);font-size:12px;">${t.resume || ''}</div>
+            ${t.reference ? `<div style="color:rgba(255,255,255,0.3);font-size:10px;">Ref: ${t.reference}</div>` : ''}
             <div style="color:rgba(255,255,255,0.3);font-size:10px;">${date}</div>
           </div>`;
         }).join('');
