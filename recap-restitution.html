@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document de restitution — DZ Diaspora</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .etat { max-width:600px; margin:60px auto; text-align:center; color:rgba(255,255,255,0.7); padding:0 20px; }
+    .btn-print { background:#4DD0E1; color:#0D1117; border:none; padding:14px 28px; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; margin-top:16px; }
+
+    /* IMPRESSION */
+    @page { size: A4; margin: 15mm; }
+    @media print {
+      html, body { height:auto !important; background:white !important; color:black !important; }
+      .no-print { display:none !important; }
+      .recap-imprimable { display:block !important; }
+      header, footer { display:none !important; }
+      .cnt-header { display:block !important; }
+      .cnt-header > div { display:block !important; width:100% !important; margin-bottom:10px; }
+    }
+    .recap-imprimable { display:none; }
+
+    /* DOCUMENT IMPRIMABLE */
+    .cnt { font-family:'Calibri',sans-serif; max-width:800px; margin:0 auto; padding:20px; color:#000; }
+    .cnt-header { display:flex; margin-bottom:20px; }
+    .cnt-logo { background:#006233; color:white; padding:16px 20px; flex:1; }
+    .cnt-logo-ar { background:#D21034; color:white; padding:16px 20px; text-align:right; flex:1; }
+    .cnt h1 { text-align:center; color:#006233; font-size:20px; margin:16px 0 4px; }
+    .cnt-sep { border-bottom:2px solid #006233; margin:12px 0; }
+    .cnt table { width:100%; border-collapse:collapse; margin-bottom:10px; }
+    .cnt td { padding:8px; border:1px solid #ddd; font-size:13px; }
+    .cnt td.label { background:#f5f5f5; font-weight:bold; width:35%; }
+    .cnt .clause { font-size:12px; margin-bottom:8px; text-align:justify; }
+    .cnt .ref { text-align:center; font-size:13px; color:#666; margin-bottom:16px; }
+    .cnt .double { font-size:11px; color:#666; text-align:center; margin-top:16px; border-top:1px solid #ccc; padding-top:8px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">🇩🇿 DZ Diaspora</a>
+</header>
+
+<div class="no-print" id="zone-etat">
+  <div class="etat">
+    <h2>🧾 Document de restitution</h2>
+    <p id="message-etat">Chargement...</p>
+  </div>
+</div>
+
+<div class="recap-imprimable" id="recap-print">
+  <div class="cnt">
+    <div class="cnt-header">
+      <div class="cnt-logo">
+        <div style="font-size:22px;font-weight:bold;">🇩🇿 DZ DIASPORA</div>
+        <div style="font-size:13px;color:#A8E063;">Premier Portail Numérique de la Diaspora Algérienne</div>
+        <div style="font-size:12px;margin-top:4px;">NET-HABITA | SIRET : 488 470 584 00043</div>
+        <div style="font-size:12px;">kourrak.habib@hotmail.com | +213 (0) 799 87 28 90</div>
+      </div>
+      <div class="cnt-logo-ar">
+        <div style="font-size:20px;font-weight:bold;direction:rtl;">DZ DIASPORA 🇩🇿</div>
+        <div style="font-size:13px;color:#FFC107;direction:rtl;">بوابة الجالية الجزائرية الرقمية الأولى</div>
+      </div>
+    </div>
+
+    <h1>DOCUMENT RECAPITULATIF DE RESTITUTION D'OBJET</h1>
+    <div style="text-align:center;font-size:16px;color:#006233;direction:rtl;margin-bottom:8px;">وثيقة إعادة الغرض</div>
+    <div class="ref">Référence : <strong id="p_reference"></strong> — Émis le <span id="p_date_emission"></span></div>
+    <div class="cnt-sep"></div>
+
+    <table>
+      <tr><td class="label">Type d'objet</td><td id="p_type"></td></tr>
+      <tr><td class="label">Description</td><td id="p_description"></td></tr>
+      <tr><td class="label">Lieu (dépôt initial)</td><td id="p_lieu_depot"></td></tr>
+      <tr><td class="label">Lieu de la remise</td><td id="p_lieu_remise"></td></tr>
+    </table>
+
+    <div class="cnt-sep"></div>
+    <table>
+      <tr><td class="label" colspan="2" style="text-align:center;background:#006233;color:white;">Déposant (a retrouvé/conservé l'objet)</td></tr>
+      <tr><td class="label">Nom</td><td id="p_deposant_nom"></td></tr>
+      <tr><td class="label">Téléphone</td><td id="p_deposant_tel"></td></tr>
+      <tr><td class="label">Email</td><td id="p_deposant_email"></td></tr>
+    </table>
+
+    <table>
+      <tr><td class="label" colspan="2" style="text-align:center;background:#D21034;color:white;">Propriétaire (récupère l'objet)</td></tr>
+      <tr><td class="label">Nom</td><td id="p_proprietaire_nom"></td></tr>
+      <tr><td class="label">Téléphone</td><td id="p_proprietaire_tel"></td></tr>
+      <tr><td class="label">Email</td><td id="p_proprietaire_email"></td></tr>
+    </table>
+
+    <div class="cnt-sep"></div>
+    <p class="clause">⚠️ Pour votre sécurité, la remise de l'objet doit s'organiser dans un lieu public ou par voie postale. DZ Diaspora se dégage de toute responsabilité une fois le contact établi entre les deux parties.</p>
+
+    <div class="double">
+      Ce document est généré automatiquement à partir des déclarations des deux parties — DZ Diaspora n'a pas vérifié l'exactitude des informations fournies.<br>
+      Conservez-le comme preuve de la transaction.
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ",
+    appId: "1:223003656315:web:100de190b8b5e74ddae2de",
+    messagingSenderId: "223003656315",
+    projectId: "dzdiaspora-7260a",
+    authDomain: "dzdiaspora-7260a.firebaseapp.com",
+    storageBucket: "dzdiaspora-7260a.firebasestorage.app"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const functions = getFunctions(app);
+
+  const params = new URLSearchParams(window.location.search);
+  const reference = params.get('ref');
+  const messageEtat = document.getElementById('message-etat');
+
+  async function charger() {
+    if (!reference) {
+      messageEtat.textContent = "Aucune reference fournie dans le lien.";
+      return;
+    }
+    try {
+      const obtenir = httpsCallable(functions, 'obtenirRecapRestitution');
+      const resultat = await obtenir({ reference });
+      const data = resultat.data;
+
+      if (data.statut === 'introuvable') {
+        messageEtat.textContent = "Reference introuvable. Verifiez le lien recu.";
+        return;
+      }
+      if (data.statut === 'en_attente') {
+        messageEtat.textContent = "L'autre partie n'a pas encore valide sa fiche de restitution. Ce document sera disponible des que ce sera fait — revenez plus tard avec ce meme lien.";
+        return;
+      }
+
+      const recap = data.recap;
+      document.getElementById('p_reference').textContent = recap.reference;
+      document.getElementById('p_date_emission').textContent = new Date(recap.date_transaction).toLocaleDateString('fr-FR');
+      document.getElementById('p_type').textContent = recap.objet?.type || '';
+      document.getElementById('p_description').textContent = recap.objet?.description || '';
+      document.getElementById('p_lieu_depot').textContent = recap.objet?.lieu || '';
+      document.getElementById('p_lieu_remise').textContent = recap.proprietaire?.lieu || '';
+      document.getElementById('p_deposant_nom').textContent = recap.deposant?.nom || '';
+      document.getElementById('p_deposant_tel').textContent = recap.deposant?.tel || '';
+      document.getElementById('p_deposant_email').textContent = recap.deposant?.email || '';
+      document.getElementById('p_proprietaire_nom').textContent = recap.proprietaire?.nom || '';
+      document.getElementById('p_proprietaire_tel').textContent = recap.proprietaire?.tel || '';
+      document.getElementById('p_proprietaire_email').textContent = recap.proprietaire?.email || '';
+
+      document.getElementById('zone-etat').style.display = 'none';
+      document.getElementById('recap-print').style.display = 'block';
+      setTimeout(() => window.print(), 300);
+    } catch (e) {
+      messageEtat.textContent = "Erreur lors du chargement du document : " + e.message;
+    }
+  }
+
+  charger();
+</script>
+
+</body>
+</html>

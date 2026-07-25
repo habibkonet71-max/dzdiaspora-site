@@ -528,15 +528,20 @@
       }
 
       try {
-        await addDoc(collection(db, 'restitutions_objets'), {
-          objet_id: restitutionObjetId,
+        const valider = httpsCallable(functions, 'validerRestitutionObjet');
+        const resultat = await valider({
+          objetId: restitutionObjetId,
           role: restitutionRole,
           nom, tel, email, lieu,
-          mode_contact: mode,
-          accepte_conditions: true,
-          date: Timestamp.now(),
+          modeContact: mode,
+          accepteConditions: true,
         });
-        alert('✅ Votre fiche a ete enregistree. Merci !');
+        if (resultat.data.statut === 'complete') {
+          alert('✅ Restitution validee. Reference : ' + resultat.data.reference);
+          window.open('recap-restitution.html?ref=' + encodeURIComponent(resultat.data.reference), '_blank');
+        } else {
+          alert('✅ Votre fiche a ete enregistree. Le document recapitulatif sera disponible une fois que l autre partie aura aussi valide sa fiche.');
+        }
         window.fermerModalRestitution();
       } catch (e) {
         alert('❌ Erreur lors de l enregistrement: ' + e.message);
