@@ -6,7 +6,9 @@
     "auteur": "DzDiaspora",
     "licence": "Creative Commons CC-BY-SA 4.0",
     "description": "Premier dictionnaire numerique Tamazight pour applications mobiles.",
-    "contact": "contact@dzdiaspora.app"
+    "contact": "contact@dzdiaspora.app",
+    "avertissement": "Dictionnaire communautaire evolutif. Certaines traductions peuvent etre approximatives ou necessiter une verification par un locuteur natif avant usage officiel ou pedagogique.",
+    "origine_ecriture": "Le Tifinagh est historiquement l'ecriture vivante des Touareg (Sahara) ; le kabyle s'ecrivait traditionnellement en caracteres latins ou arabes. La version utilisee ici (Neo-Tifinagh, standardisee a partir des annees 1970 et officialisee au Maroc en 2003) est une convention moderne partagee par l'ensemble des langues amazighes, pas une tradition kabyle ancienne."
   },
   "urgences": {
     "Police": "Aserdas",
@@ -233,7 +235,15 @@
     "Pain": "Aghrum",
     "Marche": "Asuq",
     "Ecole": "Taddart n usekcam",
-    "Mosquee": "Timejjart"
+    "Mosquee": "Timejjart",
+    "Homme": "Argaz",
+    "Femme": "Tamettut",
+    "Garcon": "Aqcic",
+    "Fille": "Taqcict",
+    "Chien": "Aydi",
+    "Chat": "Muc",
+    "Nuit": "Idh",
+    "Jour": "Ass"
   },
   "nombres": {
     "Zero": "Sifr",
@@ -262,5 +272,14 @@
     "Froid": "Tagrest",
     "Orage": "Tafekkit",
     "Inondation": "Amellal"
+  },
+  "jours": {
+    "Lundi": "Letnayen",
+    "Mardi": "Ttlata",
+    "Mercredi": "Larebaa",
+    "Jeudi": "Lexmis",
+    "Vendredi": "Jemaa",
+    "Samedi": "Ssebt",
+    "Dimanche": "Lhed"
   }
 }

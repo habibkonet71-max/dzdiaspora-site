@@ -6,7 +6,9 @@
     "auteur": "DzDiaspora",
     "licence": "Creative Commons CC-BY-SA 4.0",
     "description": "Premier dictionnaire numerique Tamazight - Ecriture Tifinagh originale",
-    "contact": "contact@dzdiaspora.app"
+    "contact": "contact@dzdiaspora.app",
+    "avertissement": "Dictionnaire communautaire evolutif. Certaines traductions peuvent etre approximatives ou necessiter une verification par un locuteur natif avant usage officiel ou pedagogique.",
+    "origine_ecriture": "Le Tifinagh est historiquement l'ecriture vivante des Touareg (Sahara) ; le kabyle s'ecrivait traditionnellement en caracteres latins ou arabes. La version utilisee ici (Neo-Tifinagh, standardisee a partir des annees 1970 et officialisee au Maroc en 2003) est une convention moderne partagee par l'ensemble des langues amazighes, pas une tradition kabyle ancienne."
   },
   "urgences": {
     "Police": "ⴰⵙⴻⵔⴷⴰⵙ",
@@ -22,7 +24,14 @@
     "Hopital": "ⵙⴱⵉⵜⴰⵔ",
     "Gendarmerie": "ⵉⴳⴻⵏⴷⴰⵔⵎⴻⵏ",
     "Plainte": "ⵜⴰⴳⵓⵏⵉ",
-    "Assurance": "ⴰⵎⴻⴷⴷⴰⴷ"
+    "Assurance": "ⴰⵎⴻⴷⴷⴰⴷ",
+    "Appeler": "ⴰⵍⴻⵙ",
+    "Blessure": "ⵜⴰⵡⴻⵙⵙⵉⵜ",
+    "Vol": "ⵜⴰⵙⴻⵔⵇⵉⵜ",
+    "Agression": "ⴰⵙⴻⵏⵀⴻⵍ",
+    "Commissariat": "ⴰⵅⵅⴰⵎ ⵏ ⵉⵙⴻⵔⴷⴰⵙ",
+    "Signaler": "ⵙⵙⵎⴻⴽⵜⵉ",
+    "Victime": "ⴰⵎⴽⵔⴰⵣ"
   },
   "sante": {
     "Sante": "ⵜⴰⵣⵎⴻⵔⵜ",
@@ -36,7 +45,19 @@
     "Vaccination": "ⵜⴰⵍⵍⴻⵍⵜ ⴷ ⴷⴷⵡⴰ",
     "Allergie": "ⵜⴰⵇⴻⵙⵙⵉⵙⵜ",
     "Grossesse": "ⵜⴰⵎⴻⵜⵜⴰⵏⵜ",
-    "Analyse": "ⵜⴰⵣⵔⵉⴳⵜ ⵏ ⵉⴷⴰⵎⵎⴻⵏ"
+    "Analyse": "ⵜⴰⵣⵔⵉⴳⵜ ⵏ ⵉⴷⴰⵎⵎⴻⵏ",
+    "Infirmier": "ⴰⵎⵙⴻⵇⴷⴰⵛ ⵏ ⵙⴱⵉⵜⴰⵔ",
+    "Ordonnance": "ⵜⴰⴱⵔⴰⵜ ⵏ ⴰⵎⵙⴻⴱⴷⴻⴷ",
+    "Clinique": "ⴽⵍⵉⵏⵉⴽ",
+    "Operation": "ⵜⴰⵎⴻⵙⵍⴰⵢⵜ",
+    "Douleur": "ⵢⴻⴽⴽⴰ",
+    "Fievre": "ⵜⴰⴼⴰⵜ",
+    "Mutuelle": "ⴰⵎⴻⴷⴷⴰⴷ",
+    "Securite sociale": "ⴰⵎⴻⴷⴷⴰⴷ ⴰⵏⴰⵎⵓⵔ",
+    "Diabete": "ⴰⵙⴻⴽⴽⴻⵔ",
+    "Pediatre": "ⴰⵎⵙⴻⴱⴷⴻⴷ ⵏ ⵜⴰⵔⵡⴰ",
+    "Dentiste": "ⴰⵎⵙⴻⴱⴷⴻⴷ ⵏ ⵉⴳⴻⵔⵎⴰⵏ",
+    "Prise de sang": "ⵜⴰⵣⵣⴰⵔⵜ ⵏ ⵉⴷⴰⵎⵎⴻⵏ"
   },
   "transport": {
     "Transport": "ⵜⴰⵏⴻⵇⵇⴰⵍⵜ",
@@ -52,7 +73,18 @@
     "Taxi": "ⵜⴰⴽⵙⵉ",
     "Voiture": "ⵜⴰⴽⵔⴰⴽⵜ",
     "Retard": "ⵜⵉⵍⴰⵡⵜ",
-    "Annulation": "ⴰⵙⴻⴽⵔⴻⵙ"
+    "Annulation": "ⴰⵙⴻⴽⵔⴻⵙ",
+    "Vol": "ⴰⴷⴼⴻⴳⵀ",
+    "Reservation": "ⴰⵙⴳⵀⴻⵎ",
+    "Bagage": "ⴰⴼⵓⵔⴷⴰⵏ",
+    "Frontiere": "ⵜⴰⵣⴻⵇⵇⴰⵢⵜ",
+    "Port": "ⴰⴷⴰⴱⵓ",
+    "Location": "ⵜⵉⴱⴱⵉⵔⵜ",
+    "Permis de conduire": "ⵜⴻⵙⴽⵉⵔⵜ ⵏ ⵓⵙⴻⴽⵛⴰⵎ",
+    "Carburant": "ⴻⵙⵙⴰⵏⵙ",
+    "Panne": "ⵜⴰⴼⴻⴽⴽⵉⵜ",
+    "Arrivee": "ⵜⵉⵙⴷⴰⵡⵉⵜ",
+    "Depart": "ⵜⴰⴼⴼⴰⵔⵜ"
   },
   "finance": {
     "Finance": "ⵉⴷⵔⵉⵎⵙⴻⵏ",
@@ -65,7 +97,16 @@
     "Salaire": "ⴰⵔⵔⴰⵣ",
     "Impots": "ⵜⵉⴽⴻⵔⴽⴰⵙ",
     "Gratuit": "ⵉⴼⴰⵙ",
-    "Investissement": "ⵜⴰⵣⵎⴻⵔⵜ"
+    "Investissement": "ⵜⴰⵣⵎⴻⵔⵜ",
+    "Compte bancaire": "ⴰⵎⵉⵔⴻⵣ ⵏ ⵜⴰⵙⵏⵉⵇⵜ",
+    "Virement": "ⴰⵣⴻⵔⵔⴻⴳ ⵏ ⵉⴷⵔⵉⵎⵙⴻⵏ",
+    "Carte bancaire": "ⵜⵉⴽⴰⵔⵜ ⵏ ⵜⴰⵙⵏⵉⵇⵜ",
+    "Taux de change": "ⵜⵉⵇⴻⴷⴰⵛⵜ ⵏ ⵓⵙⴻⵏⵏⴻⴼ",
+    "Devise": "ⵜⵉⴷⵔⵉⵎⵙⵉⵜ",
+    "Pret": "ⵜⴰⵍⵍⴰⵍⵜ",
+    "Interet": "ⵍⴻⵇⵢⴻⴷ",
+    "Epargne": "ⵜⵉⴽⵜⵉ ⵏ ⵉⴷⵔⵉⵎⵙⴻⵏ",
+    "Budget": "ⴱⵓⴷⵊⵉ"
   },
   "administratif": {
     "Administratif": "ⴰⵙⴻⴳⵣⴻⴼ",
@@ -80,7 +121,19 @@
     "Formulaire": "ⵜⴰⴱⵔⴰⵜⵜ",
     "Dossier": "ⵜⴰⵙⴻⴷⴷⴰⵔⵜ",
     "Certificat": "ⵜⵉⴽⴰⵔⵜ",
-    "Retraite": "ⵜⴰⵡⵔⵉⵇⵜ"
+    "Retraite": "ⵜⴰⵡⵔⵉⵇⵜ",
+    "Carte nationale": "ⵜⵉⴽⴰⵔⵜ ⵜⴰⵏⴰⵎⵓⵔⵜ",
+    "Carte consulaire": "ⵜⵉⴽⴰⵔⵜ ⵏ ⵜⴰⵇⵓⵙⵓⵍⵜ",
+    "Acte de naissance": "ⵜⵉⴽⴰⵔⵜ ⵏ ⵜⵎⴰⵣⵉⴳⵀⵜ",
+    "Etat civil": "ⴰⵀⵡⴰⵍ ⴰⵏⴰⵎⵓⵔ",
+    "Mairie": "ⵜⵉⵎⴻⵊⵊⴰⵔⵜ",
+    "Residence": "ⵜⴰⴷⴷⴰⵔⵜ",
+    "Legalisation": "ⴰⵙⴻⴱⴷⴻⴷ",
+    "Notaire": "ⴰⵎⵙⴻⴱⴷⴻⴷ",
+    "Justice": "ⵜⵉⵣⴻⵔⴼⴰⵏ",
+    "Demande": "ⴰⵙⵓⵜⴻⵔ",
+    "Attestation": "ⵜⵉⴱⴰⵏⵜ",
+    "Allocation": "ⵜⴰⵍⵍⴰⵍⵜ"
   },
   "immobilier": {
     "Immobilier": "ⵜⵉⴳⴻⵊⴷⵉⵜ",
@@ -92,7 +145,15 @@
     "Contrat": "ⴰⵎⴰⴽⴰⵙ",
     "Caution": "ⴰⵎⴻⴷⴷⴰⴷ",
     "Travaux": "ⵍⴻⵅⴷⵎⴻⵜ",
-    "Credit immobilier": "ⴽⵔⵉⴷⵉ ⵏ ⵜⵉⴳⴻⵊⴷⵉⵜ"
+    "Credit immobilier": "ⴽⵔⵉⴷⵉ ⵏ ⵜⵉⴳⴻⵊⴷⵉⵜ",
+    "Appartement": "ⵜⵉⴳⴻⵊⴷⵉⵜ",
+    "Locataire": "ⴰⵎⵉⵔⴻⵣⴻⵏ ⵏ ⵜⵉⴱⴱⵉⵔⵜ",
+    "Agence": "ⵜⴰⴽⴻⵍⵜ",
+    "Notaire": "ⴰⵎⵙⴻⴱⴷⴻⴷ",
+    "Construction": "ⴰⵙⴻⴷⴷⵉ",
+    "Mensualite": "ⴰⵇⴻⴷⴰⵛ ⵏ ⵡⴰⴳⴳⵓⵔ",
+    "Assurance habitation": "ⴰⵎⴻⴷⴷⴰⴷ ⵏ ⴰⵅⵅⴰⵎ",
+    "Titre de propriete": "ⵜⵉⴽⴰⵔⵜ ⵏ ⴰⵎⵉⵔⴻⵣⴻⵏ"
   },
   "justice": {
     "Justice": "ⵜⵉⵣⴻⵔⴼⴰⵏ",
@@ -104,7 +165,11 @@
     "Prison": "ⵜⴰⴱⴰⵏⴷⵉⵔⵜ",
     "Liberation": "ⵜⵍⴻⵍⵍⵉ",
     "Droit": "ⵉⵣⴻⵔⴼⴰⵏ",
-    "Loi": "ⵉⵣⴻⵔⴼⴰⵏ"
+    "Loi": "ⵉⵣⴻⵔⴼⴰⵏ",
+    "Amende": "ⵜⵉⴽⴰⵔⵜ ⵏ ⵍⵀⴻⴽⵎ",
+    "Litige": "ⵜⴰⵏⴰⴼⴰ",
+    "Notaire": "ⴰⵎⵙⴻⴱⴷⴻⴷ",
+    "Barreau": "ⵜⴰⴽⴻⴱⴱⴰⵏⵉⵜ ⵏ ⵉⵎⴻⵍⵍⴰⵢⴰⵏ"
   },
   "securite": {
     "Securite": "ⵜⴰⵖⴻⵍⵍⴻⵙⵜ",
@@ -114,7 +179,12 @@
     "Incendie": "ⵜⵉⵎⴻⵙⵙ",
     "Alerte": "ⴰⵙⵏⴻⴽⴽⴻⵔ",
     "Arnaque": "ⴰⵙⴻⵏⵀⴻⵍ ⵏ ⵉⴷⵔⵉⵎⵙⴻⵏ",
-    "Violence": "ⴰⵙⴻⵏⵀⴻⵍ"
+    "Violence": "ⴰⵙⴻⵏⵀⴻⵍ",
+    "Gendarmerie": "ⵉⴳⴻⵏⴷⴰⵔⵎⴻⵏ",
+    "Pompiers": "ⵉⴷⵓⵔⴰⵔ ⵏ ⵜⴰⴼⴰⵜ",
+    "Urgence": "ⵜⵉⵍⴰⵙ",
+    "Evacuation": "ⴰⵙⵓⴼⴼⵓⴳⵀ",
+    "Cambriolage": "ⵜⴰⵙⴻⵔⵇⵉⵜ ⵏ ⴰⵅⵅⴰⵎ"
   },
   "communication": {
     "Telephone": "ⵜⵉⵍⵉⴼⵓⵏ",
@@ -128,7 +198,12 @@
     "Recherche": "ⴰⵏⴰⴷⵉ",
     "Contact": "ⴰⵎⴻⵙⵜⴻⵏ",
     "Application": "ⵓⵙⵏⴰⵙ",
-    "Wifi": "ⵡⵉⴼⵉ"
+    "Wifi": "ⵡⵉⴼⵉ",
+    "Mobile": "ⵜⵉⵍⵉⴼⵓⵏ ⴰⵎⴰⵢⵏⵓⵜ",
+    "Notification": "ⴰⵙⵏⴻⴽⴽⴻⵔ",
+    "Annuaire": "ⴰⵎⴰⵡⴰⵍ",
+    "Mise a jour": "ⴰⵙⴻⴱⴷⴻⴷ ⴰⵎⴰⵢⵏⵓⵜ",
+    "Localisation": "ⴰⵎⴽⴰⵏ"
   },
   "quotidien": {
     "Bonjour": "ⴰⵣⵓⵍ",
@@ -150,7 +225,25 @@
     "Mosquee": "ⵜⵉⵎⴻⵊⵊⴰⵔⵜ",
     "Aujourd hui": "ⴰⵙⵙ-ⴰ",
     "Demain": "ⴰⵣⴻⴽⴽⴰ",
-    "Hier": "ⵉⴷⵀⴻⵍⵍⵉ"
+    "Hier": "ⵉⴷⵀⴻⵍⵍⵉ",
+    "Bonne nuit": "ⵍⴰⵍⵉ ⴰⵎⴻⵇⵇⵔⴰⵏ",
+    "Sil vous plait": "ⵎⴰ ⵢⴻⵍⵍⴰ",
+    "Excusez-moi": "ⵙⴻⵎⵀⵉⵜ",
+    "Je cherche": "ⵜⵜⵏⴰⴷⴰⴳⵀ",
+    "Ou est": "ⴰⵏⴷⴰ",
+    "Combien": "ⴰⵛⵀⴰⵍ",
+    "Maintenant": "ⵜⵓⵔⴰ",
+    "Enfant": "ⴰⵔⵔⴰⵡ",
+    "Marche": "ⴰⵙⵓⵇ",
+    "Ecole": "ⵜⴰⴷⴷⴰⵔⵜ ⵏ ⵓⵙⴻⴽⵛⴰⵎ",
+    "Homme": "ⴰⵔⴳⴰⵣ",
+    "Femme": "ⵜⴰⵎⴻⵜⵜⵓⵜ",
+    "Garcon": "ⴰⵇⵛⵉⵛ",
+    "Fille": "ⵜⴰⵇⵛⵉⵛⵜ",
+    "Chien": "ⴰⵢⴷⵉ",
+    "Chat": "ⵎⵓⵛ",
+    "Nuit": "ⵉⴷⵀ",
+    "Jour": "ⴰⵙⵙ"
   },
   "nombres": {
     "Zero": "ⵙⵉⴼⵔ",
@@ -165,7 +258,8 @@
     "Neuf": "ⵜⴻⵣⵣⴰ",
     "Dix": "ⵎⴰⵔⴰⵡ",
     "Cent": "ⵜⵉⵎⴰⴷ",
-    "Mille": "ⴰⵍⴰⴼ"
+    "Mille": "ⴰⵍⴰⴼ",
+    "Vingt": "ⴰⵛⵀⵔⵉⵏ"
   },
   "meteo": {
     "Soleil": "ⵜⴰⴼⴰⵜ",
@@ -175,6 +269,17 @@
     "Chaleur": "ⵜⴰⵙⴻⵎⵎⵉⵜ",
     "Froid": "ⵜⴰⴳⵔⴻⵙⵜ",
     "Orage": "ⵜⴰⴼⴻⴽⴽⵉⵜ",
-    "Inondation": "ⴰⵎⴻⵍⵍⴰⵍ"
+    "Inondation": "ⴰⵎⴻⵍⵍⴰⵍ",
+    "Meteo": "ⴰⵣⴰⵍ ⵏ ⵡⴰⵙⵙ",
+    "Nuage": "ⵉⴳⵓⴷⴻⵔ"
+  },
+  "jours": {
+    "Lundi": "ⵍⴻⵜⵏⴰⵢⴻⵏ",
+    "Mardi": "ⵜⵜⵍⴰⵜⴰ",
+    "Mercredi": "ⵍⴰⵔⴻⴱⴰⴰ",
+    "Jeudi": "ⵍⴻⵅⵎⵉⵙ",
+    "Vendredi": "ⵊⴻⵎⴰⴰ",
+    "Samedi": "ⵙⵙⴻⴱⵜ",
+    "Dimanche": "ⵍⵀⴻⴷ"
   }
 }
