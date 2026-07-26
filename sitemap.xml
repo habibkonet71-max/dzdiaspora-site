@@ -5,7 +5,7 @@
   <url><loc>https://dzdiaspora.online/inscription-pro.html</loc><lastmod>2026-07-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
   <url><loc>https://dzdiaspora.online/deposer-demande.html</loc><lastmod>2026-07-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://dzdiaspora.online/transport.html</loc><lastmod>2026-07-09</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://dzdiaspora.online/actualites.html</loc><lastmod>2026-07-09</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://dzdiaspora.online/douane.html</loc><lastmod>2026-07-26</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://dzdiaspora.online/finance.html</loc><lastmod>2026-07-09</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   <url><loc>https://dzdiaspora.online/justice.html</loc><lastmod>2026-07-09</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://dzdiaspora.online/sante.html</loc><lastmod>2026-07-09</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
@@ -19,6 +19,12 @@
   <url><loc>https://dzdiaspora.online/securite.html</loc><lastmod>2026-07-09</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://dzdiaspora.online/administratif.html</loc><lastmod>2026-07-09</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://dzdiaspora.online/publicite.html</loc><lastmod>2026-07-09</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://dzdiaspora.online/pub.html</loc><lastmod>2026-07-26</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://dzdiaspora.online/abonnement.html</loc><lastmod>2026-07-26</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://dzdiaspora.online/arnaques.html</loc><lastmod>2026-07-26</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://dzdiaspora.online/commander-pub.html</loc><lastmod>2026-07-26</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://dzdiaspora.online/deposer-annonce.html</loc><lastmod>2026-07-26</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://dzdiaspora.online/laisser-avis.html</loc><lastmod>2026-07-26</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://dzdiaspora.online/contact.html</loc><lastmod>2026-07-09</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://dzdiaspora.online/cgu.html</loc><lastmod>2026-07-09</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
 </urlset>
