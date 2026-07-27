@@ -172,6 +172,12 @@
       </div>
 
       <div class="form-group">
+        <label id="lbl-code-promo">Code promo (optionnel)</label>
+        <input type="text" id="code_promo" placeholder="Ex: BIENVENUE2026" style="text-transform:uppercase;">
+        <p style="color:rgba(255,255,255,0.4);font-size:11px;margin-top:6px;">Un code promo valide peut vous donner acces a un bonus de bienvenue (publicite illimitee 1 mois, inscription annuaire offerte). Verifie par notre equipe lors du traitement de votre demande.</p>
+      </div>
+
+      <div class="form-group">
         <label>Mode de paiement *</label>
         <div style="display:flex;gap:10px;">
           <label style="flex:1;display:flex;align-items:center;gap:8px;cursor:pointer;background:#0D1117;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);">
@@ -300,6 +306,7 @@
           presentation: document.getElementById('presentation').value.trim(),
           abonnement: document.getElementById('abonnement').value,
           mode_paiement: modePaiement,
+          code_promo: document.getElementById('code_promo').value.trim().toUpperCase(),
           notifications: {
             email: document.getElementById('notif-email').checked,
             push: document.getElementById('notif-push').checked,
