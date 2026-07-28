@@ -53,6 +53,11 @@
     <h1>🏛️ Tourisme en Algerie</h1>
     <p class="intro">Sites historiques, parcs naturels, plages et conseils pratiques pour decouvrir ou redecouvrir l Algerie.</p>
 
+    <section class="bloc" id="section-pros-tourisme" style="display:none;">
+      <h2>🤝 Professionnels partenaires</h2>
+      <div class="grid-cartes" id="liste-pros-tourisme"></div>
+    </section>
+
     <section class="bloc">
       <h2>🌟 Sites incontournables</h2>
       <div class="grid-cartes">
@@ -172,9 +177,29 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
     const firebaseConfig = { apiKey: "AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ", appId: "1:223003656315:web:100de190b8b5e74ddae2de", messagingSenderId: "223003656315", projectId: "dzdiaspora-7260a", authDomain: "dzdiaspora-7260a.firebaseapp.com", storageBucket: "dzdiaspora-7260a.firebasestorage.app" };
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    (async function chargerProsTourisme() {
+      try {
+        const snap = await getDocs(query(collection(db, 'professionnels'), where('tourisme_reference', '==', true), where('statut', '==', 'valide')));
+        if (snap.empty) return;
+        const profLabels = { avocat:'⚖️ Avocat', medecin:'🏥 Médecin', medecin_spec:'🏥 Médecin spécialiste', notaire:'📜 Notaire', huissier:'⚖️ Huissier', infirmier:'🩺 Infirmier', pharmacien:'💊 Pharmacien', dentiste:'🦷 Dentiste', psychologue:'🧠 Psychologue', comptable:'💼 Expert comptable', agence_voyage:'🧳 Agence de voyage', autre:'📋 Professionnel' };
+        document.getElementById('liste-pros-tourisme').innerHTML = snap.docs.map(d => {
+          const p = d.data();
+          return `<div class="carte">
+            <h3>${profLabels[p.profession] || '📋 Professionnel'} — ${p.prenom||''} ${p.nom||''}</h3>
+            <p>📍 ${p.wilaya||''}${p.adresse ? ' — ' + p.adresse : ''}</p>
+            ${p.telephone ? '<p class="detail">📞 ' + p.telephone + '</p>' : ''}
+            ${p.presentation ? '<p class="detail" style="font-style:italic;">"' + p.presentation.substring(0,120) + (p.presentation.length>120?'...':'') + '"</p>' : ''}
+          </div>`;
+        }).join('');
+        document.getElementById('section-pros-tourisme').style.display = 'block';
+      } catch(e) { console.log('Erreur chargement pros tourisme:', e); }
+    })();
     onAuthStateChanged(auth, (user) => {
       const btn = document.getElementById('auth-btn-header');
       if (!btn) return;

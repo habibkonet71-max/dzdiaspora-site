@@ -216,7 +216,7 @@
         if (snap.exists()) {
           const p = snap.data();
           window._proData = p;
-          const icons = { avocat:'⚖️', medecin:'🏥', medecin_spec:'🏥', notaire:'📜', pharmacien:'💊', dentiste:'🦷', psychologue:'🧠', comptable:'💼' };
+          const icons = { avocat:'⚖️', medecin:'🏥', medecin_spec:'🏥', notaire:'📜', pharmacien:'💊', dentiste:'🦷', psychologue:'🧠', comptable:'💼', agence_voyage:'🧳' };
           document.getElementById('proAvatar').textContent = icons[p.profession] || '👨‍⚕️';
           document.getElementById('proNom').textContent = (p.prenom || '') + ' ' + (p.nom || '');
           document.getElementById('proProfession').textContent = p.profession + (p.specialite ? ' — ' + p.specialite : '');

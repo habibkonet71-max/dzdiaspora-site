@@ -233,6 +233,7 @@
           <option value="dentiste">🦷 Dentiste</option>
           <option value="psychologue">🧠 Psychologue</option>
           <option value="comptable">💼 Expert comptable</option>
+          <option value="agence_voyage">🧳 Agence de voyage</option>
           <option value="autre">📋 Autre</option>
         </select>
       </div>
@@ -534,7 +535,7 @@
       try {
         const snap = await getDocs(query(collection(db, 'professionnels_demandes'), where('statut','==','en_attente'), orderBy('date','desc')));
         if (snap.empty) { container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune demande en attente ✅</p>'; return; }
-        const profLabels = { avocat:'⚖️ Avocat', medecin:'🏥 Médecin', medecin_spec:'🏥 Médecin spécialiste', notaire:'📜 Notaire', pharmacien:'💊 Pharmacien', dentiste:'🦷 Dentiste', psychologue:'🧠 Psychologue', comptable:'💼 Expert comptable', autre:'📋 Autre' };
+        const profLabels = { avocat:'⚖️ Avocat', medecin:'🏥 Médecin', medecin_spec:'🏥 Médecin spécialiste', notaire:'📜 Notaire', pharmacien:'💊 Pharmacien', dentiste:'🦷 Dentiste', psychologue:'🧠 Psychologue', comptable:'💼 Expert comptable', agence_voyage:'🧳 Agence de voyage', autre:'📋 Autre' };
         container.innerHTML = snap.docs.map(d => {
           const p = d.data();
           const date = p.date?.toDate?.()?.toLocaleDateString('fr-FR') || '';
@@ -575,6 +576,7 @@
         dentiste: 'dentiste',
         psychologue: 'psychologue',
         comptable: 'expert comptable',
+        agence_voyage: 'agence de voyage',
       };
       const profNom = profLabels[profession] || profession;
 
@@ -619,18 +621,21 @@
       } catch(e) { alert('Erreur: ' + e.text || e.message); }
     };
 
-    // Verifie le code promo saisi et calcule les champs de bonus a appliquer
-    // au professionnel (statut_compte, dates, references). Renvoie
-    // { statut_compte: 'payant' } si aucun code valide n'a ete fourni.
+    // Verifie le code promo saisi et calcule les champs de bonus a appliquer.
+    // Renvoie null si aucun code valide n'a ete fourni (compte "payant" par
+    // defaut). Ces donnees (statut_compte, dates) ne sont JAMAIS ecrites sur
+    // le document professionnels (public en lecture) : elles vont dans la
+    // collection privee professionnels_bonus pour ne pas exposer publiquement
+    // qui beneficie du bonus.
     async function calculerBonusPro(codePromoBrut) {
       const codePromo = (codePromoBrut || '').trim().toUpperCase();
-      if (!codePromo) return { statut_compte: 'payant' };
+      if (!codePromo) return null;
       const codeSnap = await getDoc(doc(db, 'codes_promo', codePromo));
-      if (!codeSnap.exists()) return { statut_compte: 'payant' };
+      if (!codeSnap.exists()) return null;
       const codeData = codeSnap.data();
       const dejaUtilise = codeData.nb_utilisations || 0;
       const codeValide = codeData.actif && (codeData.usage_max == null || dejaUtilise < codeData.usage_max);
-      if (!codeValide) return { statut_compte: 'payant' };
+      if (!codeValide) return null;
 
       const debut = new Date();
       const fin = new Date(debut);
@@ -641,12 +646,9 @@
         actif: codeData.usage_max != null && nouveauCompte >= codeData.usage_max ? false : codeData.actif,
       });
       return {
-        statut_compte: 'bonus',
         code_promo_utilise: codePromo,
         bonus_debut: Timestamp.fromDate(debut),
         bonus_fin: Timestamp.fromDate(fin),
-        tourisme_reference: true,
-        email_rappel_bonus_envoye: false,
       };
     }
 
@@ -656,21 +658,38 @@
         const demandeSnap = await getDoc(doc(db, 'professionnels_demandes', id));
         const data = demandeSnap.data();
         const bonus = await calculerBonusPro(data.code_promo);
+        // tourisme_reference reste sur le document public professionnels
+        // (c'est justement ce qui pilote son affichage public sur
+        // tourisme.html) ; statut_compte/dates restent prives.
+        const champsPublics = {...data, statut: 'valide', date_validation: Timestamp.now(), ...(bonus ? {tourisme_reference: true} : {})};
+
+        let proRef;
         if (data.email) {
           const existant = await getDocs(query(collection(db, 'professionnels'), where('email', '==', data.email)));
           if (!existant.empty) {
-            await updateDoc(existant.docs[0].ref, {...data, ...bonus, statut: 'valide', date_validation: Timestamp.now()});
+            proRef = existant.docs[0].ref;
+            await updateDoc(proRef, champsPublics);
           } else {
-            await addDoc(collection(db, 'professionnels'), {...data, ...bonus, statut: 'valide', date_validation: Timestamp.now()});
+            proRef = await addDoc(collection(db, 'professionnels'), champsPublics);
           }
         } else {
-          await addDoc(collection(db, 'professionnels'), {...data, ...bonus, statut: 'valide', date_validation: Timestamp.now()});
+          proRef = await addDoc(collection(db, 'professionnels'), champsPublics);
         }
+
+        if (bonus) {
+          await setDoc(doc(db, 'professionnels_bonus', proRef.id), {
+            email: data.email || '',
+            statut_compte: 'bonus',
+            email_rappel_bonus_envoye: false,
+            ...bonus,
+          });
+        }
+
         await updateDoc(doc(db, 'professionnels_demandes', id), { statut: 'valide' });
         if (data.email) {
           try {
             emailjs.init('lj-ndl5zGAWGWkJqc');
-            const messageBonus = bonus.statut_compte === 'bonus'
+            const messageBonus = bonus
               ? 'Votre inscription professionnelle a ete validee par notre equipe. Votre code promo a ete accepte : vous beneficiez d\'un mois de bonus de bienvenue (publicite illimitee photo/video, inscription annuaire et reference sur la page tourisme), jusqu\'au ' + bonus.bonus_fin.toDate().toLocaleDateString('fr-FR') + '. Connectez-vous sur : https://dzdiaspora.online/espace-pro.html avec votre email et mot de passe. Bienvenue sur DZ Diaspora !'
               : 'Votre inscription professionnelle a ete validee par notre equipe. Connectez-vous sur : https://dzdiaspora.online/espace-pro.html avec votre email et mot de passe. Bienvenue sur DZ Diaspora !';
             await emailjs.send('service_pv5uh7i', 'template_e12y5yv', {
@@ -683,8 +702,8 @@
             });
           } catch (mailErr) { /* email non bloquant */ }
         }
-        await journaliserAction('Validation inscription pro', (data.prenom || '') + ' ' + (data.nom || '') + ' (' + (data.email || '') + ')' + (bonus.statut_compte === 'bonus' ? ' — bonus active' : ''));
-        alert(bonus.statut_compte === 'bonus' ? '✅ Professionnel publié dans l\'annuaire avec le bonus de bienvenue, email envoyé !' : '✅ Professionnel publié dans l\'annuaire, email envoyé !');
+        await journaliserAction('Validation inscription pro', (data.prenom || '') + ' ' + (data.nom || '') + ' (' + (data.email || '') + ')' + (bonus ? ' — bonus active' : ''));
+        alert(bonus ? '✅ Professionnel publié dans l\'annuaire avec le bonus de bienvenue, email envoyé !' : '✅ Professionnel publié dans l\'annuaire, email envoyé !');
         chargerDemandesPros();
         chargerHistorique();
         chargerProfessionnels();
@@ -783,23 +802,33 @@
     };
 
     // ===== PROFESSIONNELS VALIDES (suivi bonus / paiement) =====
+    // statut_compte/bonus_fin vivent dans la collection privee
+    // professionnels_bonus (jamais sur le document professionnels, qui est
+    // public) : on les recupere separement puis on les associe par id ici,
+    // cote admin uniquement.
     async function chargerProfessionnels() {
       const container = document.getElementById('liste-professionnels');
       if (!container) return;
       try {
-        const snap = await getDocs(query(collection(db, 'professionnels'), where('statut','==','valide')));
-        if (snap.empty) { container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucun professionnel valide</p>'; return; }
+        const [proSnap, bonusSnap] = await Promise.all([
+          getDocs(query(collection(db, 'professionnels'), where('statut','==','valide'))),
+          getDocs(collection(db, 'professionnels_bonus')),
+        ]);
+        if (proSnap.empty) { container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucun professionnel valide</p>'; return; }
+        const bonusParId = {};
+        bonusSnap.docs.forEach(b => { bonusParId[b.id] = b.data(); });
         const maintenant = new Date();
-        const lignes = snap.docs.map(d => {
+        const lignes = proSnap.docs.map(d => {
           const p = d.data();
+          const b = bonusParId[d.id];
           let badge = '<span style="color:rgba(255,255,255,0.4);font-size:11px;">— non renseigne —</span>';
-          if (p.statut_compte === 'bonus') {
-            const finDate = p.bonus_fin?.toDate?.();
+          if (b?.statut_compte === 'bonus') {
+            const finDate = b.bonus_fin?.toDate?.();
             const joursRestants = finDate ? Math.max(0, Math.ceil((finDate - maintenant) / (24*60*60*1000))) : '?';
             badge = '<span style="color:#A8E063;font-size:11px;font-weight:700;">🎁 Bonus — ' + joursRestants + ' j restants</span>';
-          } else if (p.statut_compte === 'payant') {
+          } else if (b?.statut_compte === 'payant') {
             badge = '<span style="color:#4DD0E1;font-size:11px;font-weight:700;">💳 Payant</span>';
-          } else if (p.statut_compte === 'expire_bonus') {
+          } else if (b?.statut_compte === 'expire_bonus') {
             badge = '<span style="color:#FFC107;font-size:11px;font-weight:700;">⚠️ Bonus expire — a relancer</span>';
           }
           return { date: p.date_validation?.toDate?.() || new Date(0), html: `<div class="card-avis" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
