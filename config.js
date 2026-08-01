@@ -1,6 +1,5 @@
 // Configuration globale du site DZ Diaspora
-// Lien temporaire (profil personnel) en attendant la creation d'une vraie Page Facebook pro.
-const DZDIASPORA_FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61578631118662";
+const DZDIASPORA_FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61592582571378";
 
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".js-facebook-link").forEach(function (el) {
