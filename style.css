@@ -142,6 +142,9 @@ footer {
   font-size: 12px;
 }
 footer a { color: rgba(255,255,255,0.4); }
+.footer-social { margin-top: 8px; }
+.footer-social a { display: inline-flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.4); text-decoration: none; }
+.footer-social a:hover { color: #4DD0E1; }
 @media (max-width: 768px) {
   .nav-desktop { display: none; }
   .menu-btn { display: block; }
