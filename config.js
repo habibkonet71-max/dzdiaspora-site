@@ -1,6 +1,6 @@
 // Configuration globale du site DZ Diaspora
-// Remplacer FACEBOOK_URL par l'URL reelle de la page Facebook une fois connue.
-const DZDIASPORA_FACEBOOK_URL = "https://www.facebook.com/PLACEHOLDER_A_COMPLETER";
+// Lien temporaire (profil personnel) en attendant la creation d'une vraie Page Facebook pro.
+const DZDIASPORA_FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61578631118662";
 
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".js-facebook-link").forEach(function (el) {
