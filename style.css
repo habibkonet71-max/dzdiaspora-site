@@ -192,6 +192,27 @@ footer a { color: rgba(255,255,255,0.4); }
   display: inline-block;
 }
 
+.carte-photo {
+  padding: 0;
+  overflow: hidden;
+}
+.carte-photo img {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  display: block;
+  background: #0D1117;
+}
+.carte-photo .carte-contenu {
+  padding: 16px;
+}
+.carte-photo .credit-photo {
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  display: block;
+  margin-top: 8px;
+}
+
 /* Anti-CLS — eviter les decalages de mise en page */
 img { height: auto; display: block; max-width: 100%; }
 .bandeau-devises-anime { min-height: 36px; }
