@@ -124,6 +124,7 @@
       </form>
 
       <form id="formInscription" style="display: none;">
+        <div class="form-group"><label>Prenom</label><input type="text" id="prenomInscription" required></div>
         <div class="form-group"><label>Email</label><input type="email" id="emailInscription" required></div>
         <div class="form-group"><label>Mot de passe (6 caracteres minimum)</label>
           <div style="position:relative;">
@@ -154,6 +155,7 @@
       signInWithEmailAndPassword,
       sendEmailVerification,
       sendPasswordResetEmail,
+      updateProfile,
       onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
@@ -184,11 +186,16 @@
       const msgSucces = document.getElementById("msgSucces");
       msgErreur.style.display = "none";
 
+      const prenom = document.getElementById("prenomInscription").value.trim();
       const email = document.getElementById("emailInscription").value;
       const password = document.getElementById("passwordInscription").value;
 
       try {
         const cred = await createUserWithEmailAndPassword(auth, email, password);
+        if (prenom) {
+          await updateProfile(cred.user, { displayName: prenom });
+          await cred.user.getIdToken(true);
+        }
         await sendEmailVerification(cred.user);
         msgSucces.textContent = "✅ Inscription reussie ! Un email de verification vous a ete envoye — verifiez votre boite de reception.";
         msgSucces.style.display = "block";
