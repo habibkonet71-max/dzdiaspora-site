@@ -569,14 +569,15 @@
     async function chargerAlertes() {
       try {
         const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-        const { getFirestore, collection, getDocs, query, where, orderBy } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        const { getFirestore, collection, getDocs, query, where, orderBy, limit } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
         const cfg = { apiKey:"AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ", projectId:"dzdiaspora-7260a", appId:"1:223003656315:web:100de190b8b5e74ddae2de" };
         const app = getApps().length ? getApps()[0] : initializeApp(cfg);
         const db = getFirestore(app);
-        const snap = await getDocs(query(collection(db, 'alertes_transport'), where('actif','==',true), orderBy('date','desc')));
-        // Afficher la dernière alerte automatiquement
+        const snap = await getDocs(query(collection(db, 'alertes_transport'), where('actif','==',true), orderBy('date','desc'), limit(5)));
+        // Priorite aux alertes de prevention, sinon la plus recente
         if (!snap.empty) {
-          const a = snap.docs[0].data();
+          const docsAlertes = snap.docs.map(d => d.data());
+          const a = docsAlertes.find(d => d.type === 'prevention') || docsAlertes[0];
           const el = document.getElementById('bandeauAlertes');
           const elTxt = document.getElementById('bandeauAlertesTexte');
           if (el && elTxt && a.titre) {
