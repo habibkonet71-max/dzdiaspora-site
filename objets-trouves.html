@@ -323,7 +323,28 @@
     };
     const MAX_INDICES = 3;
 
-    function serialiserContenuSac(prefixeId) {
+    function serialiserContenuSacFromState(indice) {
+      const parts = indice.contenuSelection.filter(c => c !== 'autre').sort();
+      const autre = (indice.contenuAutre || '').trim();
+      if (indice.contenuSelection.includes('autre') && autre) parts.push('autre:' + autre);
+      return parts.join(',');
+    }
+
+    function htmlSelecteurContenuSacDepot(indice) {
+      let pastilles = CATEGORIES_CONTENU_SAC.map(c => {
+        const actif = indice.contenuSelection.includes(c);
+        return `<span class="pastille-contenu ${actif ? 'actif' : ''}" onclick="window.togglePastilleIndice('${indice.id}','${c}')">${LABELS_CONTENU_SAC[c]}</span>`;
+      }).join('');
+      const autreActif = indice.contenuSelection.includes('autre');
+      pastilles += `<span class="pastille-contenu ${autreActif ? 'actif' : ''}" onclick="window.togglePastilleIndice('${indice.id}','autre')">➕ Autre</span>`;
+      const autreValeur = (indice.contenuAutre || '').replace(/"/g, '&quot;');
+      return `<div class="pastilles-contenu">${pastilles}</div>
+        <input type="text" value="${autreValeur}" oninput="window.majContenuAutreIndice('${indice.id}', this.value)" placeholder="Precisez (ex: parfum, chargeur, livre...)" style="display:${autreActif ? 'block' : 'none'};">`;
+    }
+
+    // Variante DOM (pas d etat JS) pour le cote reclamation : chaque carte n est rendue
+    // qu une seule fois depuis Firestore, pas de re-render pendant la saisie.
+    function serialiserContenuSacClaim(prefixeId) {
       const cases = Array.from(document.querySelectorAll(`.pastille-contenu[data-groupe="${prefixeId}"].actif`)).map(el => el.dataset.cat);
       const parts = cases.filter(c => c !== 'autre').sort();
       const autreInput = document.getElementById(prefixeId + '-autre');
@@ -332,16 +353,16 @@
       return parts.join(',');
     }
 
-    function htmlSelecteurContenuSac(prefixeId) {
+    function htmlSelecteurContenuSacClaim(prefixeId) {
       let pastilles = CATEGORIES_CONTENU_SAC.map(c =>
-        `<span class="pastille-contenu" data-groupe="${prefixeId}" data-cat="${c}" onclick="window.togglePastilleContenu(this)">${LABELS_CONTENU_SAC[c]}</span>`
+        `<span class="pastille-contenu" data-groupe="${prefixeId}" data-cat="${c}" onclick="window.togglePastilleContenuClaim(this)">${LABELS_CONTENU_SAC[c]}</span>`
       ).join('');
-      pastilles += `<span class="pastille-contenu" data-groupe="${prefixeId}" data-cat="autre" onclick="window.togglePastilleContenu(this)">➕ Autre</span>`;
+      pastilles += `<span class="pastille-contenu" data-groupe="${prefixeId}" data-cat="autre" onclick="window.togglePastilleContenuClaim(this)">➕ Autre</span>`;
       return `<div class="pastilles-contenu">${pastilles}</div>
         <input type="text" id="${prefixeId}-autre" placeholder="Precisez (ex: parfum, chargeur, livre...)" style="display:none;">`;
     }
 
-    window.togglePastilleContenu = function(el) {
+    window.togglePastilleContenuClaim = function(el) {
       el.classList.toggle('actif');
       const groupe = el.dataset.groupe;
       const autreActif = document.querySelector(`.pastille-contenu[data-groupe="${groupe}"][data-cat="autre"].actif`);
@@ -349,12 +370,30 @@
       if (autreInput) autreInput.style.display = autreActif ? 'block' : 'none';
     };
 
+    window.togglePastilleIndice = function(id, cat) {
+      const indice = indicesDepot.find(i => i.id === id);
+      if (!indice) return;
+      const idx = indice.contenuSelection.indexOf(cat);
+      if (idx >= 0) indice.contenuSelection.splice(idx, 1); else indice.contenuSelection.push(cat);
+      rendreIndicesDepot();
+    };
+
+    window.majContenuAutreIndice = function(id, valeur) {
+      const indice = indicesDepot.find(i => i.id === id);
+      if (indice) indice.contenuAutre = valeur;
+    };
+
+    window.majReponseTexteIndice = function(id, valeur) {
+      const indice = indicesDepot.find(i => i.id === id);
+      if (indice) indice.reponseTexte = valeur;
+    };
+
     let indicesDepot = [];
     let compteurIndice = 0;
 
     window.ajouterIndiceDepot = function() {
       if (indicesDepot.length >= MAX_INDICES) return;
-      indicesDepot.push({ id: 'indice-' + (compteurIndice++), type: '' });
+      indicesDepot.push({ id: 'indice-' + (compteurIndice++), type: '', reponseTexte: '', contenuSelection: [], contenuAutre: '' });
       rendreIndicesDepot();
     };
 
@@ -365,7 +404,12 @@
 
     window.majTypeIndiceDepot = function(id, type) {
       const indice = indicesDepot.find(i => i.id === id);
-      if (indice) indice.type = type;
+      if (indice) {
+        indice.type = type;
+        indice.reponseTexte = '';
+        indice.contenuSelection = [];
+        indice.contenuAutre = '';
+      }
       rendreIndicesDepot();
     };
 
@@ -378,12 +422,13 @@
           options.map(t => `<option value="${t}" ${t === indice.type ? 'selected' : ''}>${LABELS_TYPE_VERIF[t]}</option>`).join('');
         let corpsReponse = '';
         if (indice.type) {
+          const reponseValeur = (indice.reponseTexte || '').replace(/"/g, '&quot;');
           corpsReponse = `
             <p style="color:#4DD0E1;font-size:12px;margin:8px 0;">❓ ${QUESTIONS_TYPE[indice.type]}</p>
             <label style="font-size:12px;">🔐 Reponse attendue (connue de vous seul)</label>
             ${indice.type === 'sac_bagage'
-              ? htmlSelecteurContenuSac(indice.id)
-              : `<input type="text" id="${indice.id}-reponse" placeholder="La reponse exacte a la question ci-dessus" maxlength="100">`}
+              ? htmlSelecteurContenuSacDepot(indice)
+              : `<input type="text" value="${reponseValeur}" oninput="window.majReponseTexteIndice('${indice.id}', this.value)" placeholder="La reponse exacte a la question ci-dessus" maxlength="100">`}
           `;
         }
         return `
@@ -400,9 +445,8 @@
     }
 
     function lireReponseIndice(indice) {
-      if (indice.type === 'sac_bagage') return serialiserContenuSac(indice.id);
-      const el = document.getElementById(indice.id + '-reponse');
-      return el ? el.value.trim() : '';
+      if (indice.type === 'sac_bagage') return serialiserContenuSacFromState(indice);
+      return (indice.reponseTexte || '').trim();
     }
 
     ajouterIndiceDepot();
@@ -527,7 +571,7 @@
           const indicesHtml = indices.map((ind, idx) => {
             const idIndice = `${doc.id}-i${idx}`;
             const champReponse = ind.type === 'sac_bagage'
-              ? htmlSelecteurContenuSac('rep-' + idIndice)
+              ? htmlSelecteurContenuSacClaim('rep-' + idIndice)
               : `<input type="text" id="rep-${idIndice}-reponse" placeholder="Votre reponse..." style="width:100%;padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.15);background:#0D1117;color:white;box-sizing:border-box;">`;
             return `
               <div style="margin-bottom:10px;">
@@ -565,7 +609,7 @@
       const resultatDiv = document.getElementById('resultat-' + objetId);
       const indices = JSON.parse(decodeURIComponent(btn.dataset.indices || '[]'));
       const reponses = indices.map(ind => ind.type === 'sac_bagage'
-        ? serialiserContenuSac(ind.id)
+        ? serialiserContenuSacClaim(ind.id)
         : (document.getElementById(ind.id + '-reponse')?.value.trim() || '')
       ).filter(r => r);
       if (reponses.length === 0) { resultatDiv.innerHTML = '<p style="color:#ff6b6b;font-size:12px;">Entrez au moins une reponse</p>'; return; }
