@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vérification de fiche — DZ Diaspora</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .etat { max-width:600px; margin:60px auto; text-align:center; color:rgba(255,255,255,0.7); padding:0 20px; }
+    .carte-verif { max-width:600px; margin:40px auto; padding:0 20px; }
+    .carte-verif .entete { text-align:center; margin-bottom:20px; }
+    .carte-verif .entete.ok { color:#A8E063; }
+    .carte-verif .entete.ko { color:#D21034; }
+    .carte-verif table { width:100%; border-collapse:collapse; background:#1C2333; border-radius:12px; overflow:hidden; }
+    .carte-verif td { padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.08); font-size:13px; color:white; }
+    .carte-verif td.label { color:rgba(255,255,255,0.5); width:40%; }
+    .carte-verif .note { font-size:12px; color:rgba(255,255,255,0.4); text-align:center; margin-top:16px; line-height:1.6; }
+    .btn-retelecharger { display:inline-block; margin-top:18px; background:#4DD0E1; color:#0D1117; padding:12px 24px; border-radius:10px; font-size:14px; font-weight:700; text-decoration:none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">🇩🇿 DZ Diaspora</a>
+</header>
+
+<div class="etat" id="zone-etat">
+  <h2>🔍 Vérification de fiche</h2>
+  <p id="message-etat">Chargement...</p>
+</div>
+
+<div class="carte-verif" id="carte-verif" style="display:none;">
+  <div class="entete ok">
+    <div style="font-size:32px;">✅</div>
+    <div style="font-size:16px;font-weight:700;" id="v-titre"></div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;">Reference : <span id="v-ref"></span></div>
+  </div>
+  <table id="v-table"></table>
+  <p class="note">
+    Ces informations sont celles actuellement enregistrées sur DZ Diaspora pour cette fiche.
+    Comparez-les avec le document imprimé ou téléchargé (PDF) pour en vérifier l'authenticité —
+    tout écart signifie que le document a été modifié après sa génération.
+  </p>
+  <div style="text-align:center;">
+    <a href="#" id="v-retelecharger" class="btn-retelecharger" target="_blank">📄 Retélécharger le PDF officiel</a>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ",
+    appId: "1:223003656315:web:100de190b8b5e74ddae2de",
+    messagingSenderId: "223003656315",
+    projectId: "dzdiaspora-7260a",
+    authDomain: "dzdiaspora-7260a.firebaseapp.com",
+    storageBucket: "dzdiaspora-7260a.firebasestorage.app"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const functions = getFunctions(app);
+
+  const PDF_FONCTIONS = {
+    vole: 'ficheVolePDF',
+    trouve: 'ficheTrouvePDF',
+    perte: 'fichePertePDF',
+  };
+
+  const params = new URLSearchParams(window.location.search);
+  const type = params.get('type');
+  const id = params.get('id');
+  const messageEtat = document.getElementById('message-etat');
+
+  async function charger() {
+    if (!type || !id || !PDF_FONCTIONS[type]) {
+      messageEtat.textContent = "Lien de vérification invalide.";
+      return;
+    }
+    try {
+      const obtenir = httpsCallable(functions, 'obtenirFicheVerification');
+      const resultat = await obtenir({ type, id });
+      const data = resultat.data;
+
+      if (data.statut === 'introuvable') {
+        messageEtat.textContent = "Cette fiche est introuvable ou a été retirée. Le document que vous avez ne correspond plus à une fiche active.";
+        return;
+      }
+
+      function echapper(texte) {
+        const div = document.createElement('div');
+        div.textContent = texte;
+        return div.innerHTML;
+      }
+
+      document.getElementById('v-titre').textContent = data.titre;
+      document.getElementById('v-ref').textContent = id;
+      document.getElementById('v-table').innerHTML = data.champs
+        .map(([label, valeur]) => `<tr><td class="label">${echapper(label)}</td><td>${echapper(valeur || '-')}</td></tr>`)
+        .join('');
+      document.getElementById('v-retelecharger').href =
+        `https://us-central1-dzdiaspora-7260a.cloudfunctions.net/${PDF_FONCTIONS[type]}?id=${encodeURIComponent(id)}`;
+
+      document.getElementById('zone-etat').style.display = 'none';
+      document.getElementById('carte-verif').style.display = 'block';
+    } catch (e) {
+      messageEtat.textContent = "Erreur lors du chargement de la vérification : " + e.message;
+    }
+  }
+
+  charger();
+</script>
+
+  <script src="config.js"></script>
+</body>
+</html>

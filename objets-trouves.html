@@ -426,6 +426,9 @@
         </div>
       </div>
 
+      <div style="background:rgba(255,193,7,0.08);border:1px solid rgba(255,193,7,0.3);border-radius:10px;padding:12px;margin-bottom:16px;font-size:12px;color:rgba(255,255,255,0.7);">
+        ⚠️ Toute fausse declaration est passible de poursuites pour denonciation calomnieuse (art. 226-10 du Code penal francais). Cette declaration ne remplace en aucun cas un depot de plainte officiel aupres des autorites competentes (police, gendarmerie) — DZ Diaspora ne se substitue jamais a elles et n'est en aucun cas responsable des suites d'une declaration. DZ Diaspora se reserve le droit d'engager des poursuites en cas d'abus avere.
+      </div>
       <button class="btn-submit" id="btn-declarer-vol" onclick="window.declarerVol()" style="background:#D21034;color:white;">🚨 Declarer le vol</button>
     </div>
 
@@ -439,6 +442,9 @@
         <label>Photo de l'objet a verifier</label>
         <input type="file" id="photo-verif" accept="image/*" onchange="window.previewPhotoVerif(this)">
         <img id="preview-photo-verif" style="display:none;width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-top:8px;">
+      </div>
+      <div style="background:rgba(255,193,7,0.08);border:1px solid rgba(255,193,7,0.3);border-radius:10px;padding:12px;margin-bottom:16px;font-size:12px;color:rgba(255,255,255,0.7);">
+        ⚠️ Cet outil est indicatif et ne remplace pas votre propre vigilance ni les autorites competentes en cas de suspicion averee.
       </div>
       <button class="btn-submit green" id="btn-verifier-risque" onclick="window.verifierRisque()">🤖 Analyser le risque</button>
       <div id="resultat-verif"></div>
@@ -694,7 +700,10 @@
           actif: true
         });
 
-        document.getElementById('succes-depot').style.display = 'block';
+        const succesDepotDiv = document.getElementById('succes-depot');
+        succesDepotDiv.innerHTML = '✅ Votre fiche a ete enregistree avec succes ! Merci de votre geste.<br>' +
+          '<a href="https://us-central1-dzdiaspora-7260a.cloudfunctions.net/ficheTrouvePDF?id=' + encodeURIComponent(refPublic.id) + '" target="_blank" style="color:#4DD0E1;font-weight:700;">📄 Telecharger ma fiche (PDF)</a>';
+        succesDepotDiv.style.display = 'block';
         // Vider le formulaire
         ['type-objet','description-objet','lieu-trouve','wilaya-objet','ville-objet','contact-nom','contact-tel','contact-email'].forEach(id => {
           const el = document.getElementById(id);
@@ -702,7 +711,6 @@
         });
         indicesDepot = [];
         ajouterIndiceDepot();
-        setTimeout(() => document.getElementById('succes-depot').style.display = 'none', 5000);
       } catch (e) {
         alert('Erreur lors de l enregistrement. Reessayez.');
       }
@@ -792,6 +800,7 @@
                 <button id="btn-prouve-${doc.id}" data-indices="${indicesAttr}" onclick="window.prouverObjet('${doc.id}')" style="width:100%;padding:9px;background:#A8E063;color:#0D1117;border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;">✅ Prouve-le</button>
                 <button onclick="window.supprimerObjet('${doc.id}')" style="width:100%;padding:7px;margin-top:6px;background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;border-radius:8px;font-weight:700;font-size:11px;cursor:pointer;">🗑️ C est mon objet, je le retire</button>
                 <button onclick="window.ouvrirModalRestitution('${doc.id}', 'deposant')" style="width:100%;padding:7px;margin-top:6px;background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;border-radius:8px;font-weight:700;font-size:11px;cursor:pointer;">🧾 Je suis le deposant, remplir ma fiche</button>
+                <a href="https://us-central1-dzdiaspora-7260a.cloudfunctions.net/ficheTrouvePDF?id=${doc.id}" target="_blank" style="display:block;text-align:center;margin-top:6px;font-size:11px;color:rgba(255,255,255,0.4);">📄 Telecharger cette fiche (PDF)</a>
                 <div id="resultat-${doc.id}" style="margin-top:8px;"></div>
               </div>
             </div>`;
@@ -959,10 +968,12 @@
       try {
         const rechercher = httpsCallable(functions, 'rechercherObjetIA');
         const result = await rechercher({ type, description, lieu, datePerte, evenement, pays, wilaya, ville, nom, tel, email });
-        const { correspondances } = result.data;
+        const { correspondances, rechercheId } = result.data;
 
-        document.getElementById('succes-perte-ia').style.display = 'block';
-        setTimeout(() => document.getElementById('succes-perte-ia').style.display = 'none', 5000);
+        const succesPerteDiv = document.getElementById('succes-perte-ia');
+        succesPerteDiv.innerHTML = '✅ Votre fiche de recherche a ete enregistree.<br>' +
+          '<a href="https://us-central1-dzdiaspora-7260a.cloudfunctions.net/fichePertePDF?id=' + encodeURIComponent(rechercheId) + '" target="_blank" style="color:#4DD0E1;font-weight:700;">📄 Telecharger ma fiche (PDF)</a>';
+        succesPerteDiv.style.display = 'block';
 
         if (!correspondances || correspondances.length === 0) {
           resultatsDiv.innerHTML = '<p style="color:rgba(255,255,255,0.4);text-align:center;padding:20px;">Aucune correspondance trouvee pour le moment. Votre fiche de recherche a ete enregistree, revenez verifier plus tard.</p>';
@@ -976,6 +987,7 @@
                 <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:6px;">📍 ${c.lieu || c.wilaya || c.ville} &nbsp;|&nbsp; 📅 ${c.date}</p>
                 <p style="color:rgba(255,255,255,0.55);font-size:12px;margin-top:8px;font-style:italic;">💬 ${c.raison}</p>
                 <button onclick="window.voirFicheDepuisIA('${c.id}')" style="width:100%;padding:9px;margin-top:10px;background:#4DD0E1;color:#0D1117;border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;">🔎 Voir cette fiche et Prouve-le</button>
+                <a href="https://us-central1-dzdiaspora-7260a.cloudfunctions.net/ficheTrouvePDF?id=${c.id}" target="_blank" style="display:block;text-align:center;margin-top:6px;font-size:11px;color:rgba(255,255,255,0.4);">📄 Telecharger cette fiche (PDF)</a>
               </div>`).join('');
         }
       } catch (e) {
@@ -1064,10 +1076,12 @@
         if (photoVolFile) photoUrl = await uploaderPhotoAntiRecel(photoVolFile, 'objets_voles');
 
         const declarer = httpsCallable(functions, 'declarerObjetVole');
-        await declarer({ type, description, couleur, marque, numeroSerie, photoUrl, lieu, dateVol, pays, wilaya, ville, nom, tel, email });
+        const resultatDeclaration = await declarer({ type, description, couleur, marque, numeroSerie, photoUrl, lieu, dateVol, pays, wilaya, ville, nom, tel, email });
 
-        document.getElementById('succes-vol').style.display = 'block';
-        setTimeout(() => document.getElementById('succes-vol').style.display = 'none', 5000);
+        const succesDiv = document.getElementById('succes-vol');
+        succesDiv.innerHTML = '✅ Declaration enregistree. Merci de contribuer a la lutte contre le recel.<br>' +
+          '<a href="https://us-central1-dzdiaspora-7260a.cloudfunctions.net/ficheVolePDF?id=' + encodeURIComponent(resultatDeclaration.data.objetId) + '" target="_blank" style="color:#4DD0E1;font-weight:700;">📄 Telecharger ma fiche officielle (PDF)</a>';
+        succesDiv.style.display = 'block';
         ['description-vol','couleur-vol','marque-vol','numero-serie-vol','lieu-vol','date-vol','wilaya-vol','ville-vol','nom-vol','tel-vol','email-vol'].forEach((id) => {
           const el = document.getElementById(id);
           if (el) el.value = '';
@@ -1118,6 +1132,7 @@
               <p style="color:rgba(255,255,255,0.3);font-size:12px;">📍 ${c.lieu || ''} 📅 ${c.date || ''}</p>
               <p style="color:rgba(255,255,255,0.55);font-size:12px;margin-top:6px;font-style:italic;">💬 ${c.raison || ''}</p>
               <button onclick="window.signalerMatch('${c.id}')" style="width:100%;padding:9px;margin-top:10px;background:#D21034;color:white;border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;">🚨 Signaler ce match au declarant</button>
+              <a href="https://us-central1-dzdiaspora-7260a.cloudfunctions.net/ficheVolePDF?id=${c.id}" target="_blank" style="display:block;text-align:center;margin-top:6px;font-size:11px;color:rgba(255,255,255,0.4);">📄 Telecharger la fiche de vol (PDF)</a>
             </div>`).join('');
         }
         resultatDiv.innerHTML = html;
