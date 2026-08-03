@@ -50,6 +50,13 @@
     .badge-autre { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
     .message-succes { background: rgba(168,224,99,0.1); border: 1px solid rgba(168,224,99,0.4); border-radius: 10px; padding: 16px; text-align: center; color: #A8E063; display: none; }
     .message-erreur { background: rgba(214,16,52,0.1); border: 1px solid rgba(214,16,52,0.4); border-radius: 10px; padding: 12px; color: #ff6b6b; display: none; font-size: 13px; }
+    .bloc-indice { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,193,7,0.3); border-radius: 10px; padding: 12px; margin-bottom: 14px; }
+    .bloc-indice-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .bloc-indice-header span { color: #FFC107; font-size: 13px; font-weight: 700; }
+    .bloc-indice-retirer { background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; font-size: 16px; }
+    .pastilles-contenu { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+    .pastille-contenu { padding: 7px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.7); font-size: 12px; cursor: pointer; background: #1C2333; user-select: none; }
+    .pastille-contenu.actif { background: rgba(255,193,7,0.18); border-color: #FFC107; color: #FFC107; font-weight: 700; }
   </style>
   <script data-goatcounter="https://dzdiaspora.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
@@ -160,25 +167,11 @@
         <label>Ville *</label>
         <input type="text" id="ville-objet" placeholder="Ex: Paris, Marseille, Lyon...">
       </div>
-      <div class="form-group">
-        <label>🔐 Type de verification *</label>
-        <select id="type-verification" onchange="window.majQuestionVerification()">
-          <option value="papiers_id">📄 Papiers d identite</option>
-          <option value="telephone">📱 Telephone / appareil electronique</option>
-          <option value="sac_bagage">👜 Sac / bagage</option>
-          <option value="cle">🔑 Cles</option>
-          <option value="autre">📦 Autre (question libre)</option>
-        </select>
+      <div class="code-secret-info" style="margin-bottom:12px;">
+        💡 Proposez plusieurs indices (ex: signe distinctif ET contenu du sac). Il suffira au proprietaire d en retrouver <strong>un seul</strong> pour debloquer vos coordonnees.
       </div>
-      <div class="form-group" id="groupe-question-libre" style="display:none;">
-        <label>Votre question de verification *</label>
-        <input type="text" id="question-libre" placeholder="Ex: Quelle est la marque inscrite a l interieur ?" maxlength="150">
-      </div>
-      <div class="form-group">
-        <label id="label-reponse-verification">🔐 Reponse attendue *</label>
-        <input type="text" id="reponse-verification" placeholder="La reponse exacte que seul le proprietaire connait" maxlength="100">
-        <p style="color:rgba(255,255,255,0.35);font-size:11px;margin-top:4px;">Cette reponse ne sera JAMAIS affichee publiquement.</p>
-      </div>
+      <div id="liste-indices-depot"></div>
+      <button type="button" id="btn-ajouter-indice" onclick="window.ajouterIndiceDepot()" style="width:100%;padding:10px;background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;margin-bottom:16px;">➕ Ajouter un indice</button>
 
       <div style="background:rgba(255,255,255,0.03);border-radius:10px;padding:14px;margin-bottom:16px;">
         <p style="color:rgba(255,255,255,0.6);font-size:13px;margin-bottom:10px;">Vos coordonnees de contact (visibles uniquement si le code est correct) :</p>
@@ -306,20 +299,113 @@
       document.getElementById('groupe-ville-objet').style.display = pays === 'Algerie' ? 'none' : 'block';
     };
 
-    window.majQuestionVerification = function() {
-      const typeVerif = document.getElementById('type-verification').value;
-      const groupeLibre = document.getElementById('groupe-question-libre');
-      const labelReponse = document.getElementById('label-reponse-verification');
-      const questions = {
-        papiers_id: 'Reponse attendue (date de naissance + date de validite) *',
-        telephone: 'Reponse attendue (etat ecran, couleur coque, marques) *',
-        sac_bagage: 'Reponse attendue (contenu ou detail distinctif) *',
-        cle: 'Reponse attendue (detail du porte-cles) *',
-        autre: 'Reponse attendue *',
-      };
-      groupeLibre.style.display = typeVerif === 'autre' ? 'block' : 'none';
-      labelReponse.textContent = '🔐 ' + (questions[typeVerif] || 'Reponse attendue *');
+    const TYPES_VERIFICATION = ['papiers_id', 'telephone', 'sac_bagage', 'signe_distinctif', 'cle', 'autre'];
+    const LABELS_TYPE_VERIF = {
+      papiers_id: '🪪 Papiers / piece d identite',
+      telephone: '📱 Telephone',
+      sac_bagage: '👜 Contenu du sac / bagage',
+      signe_distinctif: '✨ Signe distinctif visible',
+      cle: '🔑 Cles',
+      autre: '❓ Autre',
     };
+    const QUESTIONS_TYPE = {
+      papiers_id: 'Quel est le nom complet et la date de naissance indiques sur le document ?',
+      telephone: 'Quelle est la marque, le modele ou un signe distinctif du telephone (coque, fond d ecran...) ?',
+      sac_bagage: 'Que contient ce sac ou ce bagage, en plus de ce qui est visible de l exterieur ?',
+      signe_distinctif: 'Quel est le signe distinctif visible sur cet objet (rayure, autocollant, marque d usure...) ?',
+      cle: 'Combien de cles y a-t-il sur le trousseau et a quoi ressemble le porte-cles ?',
+      autre: 'Quel est le signe distinctif de cet objet ?',
+    };
+    const CATEGORIES_CONTENU_SAC = ['vetements', 'maquillage', 'papiers', 'electronique', 'chaussures'];
+    const LABELS_CONTENU_SAC = {
+      vetements: '👕 Vetements', maquillage: '💄 Maquillage', papiers: '📄 Papiers',
+      electronique: '📱 Electronique', chaussures: '👟 Chaussures',
+    };
+    const MAX_INDICES = 3;
+
+    function serialiserContenuSac(prefixeId) {
+      const cases = Array.from(document.querySelectorAll(`.pastille-contenu[data-groupe="${prefixeId}"].actif`)).map(el => el.dataset.cat);
+      const parts = cases.filter(c => c !== 'autre').sort();
+      const autreInput = document.getElementById(prefixeId + '-autre');
+      const autreTexte = autreInput ? autreInput.value.trim() : '';
+      if (cases.includes('autre') && autreTexte) parts.push('autre:' + autreTexte);
+      return parts.join(',');
+    }
+
+    function htmlSelecteurContenuSac(prefixeId) {
+      let pastilles = CATEGORIES_CONTENU_SAC.map(c =>
+        `<span class="pastille-contenu" data-groupe="${prefixeId}" data-cat="${c}" onclick="window.togglePastilleContenu(this)">${LABELS_CONTENU_SAC[c]}</span>`
+      ).join('');
+      pastilles += `<span class="pastille-contenu" data-groupe="${prefixeId}" data-cat="autre" onclick="window.togglePastilleContenu(this)">➕ Autre</span>`;
+      return `<div class="pastilles-contenu">${pastilles}</div>
+        <input type="text" id="${prefixeId}-autre" placeholder="Precisez (ex: parfum, chargeur, livre...)" style="display:none;">`;
+    }
+
+    window.togglePastilleContenu = function(el) {
+      el.classList.toggle('actif');
+      const groupe = el.dataset.groupe;
+      const autreActif = document.querySelector(`.pastille-contenu[data-groupe="${groupe}"][data-cat="autre"].actif`);
+      const autreInput = document.getElementById(groupe + '-autre');
+      if (autreInput) autreInput.style.display = autreActif ? 'block' : 'none';
+    };
+
+    let indicesDepot = [];
+    let compteurIndice = 0;
+
+    window.ajouterIndiceDepot = function() {
+      if (indicesDepot.length >= MAX_INDICES) return;
+      indicesDepot.push({ id: 'indice-' + (compteurIndice++), type: '' });
+      rendreIndicesDepot();
+    };
+
+    window.retirerIndiceDepot = function(id) {
+      indicesDepot = indicesDepot.filter(i => i.id !== id);
+      rendreIndicesDepot();
+    };
+
+    window.majTypeIndiceDepot = function(id, type) {
+      const indice = indicesDepot.find(i => i.id === id);
+      if (indice) indice.type = type;
+      rendreIndicesDepot();
+    };
+
+    function rendreIndicesDepot() {
+      const container = document.getElementById('liste-indices-depot');
+      container.innerHTML = indicesDepot.map((indice, idx) => {
+        const typesDejaChoisis = indicesDepot.filter(i => i.id !== indice.id).map(i => i.type);
+        const options = TYPES_VERIFICATION.filter(t => !typesDejaChoisis.includes(t));
+        const optionsHtml = '<option value="">-- Type d indice --</option>' +
+          options.map(t => `<option value="${t}" ${t === indice.type ? 'selected' : ''}>${LABELS_TYPE_VERIF[t]}</option>`).join('');
+        let corpsReponse = '';
+        if (indice.type) {
+          corpsReponse = `
+            <p style="color:#4DD0E1;font-size:12px;margin:8px 0;">❓ ${QUESTIONS_TYPE[indice.type]}</p>
+            <label style="font-size:12px;">🔐 Reponse attendue (connue de vous seul)</label>
+            ${indice.type === 'sac_bagage'
+              ? htmlSelecteurContenuSac(indice.id)
+              : `<input type="text" id="${indice.id}-reponse" placeholder="La reponse exacte a la question ci-dessus" maxlength="100">`}
+          `;
+        }
+        return `
+          <div class="bloc-indice">
+            <div class="bloc-indice-header">
+              <span>Indice ${idx + 1}</span>
+              ${indicesDepot.length > 1 ? `<button type="button" class="bloc-indice-retirer" onclick="window.retirerIndiceDepot('${indice.id}')">✕</button>` : ''}
+            </div>
+            <select onchange="window.majTypeIndiceDepot('${indice.id}', this.value)">${optionsHtml}</select>
+            ${corpsReponse}
+          </div>`;
+      }).join('');
+      document.getElementById('btn-ajouter-indice').style.display = indicesDepot.length >= MAX_INDICES ? 'none' : 'block';
+    }
+
+    function lireReponseIndice(indice) {
+      if (indice.type === 'sac_bagage') return serialiserContenuSac(indice.id);
+      const el = document.getElementById(indice.id + '-reponse');
+      return el ? el.value.trim() : '';
+    }
+
+    ajouterIndiceDepot();
 
     window.deposerObjet = async function() {
       const type = document.getElementById('type-objet').value;
@@ -328,25 +414,19 @@
       const pays = document.getElementById('pays-objet').value;
       const wilaya = pays === 'Algerie' ? document.getElementById('wilaya-objet').value : '';
       const ville = pays !== 'Algerie' ? document.getElementById('ville-objet').value : '';
-      const typeVerification = document.getElementById('type-verification').value;
-      const questionLibre = document.getElementById('question-libre').value.trim();
-      const reponse = document.getElementById('reponse-verification').value.trim().toLowerCase();
       const nom = document.getElementById('contact-nom').value;
       const tel = document.getElementById('contact-tel').value;
       const email = document.getElementById('contact-email').value;
 
-      if (!type || !description || !lieu || !pays || (pays === 'Algerie' && !wilaya) || (pays !== 'Algerie' && !ville) || !typeVerification || (typeVerification === 'autre' && !questionLibre) || !reponse || !nom || !email) {
-        alert('Veuillez remplir tous les champs obligatoires (*)');
+      const indicesValides = indicesDepot
+        .filter(i => i.type)
+        .map(i => ({ type: i.type, reponse: lireReponseIndice(i) }))
+        .filter(i => i.reponse);
+
+      if (!type || !description || !lieu || !pays || (pays === 'Algerie' && !wilaya) || (pays !== 'Algerie' && !ville) || indicesValides.length === 0 || !nom || !email) {
+        alert('Veuillez remplir tous les champs obligatoires (*), dont au moins un indice complet.');
         return;
       }
-
-      const QUESTIONS_TYPE = {
-        papiers_id: 'Quelle est la date de naissance et la date de validite du document ?',
-        telephone: 'Decrivez l etat de l ecran, la couleur de la coque et les marques distinctives.',
-        sac_bagage: 'Decrivez le contenu ou un detail distinctif (couture, etiquette, marque interieure...).',
-        cle: 'Decrivez le porte-cles ou un detail distinctif des cles.',
-      };
-      const question = typeVerification === 'autre' ? questionLibre : QUESTIONS_TYPE[typeVerification];
 
       try {
         const refPublic = await addDoc(collection(db, 'objets_trouves'), {
@@ -356,15 +436,14 @@
           pays,
           wilaya,
           ville,
-          type_verification: typeVerification,
-          question,
+          indices: indicesValides.map(i => ({ type: i.type, question: QUESTIONS_TYPE[i.type] })),
           date: Timestamp.now(),
           actif: true
         });
 
         await addDoc(collection(db, 'objets_trouves_prive'), {
           objet_id: refPublic.id,
-          reponse_attendue: reponse,
+          indices_prives: indicesValides,
           contact_nom: nom,
           contact_tel: tel,
           contact_email: email,
@@ -374,10 +453,12 @@
 
         document.getElementById('succes-depot').style.display = 'block';
         // Vider le formulaire
-        ['type-objet','description-objet','lieu-trouve','wilaya-objet','ville-objet','type-verification','question-libre','reponse-verification','contact-nom','contact-tel','contact-email'].forEach(id => {
+        ['type-objet','description-objet','lieu-trouve','wilaya-objet','ville-objet','contact-nom','contact-tel','contact-email'].forEach(id => {
           const el = document.getElementById(id);
           if (el) el.value = '';
         });
+        indicesDepot = [];
+        ajouterIndiceDepot();
         setTimeout(() => document.getElementById('succes-depot').style.display = 'none', 5000);
       } catch (e) {
         alert('Erreur lors de l enregistrement. Reessayez.');
@@ -439,16 +520,33 @@
           const d = doc.data();
           const date = d.date?.toDate ? d.date.toDate().toLocaleDateString('fr-FR') : 'Date inconnue';
           const lieuComplet = d.pays === 'Algerie' ? (d.wilaya || '') : (d.ville || '') + (d.pays ? ', ' + d.pays : '');
-          const question = d.question || QUESTIONS_AFFICHAGE[d.type_verification] || 'Question de verification';
+          const indices = Array.isArray(d.indices) && d.indices.length > 0
+            ? d.indices
+            : (d.type_verification ? [{ type: d.type_verification, question: d.question || QUESTIONS_AFFICHAGE[d.type_verification] || 'Question de verification' }] : []);
+
+          const indicesHtml = indices.map((ind, idx) => {
+            const idIndice = `${doc.id}-i${idx}`;
+            const champReponse = ind.type === 'sac_bagage'
+              ? htmlSelecteurContenuSac('rep-' + idIndice)
+              : `<input type="text" id="rep-${idIndice}-reponse" placeholder="Votre reponse..." style="width:100%;padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.15);background:#0D1117;color:white;box-sizing:border-box;">`;
+            return `
+              <div style="margin-bottom:10px;">
+                <p style="color:#4DD0E1;font-size:12px;font-weight:600;margin-bottom:6px;">❓ ${ind.question}</p>
+                ${champReponse}
+              </div>`;
+          }).join('');
+
+          const indicesAttr = encodeURIComponent(JSON.stringify(indices.map((ind, idx) => ({ id: `rep-${doc.id}-i${idx}`, type: ind.type }))));
+
           html += `
             <div class="objet-card" id="carte-${doc.id}">
               <span class="badge ${badges[d.type] || 'badge-autre'}">${emojis[d.type] || '📦'} ${labels[d.type] || 'Autre'}</span>
               <p style="color:white;font-size:14px;line-height:1.5;">${d.description}</p>
               <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:6px;">📍 ${d.lieu} — ${lieuComplet} &nbsp;|&nbsp; 📅 ${date}</p>
               <div style="margin-top:10px;padding:10px;background:rgba(255,255,255,0.03);border-radius:8px;">
-                <p style="color:#4DD0E1;font-size:12px;font-weight:600;margin-bottom:6px;">❓ ${question}</p>
-                <input type="text" id="reponse-${doc.id}" placeholder="Votre reponse..." style="width:100%;padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.15);background:#0D1117;color:white;box-sizing:border-box;margin-bottom:8px;">
-                <button id="btn-prouve-${doc.id}" onclick="window.prouverObjet('${doc.id}')" style="width:100%;padding:9px;background:#A8E063;color:#0D1117;border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;">✅ Prouve-le</button>
+                ${indices.length > 1 ? '<p style="color:rgba(255,255,255,0.35);font-size:11px;margin-bottom:8px;">Repondez a UN SEUL des indices ci-dessous :</p>' : ''}
+                ${indicesHtml}
+                <button id="btn-prouve-${doc.id}" data-indices="${indicesAttr}" onclick="window.prouverObjet('${doc.id}')" style="width:100%;padding:9px;background:#A8E063;color:#0D1117;border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;">✅ Prouve-le</button>
                 <button onclick="window.supprimerObjet('${doc.id}')" style="width:100%;padding:7px;margin-top:6px;background:rgba(214,16,52,0.1);border:1px solid #D21034;color:#ff6b6b;border-radius:8px;font-weight:700;font-size:11px;cursor:pointer;">🗑️ C est mon objet, je le retire</button>
                 <button onclick="window.ouvrirModalRestitution('${doc.id}', 'deposant')" style="width:100%;padding:7px;margin-top:6px;background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;border-radius:8px;font-weight:700;font-size:11px;cursor:pointer;">🧾 Je suis le deposant, remplir ma fiche</button>
                 <div id="resultat-${doc.id}" style="margin-top:8px;"></div>
@@ -463,16 +561,19 @@
     };
 
     window.prouverObjet = async function(objetId) {
-      const input = document.getElementById('reponse-' + objetId);
       const btn = document.getElementById('btn-prouve-' + objetId);
       const resultatDiv = document.getElementById('resultat-' + objetId);
-      const reponse = input.value.trim();
-      if (!reponse) { resultatDiv.innerHTML = '<p style="color:#ff6b6b;font-size:12px;">Entrez une reponse</p>'; return; }
+      const indices = JSON.parse(decodeURIComponent(btn.dataset.indices || '[]'));
+      const reponses = indices.map(ind => ind.type === 'sac_bagage'
+        ? serialiserContenuSac(ind.id)
+        : (document.getElementById(ind.id + '-reponse')?.value.trim() || '')
+      ).filter(r => r);
+      if (reponses.length === 0) { resultatDiv.innerHTML = '<p style="color:#ff6b6b;font-size:12px;">Entrez au moins une reponse</p>'; return; }
       btn.disabled = true;
       btn.textContent = '⏳ Verification...';
       try {
         const verifier = httpsCallable(functions, 'verifierReponseObjet');
-        const result = await verifier({ objetId, reponse });
+        const result = await verifier({ objetId, reponses });
         const data = result.data;
         if (data.succes) {
           resultatDiv.innerHTML = `
