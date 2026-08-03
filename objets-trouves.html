@@ -485,6 +485,12 @@
     const functions = getFunctions(app);
     const storage = getStorage(app);
 
+    function echapper(texte) {
+      const div = document.createElement('div');
+      div.textContent = texte == null ? '' : String(texte);
+      return div.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     // Auth header
     onAuthStateChanged(auth, (user) => {
       const btn = document.getElementById('auth-btn-header');
@@ -782,7 +788,7 @@
               : `<input type="text" id="rep-${idIndice}-reponse" placeholder="Votre reponse..." style="width:100%;padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.15);background:#0D1117;color:white;box-sizing:border-box;">`;
             return `
               <div style="margin-bottom:10px;">
-                <p style="color:#4DD0E1;font-size:12px;font-weight:600;margin-bottom:6px;">❓ ${ind.question}</p>
+                <p style="color:#4DD0E1;font-size:12px;font-weight:600;margin-bottom:6px;">❓ ${echapper(ind.question)}</p>
                 ${champReponse}
               </div>`;
           }).join('');
@@ -792,8 +798,8 @@
           html += `
             <div class="objet-card" id="carte-${doc.id}">
               <span class="badge ${badges[d.type] || 'badge-autre'}">${emojis[d.type] || '📦'} ${labels[d.type] || 'Autre'}</span>
-              <p style="color:white;font-size:14px;line-height:1.5;">${d.description}</p>
-              <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:6px;">📍 ${d.lieu} — ${lieuComplet} &nbsp;|&nbsp; 📅 ${date}</p>
+              <p style="color:white;font-size:14px;line-height:1.5;">${echapper(d.description)}</p>
+              <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:6px;">📍 ${echapper(d.lieu)} — ${echapper(lieuComplet)} &nbsp;|&nbsp; 📅 ${date}</p>
               <div style="margin-top:10px;padding:10px;background:rgba(255,255,255,0.03);border-radius:8px;">
                 ${indices.length > 1 ? '<p style="color:rgba(255,255,255,0.35);font-size:11px;margin-bottom:8px;">Repondez a UN SEUL des indices ci-dessous :</p>' : ''}
                 ${indicesHtml}
@@ -830,9 +836,9 @@
         if (data.succes) {
           resultatDiv.innerHTML = `
             <div style="background:rgba(168,224,99,0.1);border:1px solid rgba(168,224,99,0.4);border-radius:8px;padding:10px;margin-top:6px;">
-              <p style="color:#A8E063;font-weight:bold;font-size:13px;">✅ ${data.contact_nom}</p>
-              ${data.contact_tel ? `<p style="color:white;font-size:13px;margin-top:4px;">📞 <a href="tel:${data.contact_tel}" style="color:#4DD0E1;">${data.contact_tel}</a></p>` : ''}
-              <p style="color:white;font-size:13px;margin-top:4px;">✉️ <a href="mailto:${data.contact_email}" style="color:#4DD0E1;">${data.contact_email}</a></p>
+              <p style="color:#A8E063;font-weight:bold;font-size:13px;">✅ ${echapper(data.contact_nom)}</p>
+              ${data.contact_tel ? `<p style="color:white;font-size:13px;margin-top:4px;">📞 <a href="tel:${echapper(data.contact_tel)}" style="color:#4DD0E1;">${echapper(data.contact_tel)}</a></p>` : ''}
+              <p style="color:white;font-size:13px;margin-top:4px;">✉️ <a href="mailto:${echapper(data.contact_email)}" style="color:#4DD0E1;">${echapper(data.contact_email)}</a></p>
               <button onclick="window.ouvrirModalRestitution('${objetId}', 'proprietaire')" style="width:100%;padding:8px;margin-top:8px;background:#4DD0E1;color:#0D1117;border:none;border-radius:8px;font-weight:700;font-size:11px;cursor:pointer;">🧾 Remplir ma fiche de restitution</button>
             </div>`;
           btn.style.display = 'none';
@@ -983,9 +989,9 @@
             correspondances.map(c => `
               <div class="objet-card">
                 <span class="badge" style="background:${CONFIANCE_COULEURS[c.confiance] || CONFIANCE_COULEURS.moyenne}22;color:${CONFIANCE_COULEURS[c.confiance] || CONFIANCE_COULEURS.moyenne};">${CONFIANCE_LABELS[c.confiance] || CONFIANCE_LABELS.moyenne}</span>
-                <p style="color:white;font-size:14px;line-height:1.5;margin-top:8px;">${emojis[c.type] || '📦'} ${c.description}</p>
-                <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:6px;">📍 ${c.lieu || c.wilaya || c.ville} &nbsp;|&nbsp; 📅 ${c.date}</p>
-                <p style="color:rgba(255,255,255,0.55);font-size:12px;margin-top:8px;font-style:italic;">💬 ${c.raison}</p>
+                <p style="color:white;font-size:14px;line-height:1.5;margin-top:8px;">${emojis[c.type] || '📦'} ${echapper(c.description)}</p>
+                <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:6px;">📍 ${echapper(c.lieu || c.wilaya || c.ville)} &nbsp;|&nbsp; 📅 ${echapper(c.date)}</p>
+                <p style="color:rgba(255,255,255,0.55);font-size:12px;margin-top:8px;font-style:italic;">💬 ${echapper(c.raison)}</p>
                 <button onclick="window.voirFicheDepuisIA('${c.id}')" style="width:100%;padding:9px;margin-top:10px;background:#4DD0E1;color:#0D1117;border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;">🔎 Voir cette fiche et Prouve-le</button>
                 <a href="https://us-central1-dzdiaspora-7260a.cloudfunctions.net/ficheTrouvePDF?id=${c.id}" target="_blank" style="display:block;text-align:center;margin-top:6px;font-size:11px;color:rgba(255,255,255,0.4);">📄 Telecharger cette fiche (PDF)</a>
               </div>`).join('');
@@ -1118,19 +1124,19 @@
         let html = `
           <div style="background:${couleur}1a;border:1px solid ${couleur}66;border-radius:10px;padding:14px;margin-top:16px;">
             <p style="color:${couleur};font-weight:700;font-size:15px;">${RISQUE_LABELS[niveauRisque] || niveauRisque}</p>
-            ${analyse ? `<p style="color:rgba(255,255,255,0.7);font-size:13px;margin-top:8px;">👁️ ${analyse}</p>` : ''}
+            ${analyse ? `<p style="color:rgba(255,255,255,0.7);font-size:13px;margin-top:8px;">👁️ ${echapper(analyse)}</p>` : ''}
           </div>`;
         const emojis = { document: '📄', sac: '👜', electronique: '📱', cle: '🔑', bijou: '💍', autre: '📦' };
         if (correspondances && correspondances.length > 0) {
           html += '<p style="color:#4DD0E1;font-size:13px;font-weight:600;margin-top:16px;">Correspondances possibles :</p>';
           html += correspondances.map((c) => `
             <div class="objet-card">
-              ${c.photo_url ? `<img src="${c.photo_url}" style="width:100%;max-height:180px;object-fit:cover;border-radius:8px;margin-bottom:8px;">` : ''}
-              <p style="color:white;font-size:14px;">${emojis[c.type] || '📦'} ${c.description}</p>
-              <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px;">Couleur : ${c.couleur || '?'} • Marque : ${c.marque || '?'}</p>
-              ${c.numero_serie ? `<p style="color:rgba(255,255,255,0.4);font-size:12px;">N° de serie : ${c.numero_serie}</p>` : ''}
-              <p style="color:rgba(255,255,255,0.3);font-size:12px;">📍 ${c.lieu || ''} 📅 ${c.date || ''}</p>
-              <p style="color:rgba(255,255,255,0.55);font-size:12px;margin-top:6px;font-style:italic;">💬 ${c.raison || ''}</p>
+              ${c.photo_url ? `<img src="${echapper(c.photo_url)}" style="width:100%;max-height:180px;object-fit:cover;border-radius:8px;margin-bottom:8px;">` : ''}
+              <p style="color:white;font-size:14px;">${emojis[c.type] || '📦'} ${echapper(c.description)}</p>
+              <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px;">Couleur : ${echapper(c.couleur || '?')} • Marque : ${echapper(c.marque || '?')}</p>
+              ${c.numero_serie ? `<p style="color:rgba(255,255,255,0.4);font-size:12px;">N° de serie : ${echapper(c.numero_serie)}</p>` : ''}
+              <p style="color:rgba(255,255,255,0.3);font-size:12px;">📍 ${echapper(c.lieu || '')} 📅 ${echapper(c.date || '')}</p>
+              <p style="color:rgba(255,255,255,0.55);font-size:12px;margin-top:6px;font-style:italic;">💬 ${echapper(c.raison || '')}</p>
               <button onclick="window.signalerMatch('${c.id}')" style="width:100%;padding:9px;margin-top:10px;background:#D21034;color:white;border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;">🚨 Signaler ce match au declarant</button>
               <a href="https://us-central1-dzdiaspora-7260a.cloudfunctions.net/ficheVolePDF?id=${c.id}" target="_blank" style="display:block;text-align:center;margin-top:6px;font-size:11px;color:rgba(255,255,255,0.4);">📄 Telecharger la fiche de vol (PDF)</a>
             </div>`).join('');
