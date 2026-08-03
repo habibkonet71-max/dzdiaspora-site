@@ -109,6 +109,8 @@
       <button class="tab-btn active" data-tab="deposer" onclick="changerTab('deposer')">📋 Deposer un objet trouve</button>
       <button class="tab-btn" data-tab="rechercher" onclick="changerTab('rechercher')">🔎 Rechercher mon objet</button>
       <button class="tab-btn" data-tab="perte-ia" onclick="changerTab('perte-ia')">🤖 Signaler une perte (IA)</button>
+      <button class="tab-btn" data-tab="declarer-vol" onclick="changerTab('declarer-vol')">🚨 Declarer un vol</button>
+      <button class="tab-btn" data-tab="verifier-achat" onclick="changerTab('verifier-achat')">🛡️ Verifier avant d'acheter</button>
     </div>
 
     <!-- TAB 1 : DEPOSER -->
@@ -331,6 +333,116 @@
 
       <div id="resultats-recherche-ia" style="margin-top:20px;"></div>
     </div>
+
+    <!-- TAB 4 : ANTI-RECEL — DECLARER UN VOL -->
+    <div id="tab-declarer-vol" class="tab-content">
+      <div class="code-secret-info" style="border-color:rgba(214,16,52,0.3);background:rgba(214,16,52,0.08);">
+        🚨 <strong>Vous avez ete victime d'un vol ?</strong><br>
+        Declarez-le ici avec un maximum de details (photo, numero de serie, couleur). Toute personne qui envisage d'acheter un objet similaire d'occasion pourra le verifier avant d'acheter et sera avertie du risque.
+      </div>
+      <div class="message-succes" id="succes-vol">✅ Declaration enregistree. Merci de contribuer a la lutte contre le recel.</div>
+      <div class="message-erreur" id="erreur-vol"></div>
+
+      <div class="form-group">
+        <label>Type d'objet vole *</label>
+        <select id="type-vol">
+          <option value="">-- Selectionnez --</option>
+          <option value="document">📄 Document (CNI, passeport, permis de conduire...)</option>
+          <option value="sac">👜 Sac, cabas, valise, portefeuille</option>
+          <option value="electronique">📱 Telephone, tablette, ordinateur, velo electrique...</option>
+          <option value="cle">🔑 Cles</option>
+          <option value="bijou">💍 Bijou, montre</option>
+          <option value="autre">📦 Autre objet (velo, outillage...)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Description precise *</label>
+        <textarea id="description-vol" placeholder="Ex: VTT electrique gris et noir, marque Decathlon, selle noire recousue..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Couleur</label>
+        <input type="text" id="couleur-vol" placeholder="Ex: Gris et noir">
+      </div>
+      <div class="form-group">
+        <label>Marque</label>
+        <input type="text" id="marque-vol" placeholder="Ex: Decathlon, Samsung...">
+      </div>
+      <div class="form-group">
+        <label>Numero de serie (fortement recommande)</label>
+        <input type="text" id="numero-serie-vol" placeholder="Numero grave/imprime sur l'objet">
+      </div>
+      <div class="form-group">
+        <label>Photo de l'objet</label>
+        <input type="file" id="photo-vol" accept="image/*" onchange="window.previewPhotoVol(this)">
+        <img id="preview-photo-vol" style="display:none;width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-top:8px;">
+      </div>
+      <div class="form-group">
+        <label>Lieu du vol</label>
+        <input type="text" id="lieu-vol" placeholder="Ex: Parking de la gare de Blida...">
+      </div>
+      <div class="form-group">
+        <label>Date approximative du vol</label>
+        <input type="date" id="date-vol">
+      </div>
+      <div class="form-group">
+        <label>Pays *</label>
+        <select id="pays-vol" onchange="window.togglePaysVol()">
+          <option value="Algerie">🇩🇿 Algerie</option>
+          <option value="France">🇫🇷 France</option>
+          <option value="Autre">🌍 Autre pays</option>
+        </select>
+      </div>
+      <div class="form-group" id="groupe-wilaya-vol">
+        <label>Wilaya *</label>
+        <select id="wilaya-vol">
+          <option value="">-- Wilaya --</option>
+          <option>Alger</option><option>Oran</option><option>Constantine</option>
+          <option>Annaba</option><option>Blida</option><option>Bejaia</option>
+          <option>Tizi Ouzou</option><option>Setif</option><option>Batna</option>
+          <option>Tlemcen</option><option>Mostaganem</option><option>Sidi Bel Abbes</option>
+          <option>Skikda</option><option>Guelma</option><option>Medea</option>
+          <option>Mascara</option><option>Ghardaia</option><option>Ouargla</option>
+          <option>Tamanrasset</option><option>Adrar</option><option>Autre</option>
+        </select>
+      </div>
+      <div class="form-group" id="groupe-ville-vol" style="display:none;">
+        <label>Ville *</label>
+        <input type="text" id="ville-vol" placeholder="Ex: Paris, Marseille, Lyon...">
+      </div>
+
+      <div style="background:rgba(255,255,255,0.03);border-radius:10px;padding:14px;margin-bottom:16px;">
+        <p style="color:rgba(255,255,255,0.6);font-size:13px;margin-bottom:10px;">Vos coordonnees :</p>
+        <div class="form-group">
+          <label>Votre nom *</label>
+          <input type="text" id="nom-vol" placeholder="Votre prenom ou nom">
+        </div>
+        <div class="form-group">
+          <label>Telephone (optionnel)</label>
+          <input type="tel" id="tel-vol" placeholder="Ex: +213 7 12 34 56 78">
+        </div>
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" id="email-vol" placeholder="votre@email.com">
+        </div>
+      </div>
+
+      <button class="btn-submit" id="btn-declarer-vol" onclick="window.declarerVol()" style="background:#D21034;color:white;">🚨 Declarer le vol</button>
+    </div>
+
+    <!-- TAB 5 : ANTI-RECEL — VERIFIER AVANT D'ACHETER -->
+    <div id="tab-verifier-achat" class="tab-content">
+      <div class="code-secret-info">
+        🛡️ <strong>Vous envisagez d'acheter un objet d'occasion ?</strong><br>
+        Photographiez-le pour verifier s'il correspond a un objet declare vole. Notre IA analyse la photo et estime le risque. Ceci ne remplace pas votre vigilance : verifiez toujours l'identite du vendeur.
+      </div>
+      <div class="form-group">
+        <label>Photo de l'objet a verifier</label>
+        <input type="file" id="photo-verif" accept="image/*" onchange="window.previewPhotoVerif(this)">
+        <img id="preview-photo-verif" style="display:none;width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-top:8px;">
+      </div>
+      <button class="btn-submit green" id="btn-verifier-risque" onclick="window.verifierRisque()">🤖 Analyser le risque</button>
+      <div id="resultat-verif"></div>
+    </div>
   </main>
 
   <footer>
@@ -350,6 +462,7 @@
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, limit, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
     import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
+    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ",
@@ -364,6 +477,7 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
     const functions = getFunctions(app);
+    const storage = getStorage(app);
 
     // Auth header
     onAuthStateChanged(auth, (user) => {
@@ -870,6 +984,161 @@
       } finally {
         btn.disabled = false;
         btn.textContent = '🤖 Lancer la recherche IA';
+      }
+    };
+
+    // ANTI-RECEL — DECLARER UN VOL / VERIFIER AVANT D'ACHETER
+    let photoVolFile = null;
+    let photoVerifFile = null;
+
+    window.previewPhotoVol = function(input) {
+      const file = input.files[0];
+      if (!file) return;
+      photoVolFile = file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = document.getElementById('preview-photo-vol');
+        img.src = e.target.result;
+        img.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    };
+
+    window.previewPhotoVerif = function(input) {
+      const file = input.files[0];
+      if (!file) return;
+      photoVerifFile = file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = document.getElementById('preview-photo-verif');
+        img.src = e.target.result;
+        img.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+      document.getElementById('resultat-verif').innerHTML = '';
+    };
+
+    async function uploaderPhotoAntiRecel(file, dossier) {
+      const nomFichier = dossier + '/' + Date.now() + '_' + file.name;
+      const r = storageRef(storage, nomFichier);
+      await uploadBytes(r, file);
+      return getDownloadURL(r);
+    }
+
+    window.togglePaysVol = function() {
+      const pays = document.getElementById('pays-vol').value;
+      document.getElementById('groupe-wilaya-vol').style.display = pays === 'Algerie' ? 'block' : 'none';
+      document.getElementById('groupe-ville-vol').style.display = pays === 'Algerie' ? 'none' : 'block';
+    };
+
+    window.declarerVol = async function() {
+      const type = document.getElementById('type-vol').value;
+      const description = document.getElementById('description-vol').value.trim();
+      const couleur = document.getElementById('couleur-vol').value.trim();
+      const marque = document.getElementById('marque-vol').value.trim();
+      const numeroSerie = document.getElementById('numero-serie-vol').value.trim();
+      const lieu = document.getElementById('lieu-vol').value.trim();
+      const dateVol = document.getElementById('date-vol').value;
+      const pays = document.getElementById('pays-vol').value;
+      const wilaya = pays === 'Algerie' ? document.getElementById('wilaya-vol').value : '';
+      const ville = pays !== 'Algerie' ? document.getElementById('ville-vol').value.trim() : '';
+      const nom = document.getElementById('nom-vol').value.trim();
+      const tel = document.getElementById('tel-vol').value.trim();
+      const email = document.getElementById('email-vol').value.trim();
+
+      const erreurDiv = document.getElementById('erreur-vol');
+      erreurDiv.style.display = 'none';
+
+      if (!type || !description || !pays || (pays === 'Algerie' && !wilaya) || (pays !== 'Algerie' && !ville) || !nom || !email) {
+        erreurDiv.textContent = 'Veuillez remplir tous les champs obligatoires (*)';
+        erreurDiv.style.display = 'block';
+        return;
+      }
+
+      const btn = document.getElementById('btn-declarer-vol');
+      btn.disabled = true;
+      btn.textContent = '⏳ Envoi en cours...';
+
+      try {
+        let photoUrl = '';
+        if (photoVolFile) photoUrl = await uploaderPhotoAntiRecel(photoVolFile, 'objets_voles');
+
+        const declarer = httpsCallable(functions, 'declarerObjetVole');
+        await declarer({ type, description, couleur, marque, numeroSerie, photoUrl, lieu, dateVol, pays, wilaya, ville, nom, tel, email });
+
+        document.getElementById('succes-vol').style.display = 'block';
+        setTimeout(() => document.getElementById('succes-vol').style.display = 'none', 5000);
+        ['description-vol','couleur-vol','marque-vol','numero-serie-vol','lieu-vol','date-vol','wilaya-vol','ville-vol','nom-vol','tel-vol','email-vol'].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.value = '';
+        });
+        document.getElementById('type-vol').value = '';
+        photoVolFile = null;
+        document.getElementById('photo-vol').value = '';
+        document.getElementById('preview-photo-vol').style.display = 'none';
+      } catch (e) {
+        erreurDiv.textContent = '❌ ' + (e.message || 'Erreur lors de la declaration.');
+        erreurDiv.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🚨 Declarer le vol';
+      }
+    };
+
+    const RISQUE_COULEURS = { eleve: '#D21034', moyen: '#FFC107', faible: 'rgba(255,255,255,0.4)', aucun: '#A8E063' };
+    const RISQUE_LABELS = { eleve: '🔴 Risque eleve', moyen: '🟡 Risque moyen', faible: '⚪ Risque faible', aucun: '🟢 Aucun risque detecte' };
+
+    window.verifierRisque = async function() {
+      if (!photoVerifFile) { alert('Choisissez une photo de l objet a verifier.'); return; }
+      const btn = document.getElementById('btn-verifier-risque');
+      const resultatDiv = document.getElementById('resultat-verif');
+      btn.disabled = true;
+      btn.textContent = '🤖 Analyse en cours...';
+      resultatDiv.innerHTML = '';
+      try {
+        const photoUrl = await uploaderPhotoAntiRecel(photoVerifFile, 'verification_achat');
+        const verifier = httpsCallable(functions, 'verifierRisqueVol');
+        const result = await verifier({ photoUrl });
+        const { analyse, niveauRisque, correspondances } = result.data;
+        const couleur = RISQUE_COULEURS[niveauRisque] || RISQUE_COULEURS.aucun;
+        let html = `
+          <div style="background:${couleur}1a;border:1px solid ${couleur}66;border-radius:10px;padding:14px;margin-top:16px;">
+            <p style="color:${couleur};font-weight:700;font-size:15px;">${RISQUE_LABELS[niveauRisque] || niveauRisque}</p>
+            ${analyse ? `<p style="color:rgba(255,255,255,0.7);font-size:13px;margin-top:8px;">👁️ ${analyse}</p>` : ''}
+          </div>`;
+        const emojis = { document: '📄', sac: '👜', electronique: '📱', cle: '🔑', bijou: '💍', autre: '📦' };
+        if (correspondances && correspondances.length > 0) {
+          html += '<p style="color:#4DD0E1;font-size:13px;font-weight:600;margin-top:16px;">Correspondances possibles :</p>';
+          html += correspondances.map((c) => `
+            <div class="objet-card">
+              ${c.photo_url ? `<img src="${c.photo_url}" style="width:100%;max-height:180px;object-fit:cover;border-radius:8px;margin-bottom:8px;">` : ''}
+              <p style="color:white;font-size:14px;">${emojis[c.type] || '📦'} ${c.description}</p>
+              <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px;">Couleur : ${c.couleur || '?'} • Marque : ${c.marque || '?'}</p>
+              ${c.numero_serie ? `<p style="color:rgba(255,255,255,0.4);font-size:12px;">N° de serie : ${c.numero_serie}</p>` : ''}
+              <p style="color:rgba(255,255,255,0.3);font-size:12px;">📍 ${c.lieu || ''} 📅 ${c.date || ''}</p>
+              <p style="color:rgba(255,255,255,0.55);font-size:12px;margin-top:6px;font-style:italic;">💬 ${c.raison || ''}</p>
+              <button onclick="window.signalerMatch('${c.id}')" style="width:100%;padding:9px;margin-top:10px;background:#D21034;color:white;border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;">🚨 Signaler ce match au declarant</button>
+            </div>`).join('');
+        }
+        resultatDiv.innerHTML = html;
+      } catch (e) {
+        resultatDiv.innerHTML = '<p style="color:#ff6b6b;font-size:13px;">❌ ' + (e.message || 'Erreur lors de l analyse.') + '</p>';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🤖 Analyser le risque';
+      }
+    };
+
+    window.signalerMatch = async function(objetId) {
+      const contact = prompt('Votre email ou telephone (transmis au declarant pour vous recontacter) :');
+      if (!contact) return;
+      const message = prompt('Message (optionnel) :') || '';
+      try {
+        const signaler = httpsCallable(functions, 'signalerMatchObjetVole');
+        await signaler({ objetId, contact, message });
+        alert('✅ Le declarant a ete prevenu.');
+      } catch (e) {
+        alert('❌ Erreur lors de l envoi: ' + (e.message || ''));
       }
     };
 
