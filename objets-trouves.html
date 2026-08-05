@@ -192,7 +192,10 @@
         </div>
       </div>
 
-      <button class="btn-submit" onclick="deposerObjet()">📋 Deposer la fiche</button>
+      <div style="display:flex;gap:10px;">
+        <button class="btn-submit" id="btn-deposer" onclick="deposerObjet()" style="flex:2;">📋 Deposer la fiche</button>
+        <button class="btn-submit" id="btn-effacer-depot" type="button" onclick="window.effacerFormulaireDepot()" style="flex:1;background:transparent;border:1px solid #4DD0E1;color:#4DD0E1;">🗑️ Effacer</button>
+      </div>
     </div>
 
     <!-- TAB 2 : RECHERCHER (fusionne avec liste + Prouve-le) -->
@@ -662,6 +665,18 @@
 
     ajouterIndiceDepot();
 
+    window.effacerFormulaireDepot = function() {
+      ['type-objet','description-objet','lieu-trouve','wilaya-objet','ville-objet','contact-nom','contact-tel','contact-email'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      indicesDepot = [];
+      ajouterIndiceDepot();
+      const succesDepotDiv = document.getElementById('succes-depot');
+      succesDepotDiv.style.display = 'none';
+      succesDepotDiv.innerHTML = '';
+    };
+
     window.deposerObjet = async function() {
       const type = document.getElementById('type-objet').value;
       const description = document.getElementById('description-objet').value;
@@ -683,6 +698,8 @@
         return;
       }
 
+      const btn = document.getElementById('btn-deposer');
+      btn.disabled = true;
       try {
         const refPublic = await addDoc(collection(db, 'objets_trouves'), {
           type,
@@ -719,6 +736,8 @@
         ajouterIndiceDepot();
       } catch (e) {
         alert('Erreur lors de l enregistrement. Reessayez.');
+      } finally {
+        btn.disabled = false;
       }
     };
 
