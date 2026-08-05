@@ -302,7 +302,10 @@
       <div style="display:none;position:absolute;left:-9999px;">
         <input type="text" id="honeypot_field" name="website" tabindex="-1" autocomplete="off">
       </div>
-    <button class="btn-commander" onclick="envoyerCommande()">📣 Envoyer ma demande</button>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-commander" id="btn-envoyer-commande" onclick="envoyerCommande()" style="flex:2;">📣 Envoyer ma demande</button>
+      <button class="btn-commander" id="btn-effacer-commande" type="button" onclick="window.effacerFormulaireCommande()" style="flex:1;background:transparent;border:1px solid #4DD0E1;color:#4DD0E1;">🗑️ Effacer</button>
+    </div>
 
     <!-- ALGERIE -->
     <div style="margin-top:16px;background:rgba(0,98,51,0.08);border:1px solid rgba(168,224,99,0.3);border-radius:12px;padding:16px;text-align:center;">
@@ -355,6 +358,8 @@
       if (!window._selections.duree) { alert('Veuillez choisir une durée'); return; }
       if (window._pagesChoisies.length === 0) { alert('Veuillez choisir au moins une page cible'); return; }
 
+      const btn = document.getElementById('btn-envoyer-commande');
+      btn.disabled = true;
       try {
         let urlFichier = null;
         const fichier = document.getElementById('p-fichier').files[0];
@@ -402,7 +407,29 @@
       } catch(e) {
         console.error(e);
         alert('Erreur lors de l\'envoi. Réessayez.');
+      } finally {
+        btn.disabled = false;
       }
+    };
+
+    window.effacerFormulaireCommande = function() {
+      ['p-nom','p-email','p-tel','p-lien','p-message'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      document.getElementById('p-pays').value = 'france';
+      document.getElementById('bloc-virement').style.display = 'none';
+      document.getElementById('p-fichier').value = '';
+      const fichierNom = document.getElementById('fichier-nom');
+      if (fichierNom) fichierNom.textContent = '';
+      document.querySelectorAll('.choix-btn.actif').forEach(b => b.classList.remove('actif'));
+      document.querySelectorAll('.page-tag.actif').forEach(b => b.classList.remove('actif'));
+      window._selections = {};
+      window._pagesChoisies = [];
+      const recap = document.getElementById('recapSection');
+      if (recap) recap.style.display = 'none';
+      const succes = document.getElementById('msgSucces');
+      if (succes) succes.style.display = 'none';
     };
   </script>
 

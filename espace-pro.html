@@ -207,7 +207,7 @@
           <div class="reply-zone" id="reply-${d.id}">
             <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-bottom:8px;">Votre réponse sera visible par le client. Présentez-vous et proposez vos services.</p>
             <textarea id="msg-${d.id}" placeholder="Bonjour, je suis ${proData?.prenom||''} ${proData?.nom||''}, ${proData?.profession||''}. Je peux vous aider concernant..."></textarea>
-            <button class="btn-envoyer-rep" onclick="envoyerReponse('${d.id}')">✅ Envoyer ma réponse</button>
+            <button class="btn-envoyer-rep" id="btn-envoyer-rep-${d.id}" onclick="envoyerReponse('${d.id}')">✅ Envoyer ma réponse</button>
           </div>
         </div>`;
       }).join('');
@@ -230,6 +230,8 @@
     window.envoyerReponse = async function(demandeId) {
       const msg = document.getElementById('msg-'+demandeId).value.trim();
       if (!msg) { alert('Rédigez votre réponse'); return; }
+      const btn = document.getElementById('btn-envoyer-rep-'+demandeId);
+      if (btn) btn.disabled = true;
       try {
         await addDoc(collection(db, 'reponses_demandes'), {
           demande_id: demandeId,
@@ -247,6 +249,7 @@
         alert('✅ Réponse envoyée ! Le client va vous contacter.');
         await chargerDemandes();
       } catch(e) { alert('Erreur. Réessayez.'); }
+      finally { if (btn) btn.disabled = false; }
     };
 
     document.getElementById('menuBtn')?.addEventListener('click', () => document.getElementById('menuDropdown')?.classList.toggle('open'));

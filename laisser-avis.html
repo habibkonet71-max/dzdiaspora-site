@@ -115,7 +115,10 @@
         </select>
       </div>
 
-      <button class="btn-envoyer" onclick="envoyerAvis()">⭐ Publier mon avis</button>
+      <div style="display:flex;gap:10px;">
+        <button class="btn-envoyer" id="btnPublierAvis" onclick="envoyerAvis()" style="flex:2;">⭐ Publier mon avis</button>
+        <button type="button" id="btnEffacerAvis" onclick="window.effacerFormulaireAvis()" style="flex:1;padding:14px;background:transparent;border:1px solid #FFC107;color:#FFC107;border-radius:12px;font-weight:700;cursor:pointer;">🗑️ Effacer</button>
+      </div>
       <p style="color:rgba(255,255,255,0.3);font-size:11px;text-align:center;margin-top:8px;">Votre avis sera vérifié avant publication.</p>
     </section>
   </main>
@@ -154,6 +157,8 @@
       if (!note) { alert('Choisissez une note'); return; }
       if (!texte) { alert('Rédigez votre avis'); return; }
       if (!nom) { alert('Indiquez votre nom'); return; }
+      const btn = document.getElementById('btnPublierAvis');
+      btn.disabled = true;
       try {
         await addDoc(collection(db, 'avis_clients'), {
           pro_id: proId,
@@ -179,6 +184,7 @@
         } catch(e) { console.log('Email non envoyé:', e); }
         window.scrollTo(0, 0);
       } catch(e) { alert('Erreur. Réessayez.'); }
+      finally { btn.disabled = false; }
     };
 
     document.getElementById('menuBtn')?.addEventListener('click', () => document.getElementById('menuDropdown')?.classList.toggle('open'));
@@ -194,6 +200,22 @@
       }
       document.getElementById('note-label').textContent = labels[n] + ' (' + n + '/5)';
       document.getElementById('note-label').style.color = n >= 4 ? '#A8E063' : n >= 3 ? '#FFC107' : '#ff6b6b';
+    };
+
+    window.effacerFormulaireAvis = function() {
+      window._note = 0;
+      for (let i = 1; i <= 5; i++) {
+        document.getElementById('e'+i).classList.remove('actif');
+      }
+      document.getElementById('note-label').textContent = 'Cliquez sur une étoile';
+      document.getElementById('note-label').style.color = 'rgba(255,255,255,0.5)';
+      ['avis-texte','avis-nom','avis-email'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      const pays = document.getElementById('avis-pays'); if (pays) pays.selectedIndex = 0;
+      document.getElementById('msgSucces').style.display = 'none';
+      window.scrollTo(0, 0);
     };
   </script>
   <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>

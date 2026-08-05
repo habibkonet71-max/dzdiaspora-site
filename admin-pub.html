@@ -202,10 +202,10 @@
             <textarea class="notes-input" id="notes-${c.id}" placeholder="Notes...">${c.notes || ''}</textarea>
           </div>
           <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
-            ${statut !== 'valide' && statut !== 'publie' ? `<button class="btn-valider" onclick="changerStatut('${c.id}','valide')">✅ Valider</button>` : ''}
-            ${statut === 'valide' ? `<button class="btn-publier" onclick="changerStatut('${c.id}','publie')">📣 Publier</button>` : ''}
-            ${statut !== 'refuse' ? `<button class="btn-refuser" onclick="changerStatut('${c.id}','refuse')">❌ Refuser</button>` : ''}
-            <button class="btn-valider" style="background:rgba(77,208,225,0.1);border-color:#4DD0E1;color:#4DD0E1;" onclick="sauvegarderNotes('${c.id}')">💾 Sauvegarder</button>
+            ${statut !== 'valide' && statut !== 'publie' ? `<button class="btn-valider" onclick="changerStatut('${c.id}','valide',this)">✅ Valider</button>` : ''}
+            ${statut === 'valide' ? `<button class="btn-publier" onclick="changerStatut('${c.id}','publie',this)">📣 Publier</button>` : ''}
+            ${statut !== 'refuse' ? `<button class="btn-refuser" onclick="changerStatut('${c.id}','refuse',this)">❌ Refuser</button>` : ''}
+            <button class="btn-valider" style="background:rgba(77,208,225,0.1);border-color:#4DD0E1;color:#4DD0E1;" onclick="sauvegarderNotes('${c.id}',this)">💾 Sauvegarder</button>
             ${c.tel ? `<a href="tel:${c.tel}" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;">📞 Appeler</a>` : ''}
           </div>
         </div>`;
@@ -220,18 +220,32 @@
       afficherCommandes(filtered);
     };
 
-    window.changerStatut = async function(id, statut) {
-      await updateDoc(doc(db, 'commandes_pub', id), { statut, date_maj: Timestamp.now() });
-      toutesCommandes = toutesCommandes.map(c => c.id === id ? {...c, statut} : c);
-      afficherStats();
-      window.filtrer(filtreActif, document.querySelector('.filtre-btn.actif'));
+    window.changerStatut = async function(id, statut, btn) {
+      if (btn) btn.disabled = true;
+      try {
+        await updateDoc(doc(db, 'commandes_pub', id), { statut, date_maj: Timestamp.now() });
+        toutesCommandes = toutesCommandes.map(c => c.id === id ? {...c, statut} : c);
+        afficherStats();
+        window.filtrer(filtreActif, document.querySelector('.filtre-btn.actif'));
+      } catch (e) {
+        alert('Erreur lors de la mise a jour du statut. Reessayez.');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
     };
 
-    window.sauvegarderNotes = async function(id) {
-      const tarif = document.getElementById('tarif-'+id)?.value;
-      const notes = document.getElementById('notes-'+id)?.value;
-      await updateDoc(doc(db, 'commandes_pub', id), { tarif: tarif ? Number(tarif) : null, notes });
-      alert('✅ Sauvegardé !');
+    window.sauvegarderNotes = async function(id, btn) {
+      if (btn) btn.disabled = true;
+      try {
+        const tarif = document.getElementById('tarif-'+id)?.value;
+        const notes = document.getElementById('notes-'+id)?.value;
+        await updateDoc(doc(db, 'commandes_pub', id), { tarif: tarif ? Number(tarif) : null, notes });
+        alert('✅ Sauvegardé !');
+      } catch (e) {
+        alert('Erreur lors de la sauvegarde. Reessayez.');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
     };
 
     let tousDevis = [];
@@ -266,8 +280,8 @@
           </div>
           ${d.message ? `<div style="background:#0D1117;border-radius:8px;padding:10px;font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:10px;">${d.message}</div>` : ''}
           <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
-            ${statut !== 'traite' ? `<button class="btn-valider" onclick="changerStatutDevis('${d.id}','traite')">✅ Marquer traité</button>` : ''}
-            ${statut !== 'sans_suite' ? `<button class="btn-refuser" onclick="changerStatutDevis('${d.id}','sans_suite')">❌ Sans suite</button>` : ''}
+            ${statut !== 'traite' ? `<button class="btn-valider" onclick="changerStatutDevis('${d.id}','traite',this)">✅ Marquer traité</button>` : ''}
+            ${statut !== 'sans_suite' ? `<button class="btn-refuser" onclick="changerStatutDevis('${d.id}','sans_suite',this)">❌ Sans suite</button>` : ''}
             ${d.email ? `<a href="mailto:${d.email}" style="background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;">✉️ Répondre</a>` : ''}
             ${d.tel ? `<a href="tel:${d.tel}" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;">📞 Appeler</a>` : ''}
           </div>
@@ -275,10 +289,17 @@
       }).join('');
     }
 
-    window.changerStatutDevis = async function(id, statut) {
-      await updateDoc(doc(db, 'demandes_pub', id), { statut, date_maj: Timestamp.now() });
-      tousDevis = tousDevis.map(d => d.id === id ? {...d, statut} : d);
-      afficherDevis();
+    window.changerStatutDevis = async function(id, statut, btn) {
+      if (btn) btn.disabled = true;
+      try {
+        await updateDoc(doc(db, 'demandes_pub', id), { statut, date_maj: Timestamp.now() });
+        tousDevis = tousDevis.map(d => d.id === id ? {...d, statut} : d);
+        afficherDevis();
+      } catch (e) {
+        alert('Erreur lors de la mise a jour du statut. Reessayez.');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
     };
 
     document.getElementById('menuBtn')?.addEventListener('click', () => document.getElementById('menuDropdown')?.classList.toggle('open'));

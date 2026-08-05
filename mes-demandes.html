@@ -166,7 +166,7 @@
             </div>`}
 
             <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
-              ${statut === 'ouverte' ? `<button class="btn-fermer" onclick="fermerDemande('${d.id}')">🔒 Fermer la demande</button>` : ''}
+              ${statut === 'ouverte' ? `<button class="btn-fermer" id="btn-fermer-${d.id}" onclick="fermerDemande('${d.id}')">🔒 Fermer la demande</button>` : ''}
               <a href="deposer-demande.html" style="background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;text-decoration:none;">+ Nouvelle demande</a>
             </div>
           </div>`;
@@ -208,8 +208,15 @@
 
     window.fermerDemande = async function(id) {
       if (!confirm('Fermer cette demande ?')) return;
-      await updateDoc(doc(db, 'demandes_clients', id), { statut: 'fermee', date_fermeture: Timestamp.now() });
-      location.reload();
+      const btn = document.getElementById('btn-fermer-'+id);
+      if (btn) btn.disabled = true;
+      try {
+        await updateDoc(doc(db, 'demandes_clients', id), { statut: 'fermee', date_fermeture: Timestamp.now() });
+        location.reload();
+      } catch(e) {
+        alert('Erreur. Réessayez.');
+        if (btn) btn.disabled = false;
+      }
     };
 
     document.getElementById('menuBtn')?.addEventListener('click', () => document.getElementById('menuDropdown')?.classList.toggle('open'));

@@ -231,7 +231,10 @@
           <option value="dzd">Paiement en DZD (Algérie)</option>
         </select>
         <textarea id="pub-message" placeholder="Décrivez votre activité et vos objectifs publicitaires..."></textarea>
-        <button class="btn-envoyer" onclick="envoyerDevis()">📩 Envoyer ma demande de devis</button>
+        <div style="display:flex;gap:10px;">
+          <button class="btn-envoyer" id="btn-envoyer-devis" onclick="envoyerDevis()" style="flex:2;">📩 Envoyer ma demande de devis</button>
+          <button class="btn-envoyer" id="btn-effacer-devis" type="button" onclick="window.effacerFormulaireDevis()" style="flex:1;background:transparent;border:1px solid #4DD0E1;color:#4DD0E1;">🗑️ Effacer</button>
+        </div>
       </div>
 
       <!-- CONTACT DIRECT -->
@@ -268,6 +271,8 @@
       const nom = document.getElementById('pub-nom').value.trim();
       const email = document.getElementById('pub-email').value.trim();
       if (!nom || !email) { alert('Veuillez renseigner votre nom et email.'); return; }
+      const btn = document.getElementById('btn-envoyer-devis');
+      btn.disabled = true;
       try {
         await addDoc(collection(db, 'demandes_pub'), {
           nom, email,
@@ -281,6 +286,18 @@
         document.getElementById('msg-succes').style.display = 'block';
         window.scrollTo(0,0);
       } catch(e) { alert('Erreur. Réessayez.'); }
+      finally { btn.disabled = false; }
+    };
+
+    window.effacerFormulaireDevis = function() {
+      ['pub-nom','pub-email','pub-tel','pub-message'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      document.getElementById('pub-format').value = '';
+      document.getElementById('pub-budget').value = '';
+      const succes = document.getElementById('msg-succes');
+      if (succes) succes.style.display = 'none';
     };
   </script>
   <script src="script.js"></script>

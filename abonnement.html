@@ -140,7 +140,7 @@
             <li class="non">Annonces illimitees</li>
             <li class="non">Badge vendeur verifie</li>
           </ul>
-          <button class="plan-btn" style="background:#4DD0E1;color:#0D1117;border:none;cursor:pointer;width:100%;font-size:14px;" onclick="lancerPaiement('hebdomadaire')">Choisir Starter — 14€</button>
+          <button class="plan-btn" id="btn-plan-starter" style="background:#4DD0E1;color:#0D1117;border:none;cursor:pointer;width:100%;font-size:14px;" onclick="lancerPaiement('hebdomadaire', this)">Choisir Starter — 14€</button>
         </div>
 
         <div class="plan-card best">
@@ -157,7 +157,7 @@
             <li>Support prioritaire sous 24h</li>
             <li>Annulation a tout moment</li>
           </ul>
-          <button class="plan-btn" style="background:#A8E063;color:#0D1117;border:none;cursor:pointer;width:100%;font-size:14px;" onclick="lancerPaiement('mensuel')">Passer Pro — 60€/mois</button>
+          <button class="plan-btn" id="btn-plan-mensuel" style="background:#A8E063;color:#0D1117;border:none;cursor:pointer;width:100%;font-size:14px;" onclick="lancerPaiement('mensuel', this)">Passer Pro — 60€/mois</button>
         </div>
 
         <div class="plan-card">
@@ -173,7 +173,7 @@
             <li>Support prioritaire sous 24h</li>
             <li>Formule annuelle : 240€/an (2 mois offerts)</li>
           </ul>
-          <button class="plan-btn" style="background:#FF7043;color:white;border:none;cursor:pointer;width:100%;font-size:14px;" onclick="lancerPaiementMetier('mensuel')">Devenir Pro Metier — 20€/mois</button>
+          <button class="plan-btn" id="btn-plan-metier" style="background:#FF7043;color:white;border:none;cursor:pointer;width:100%;font-size:14px;" onclick="lancerPaiementMetier('mensuel', this)">Devenir Pro Metier — 20€/mois</button>
         </div>
 
       </div>
@@ -266,22 +266,28 @@
     };
     const app = initializeApp(firebaseConfig);
     const functions = getFunctions(app);
-    window.lancerPaiement = async function(type) {
+    window.lancerPaiement = async function(type, btnEl) {
+      if (btnEl) btnEl.disabled = true;
       try {
         const creer = httpsCallable(functions, "creerSessionAbonnementPro");
         const result = await creer({ typeAbonnement: type });
         if (result.data.url) window.location.href = result.data.url;
       } catch (e) {
         alert("Erreur lors de la creation du paiement. Reessayez.");
+      } finally {
+        if (btnEl) btnEl.disabled = false;
       }
     };
-    window.lancerPaiementMetier = async function(type) {
+    window.lancerPaiementMetier = async function(type, btnEl) {
+      if (btnEl) btnEl.disabled = true;
       try {
         const creer = httpsCallable(functions, "creerSessionProMetier");
         const result = await creer({ typeAbonnement: type });
         if (result.data.url) window.location.href = result.data.url;
       } catch (e) {
         alert("Erreur lors de la creation du paiement. Reessayez.");
+      } finally {
+        if (btnEl) btnEl.disabled = false;
       }
     };
   </script>

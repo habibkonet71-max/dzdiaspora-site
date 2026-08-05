@@ -236,7 +236,10 @@
       <div style="display:none;position:absolute;left:-9999px;">
         <input type="text" id="honeypot_field" name="website" tabindex="-1" autocomplete="off">
       </div>
-        <button class="btn-submit" id="btn-envoyer" onclick="envoyerDemande()">📋 Envoyer ma demande</button>
+        <div style="display:flex;gap:10px;">
+          <button class="btn-submit" id="btn-envoyer" onclick="envoyerDemande()" style="flex:2;">📋 Envoyer ma demande</button>
+          <button class="btn-submit" id="btn-effacer-inscription" type="button" onclick="window.effacerFormulaireInscription()" style="flex:1;background:transparent;border:1px solid #4DD0E1;color:#4DD0E1;">🗑️ Effacer</button>
+        </div>
       <p style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:10px;text-align:center;">
         Validation et paiement sous 48h. Vos coordonnees seront visibles apres validation uniquement.
       </p>
@@ -364,6 +367,25 @@
         window._envoiEnCours = false;
         if (btn) btn.disabled = false;
       }
+    };
+
+    window.effacerFormulaireInscription = function() {
+      ['specialite','nom','prenom','adresse','telephone','email','langues','ordre','presentation','code_promo'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      document.getElementById('profession').value = '';
+      document.getElementById('wilaya').value = '';
+      document.getElementById('abonnement').value = 'mensuel_eur';
+      document.getElementById('specGroup').style.display = 'none';
+      document.getElementById('paiement-carte').checked = true;
+      document.getElementById('cgu').checked = false;
+      document.getElementById('notif-email').checked = true;
+      document.getElementById('notif-push').checked = false;
+      document.getElementById('notif-whatsapp').checked = false;
+      document.getElementById('notif-sms').checked = false;
+      const msg = document.getElementById('msgSucces');
+      if (msg) msg.style.display = 'none';
     };
   </script>
 

@@ -182,9 +182,9 @@
           </div>
           ${r.description ? `<div style="background:#0D1117;border-radius:8px;padding:10px;font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:10px;">"${r.description}"</div>` : ''}
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            ${statut === 'en_attente' ? `<button class="btn-confirmer" onclick="changerStatut('${r.id}','confirme')">✅ Confirmer</button>` : ''}
-            ${statut === 'confirme' ? `<button class="btn-termine" onclick="changerStatut('${r.id}','termine')">🏁 Terminer</button>` : ''}
-            ${statut !== 'annule' && statut !== 'termine' ? `<button class="btn-annuler" onclick="changerStatut('${r.id}','annule')">❌ Annuler</button>` : ''}
+            ${statut === 'en_attente' ? `<button class="btn-confirmer" onclick="changerStatut('${r.id}','confirme',this)">✅ Confirmer</button>` : ''}
+            ${statut === 'confirme' ? `<button class="btn-termine" onclick="changerStatut('${r.id}','termine',this)">🏁 Terminer</button>` : ''}
+            ${statut !== 'annule' && statut !== 'termine' ? `<button class="btn-annuler" onclick="changerStatut('${r.id}','annule',this)">❌ Annuler</button>` : ''}
             ${r.tel ? `<a href="tel:${r.tel}" style="background:rgba(168,224,99,0.1);border:1px solid #A8E063;color:#A8E063;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;">📞 Appeler</a>` : ''}
             ${r.pro_tel ? `<a href="tel:${r.pro_tel}" style="background:rgba(77,208,225,0.1);border:1px solid #4DD0E1;color:#4DD0E1;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;">📞 Pro</a>` : ''}
           </div>
@@ -200,11 +200,18 @@
       afficherRdv(filtered);
     };
 
-    window.changerStatut = async function(id, statut) {
-      await updateDoc(doc(db, 'rendez_vous', id), { statut, date_maj: Timestamp.now() });
-      tousRdv = tousRdv.map(r => r.id === id ? {...r, statut} : r);
-      afficherStats();
-      window.filtrer(filtreActif, document.querySelector('.filtre-btn.actif'));
+    window.changerStatut = async function(id, statut, btn) {
+      if (btn) btn.disabled = true;
+      try {
+        await updateDoc(doc(db, 'rendez_vous', id), { statut, date_maj: Timestamp.now() });
+        tousRdv = tousRdv.map(r => r.id === id ? {...r, statut} : r);
+        afficherStats();
+        window.filtrer(filtreActif, document.querySelector('.filtre-btn.actif'));
+      } catch (e) {
+        alert('Erreur lors de la mise a jour du statut. Reessayez.');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
     };
 
     document.getElementById('menuBtn')?.addEventListener('click', () => document.getElementById('menuDropdown')?.classList.toggle('open'));

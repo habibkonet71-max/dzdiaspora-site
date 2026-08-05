@@ -195,7 +195,10 @@
       </div>
     </div>
 
-    <button class="btn-rdv" onclick="envoyerRdv()">📅 Confirmer la demande de RDV</button>
+    <div style="display:flex;gap:10px;margin-top:8px;">
+      <button class="btn-rdv" id="btnConfirmerRdv" onclick="envoyerRdv()" style="flex:2;margin-top:0;">📅 Confirmer la demande de RDV</button>
+      <button type="button" id="btnEffacerRdv" onclick="window.effacerFormulaireRdv()" style="flex:1;padding:15px;background:transparent;border:1px solid #4DD0E1;color:#4DD0E1;border-radius:12px;font-weight:700;cursor:pointer;">🗑️ Effacer</button>
+    </div>
 
     <p style="color:rgba(255,255,255,0.3);font-size:11px;text-align:center;margin-top:10px;">
       Le professionnel vous confirmera le rendez-vous sous 24h. Aucun paiement requis à ce stade.
@@ -264,6 +267,8 @@
         alert('Veuillez remplir tous les champs obligatoires et choisir un créneau.');
         return;
       }
+      const btn = document.getElementById('btnConfirmerRdv');
+      btn.disabled = true;
       try {
         const _token = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2);
         const _rdvRef = await addDoc(collection(db, 'rendez_vous'), {
@@ -305,6 +310,8 @@
       } catch(e) {
         console.error(e);
         alert('Erreur. Réessayez.');
+      } finally {
+        btn.disabled = false;
       }
     };
 
@@ -332,6 +339,25 @@
       document.querySelectorAll('.creneau').forEach(c => c.classList.remove('actif'));
       el.classList.add('actif');
       window._creneau = h;
+    };
+
+    window.effacerFormulaireRdv = function() {
+      window._typeRdv = 'presentiel';
+      window._creneau = null;
+      document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('actif'));
+      document.querySelector('.type-btn')?.classList.add('actif');
+      const dateEl = document.getElementById('rdv-date');
+      if (dateEl) dateEl.value = '';
+      document.getElementById('zone-creneaux').style.display = 'none';
+      document.getElementById('creneauxGrid').innerHTML = '';
+      const motif = document.getElementById('rdv-motif'); if (motif) motif.selectedIndex = 0;
+      ['rdv-description','rdv-nom','rdv-email','rdv-tel'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      const pays = document.getElementById('rdv-pays'); if (pays) pays.selectedIndex = 0;
+      document.getElementById('msgSucces').style.display = 'none';
+      window.scrollTo(0, 0);
     };
   </script>
   <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>

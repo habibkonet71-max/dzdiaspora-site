@@ -306,7 +306,10 @@
       <div style="display:none;position:absolute;left:-9999px;">
         <input type="text" id="honeypot_field" name="website" tabindex="-1" autocomplete="off">
       </div>
-    <button class="btn-deposer" onclick="envoyerDemande()">📋 Publier ma demande</button>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-deposer" id="btnEnvoyerDemande" onclick="envoyerDemande()" style="flex:2;">📋 Publier ma demande</button>
+      <button type="button" id="btnEffacerDemande" onclick="window.effacerFormulaireDemande()" style="flex:1;padding:15px;background:transparent;border:1px solid #4DD0E1;color:#4DD0E1;border-radius:12px;font-weight:700;cursor:pointer;">🗑️ Effacer</button>
+    </div>
       <p style="color:rgba(255,255,255,0.3);font-size:11px;text-align:center;margin-top:8px;">Gratuit et sans engagement. Les pros vous contactent directement.</p>
     </div>
 
@@ -321,7 +324,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, doc, getDoc, query, where, getDocs, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const cfg = { apiKey:"AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ", appId:"1:223003656315:web:100de190b8b5e74ddae2de", messagingSenderId:"223003656315", projectId:"dzdiaspora-7260a", authDomain:"dzdiaspora-7260a.firebaseapp.com", storageBucket:"dzdiaspora-7260a.firebasestorage.app" };
     const app = initializeApp(cfg);
@@ -406,6 +409,8 @@
         if (!data.type_bien || !data.description) { alert('Complétez votre recherche immobilière'); return; }
       }
 
+      const btn = document.getElementById('btnEnvoyerDemande');
+      btn.disabled = true;
       try {
         const docRef = await addDoc(collection(db, 'demandes_clients'), data);
         document.getElementById('msgSucces').style.display = 'block';
@@ -441,6 +446,7 @@
           }
         } catch(emailErr) { console.log('Email non envoye:', emailErr); }
       } catch(e) { alert('Erreur. Réessayez.'); }
+      finally { btn.disabled = false; }
     };
   </script>
 
@@ -462,6 +468,33 @@
     window.toggleUrgence = function(el, secteur) {
       el.classList.toggle('actif');
       window['_urgent_' + secteur] = el.classList.contains('actif');
+    };
+
+    window.effacerFormulaireDemande = function() {
+      window._secteur = null;
+      window._urgent_juridique = false;
+      window._urgent_medical = false;
+      document.querySelectorAll('.secteur-btn').forEach(b => b.classList.remove('actif'));
+      document.querySelectorAll('.form-section').forEach(f => f.classList.remove('actif'));
+      ['j-type','j-wilaya','j-description','m-specialite','m-wilaya','m-description',
+       'i-type-bien','i-wilaya','i-budget','i-surface','i-pieces','i-description',
+       'c-nom','c-email','c-tel'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      const mType = document.getElementById('m-type'); if (mType) mType.selectedIndex = 0;
+      const iTransaction = document.getElementById('i-transaction'); if (iTransaction) iTransaction.selectedIndex = 0;
+      const cPays = document.getElementById('c-pays'); if (cPays) cPays.selectedIndex = 0;
+      const cVisibilite = document.getElementById('c-visibilite'); if (cVisibilite) cVisibilite.checked = true;
+      document.querySelectorAll('.urgence-tag').forEach(t => t.classList.remove('actif'));
+      document.querySelectorAll('.tag').forEach(t => t.classList.remove('actif'));
+      const langJur = document.querySelector('#form-juridique .tags-container .tag');
+      if (langJur) langJur.classList.add('actif');
+      const langMed = document.querySelector('#form-medical .tags-container .tag');
+      if (langMed) langMed.classList.add('actif');
+      const msgSucces = document.getElementById('msgSucces');
+      if (msgSucces) msgSucces.style.display = 'none';
+      window.scrollTo(0, 0);
     };
   </script>
   <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>

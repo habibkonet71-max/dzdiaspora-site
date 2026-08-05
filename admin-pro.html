@@ -160,7 +160,7 @@
         <label>Description (usage interne)</label>
         <input type="text" id="cp-description" placeholder="Ex: Lancement — 3 premiers clients pro">
       </div>
-      <button onclick="window.creerCodePromo()" style="width:100%;padding:12px;background:#A8E063;color:#0D1117;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:16px;">➕ Creer le code</button>
+      <button id="btn-creer-code-promo" onclick="window.creerCodePromo()" style="width:100%;padding:12px;background:#A8E063;color:#0D1117;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:16px;">➕ Creer le code</button>
       <div id="liste-codes-promo"><p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Chargement...</p></div>
     </section>
 
@@ -211,7 +211,10 @@
         <input type="text" id="a-source-alerte" placeholder="Ex: entmv.dz">
       </div>
       <div id="alerte-succes" style="display:none;background:rgba(168,224,99,0.1);border:1px solid rgba(168,224,99,0.4);border-radius:10px;padding:12px;color:#A8E063;text-align:center;margin-bottom:12px;">✅ Alerte publiée !</div>
-      <button onclick="publierAlerte()" style="width:100%;padding:13px;background:#FFC107;color:#0D1117;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">📢 Publier l'alerte</button>
+      <div style="display:flex;gap:10px;">
+        <button id="btn-publier-alerte" onclick="publierAlerte()" style="flex:2;padding:13px;background:#FFC107;color:#0D1117;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">📢 Publier l'alerte</button>
+        <button type="button" onclick="window.effacerFormulaireAlerte()" style="flex:1;padding:13px;background:transparent;border:1px solid #FFC107;color:#FFC107;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">🗑️ Effacer</button>
+      </div>
       <div id="liste-alertes-actives" style="margin-top:16px;"></div>
     </section>
     </div>
@@ -219,7 +222,7 @@
     <div class="onglet-contenu" id="onglet-annonces">
       <div class="barre-selection" id="barre-selection-annonces">
         <span id="compteur-selection">0 selectionnee(s)</span>
-        <button class="btn-suppr-groupe" onclick="window.supprimerAnnoncesSelection()">🗑️ Supprimer la selection</button>
+        <button class="btn-suppr-groupe" id="btn-suppr-groupe-annonces" onclick="window.supprimerAnnoncesSelection()">🗑️ Supprimer la selection</button>
       </div>
       <div class="onglets-nav" style="border-bottom:none;margin-bottom:14px;">
         <button class="onglet-btn actif" data-cat-annonce="immobilier" onclick="window.changerCategorieAnnonceAdmin('immobilier')">🏠 Immobilier</button>
@@ -315,7 +318,7 @@
         </div>
       </div>
       <div id="succes-pro" style="display:none;background:rgba(168,224,99,0.1);border:1px solid rgba(168,224,99,0.4);border-radius:10px;padding:12px;color:#A8E063;text-align:center;margin-bottom:12px;">✅ Professionnel publié dans l'annuaire !</div>
-      <button class="btn-publier" onclick="publierPro()">✅ Publier dans l'annuaire</button>
+      <button class="btn-publier" id="btn-publier-pro" onclick="publierPro()">✅ Publier dans l'annuaire</button>
       <button onclick="viderFormulaire()" style="width:100%;padding:10px;background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);border-radius:10px;font-size:13px;cursor:pointer;margin-top:8px;">🗑️ Vider le formulaire</button>
     </section>
 
@@ -667,6 +670,8 @@
 
     window.validerDemandePro = async function(btn) {
       const id = btn.dataset?.id || btn;
+      if (btn.disabled) return;
+      btn.disabled = true;
       try {
         const demandeSnap = await getDoc(doc(db, 'professionnels_demandes', id));
         const data = demandeSnap.data();
@@ -721,11 +726,14 @@
         chargerHistorique();
         chargerProfessionnels();
       } catch(e) { alert('Erreur: ' + e.message); }
+      finally { btn.disabled = false; }
     };
 
     window.refuserDemandePro = async function(btn) {
       const id = btn.dataset?.id || btn;
       if (!confirm('Refuser cette demande ?')) return;
+      if (btn.disabled) return;
+      btn.disabled = true;
       try {
         const demandeSnap = await getDoc(doc(db, 'professionnels_demandes', id));
         const data = demandeSnap.data();
@@ -747,18 +755,22 @@
         chargerDemandesPros();
         chargerHistorique();
       } catch(e) { alert('Erreur: ' + e.message); }
+      finally { btn.disabled = false; }
     };
 
     window.supprimerDemandePro = async function(btn) {
       const id = btn.dataset?.id || btn;
       const nom = btn.dataset?.nom || '';
       if (!confirm('Supprimer definitivement cette demande (' + nom + ') ? Cette action est irreversible.')) return;
+      if (btn.disabled) return;
+      btn.disabled = true;
       try {
         await deleteDoc(doc(db, 'professionnels_demandes', id));
         await journaliserAction('Suppression demande pro', nom);
         chargerDemandesPros();
         chargerHistorique();
       } catch(e) { alert('Erreur: ' + e.message); }
+      finally { btn.disabled = false; }
     };
 
     // ===== CODES PROMO (bonus de bienvenue) =====
@@ -788,6 +800,8 @@
       const usageMaxBrut = document.getElementById('cp-usage-max').value.trim();
       const description = document.getElementById('cp-description').value.trim();
       if (!code) { alert('Saisissez un code'); return; }
+      const btn = document.getElementById('btn-creer-code-promo');
+      btn.disabled = true;
       try {
         await setDoc(doc(db, 'codes_promo', code), {
           actif: true,
@@ -802,16 +816,20 @@
         await journaliserAction('Creation code promo', code);
         chargerCodesPromo();
       } catch(e) { alert('Erreur: ' + e.message); }
+      finally { btn.disabled = false; }
     };
 
     window.toggleCodePromo = async function(btn) {
       const id = btn.dataset.id;
       const actifActuel = btn.dataset.actif === 'true';
+      if (btn.disabled) return;
+      btn.disabled = true;
       try {
         await updateDoc(doc(db, 'codes_promo', id), { actif: !actifActuel });
         await journaliserAction(actifActuel ? 'Desactivation code promo' : 'Activation code promo', id);
         chargerCodesPromo();
       } catch(e) { alert('Erreur: ' + e.message); }
+      finally { btn.disabled = false; }
     };
 
     // ===== PROFESSIONNELS VALIDES (suivi bonus / paiement) =====
@@ -891,6 +909,8 @@
     window.validerAvis = async function(btn) {
       const id = btn.dataset?.id || btn;
       const proId = btn.dataset?.proid || '';
+      if (btn.disabled) return;
+      btn.disabled = true;
       try {
         await updateDoc(doc(db, 'avis_clients', id), { statut: 'publie', date_validation: Timestamp.now() });
         await recalculerNoteMoyenne(proId);
@@ -898,13 +918,19 @@
         chargerAvisAttente();
         chargerAvisPublies();
       } catch(e) { alert('Erreur: '+e.message); }
+      finally { btn.disabled = false; }
     };
 
     window.supprimerAvis = async function(btn) {
       const id = btn.dataset?.id || btn;
       if (!confirm('Supprimer cet avis ?')) return;
-      await deleteDoc(doc(db, 'avis_clients', id));
-      chargerAvisAttente();
+      if (btn.disabled) return;
+      btn.disabled = true;
+      try {
+        await deleteDoc(doc(db, 'avis_clients', id));
+        chargerAvisAttente();
+      } catch(e) { alert('Erreur: '+e.message); }
+      finally { btn.disabled = false; }
     };
 
     async function chargerAvisPublies() {
@@ -933,9 +959,14 @@
       const id = btn.dataset?.id || btn;
       const proId = btn.dataset?.proid || '';
       if (!confirm('Retirer cet avis publié ? La note moyenne du professionnel sera recalculée.')) return;
-      await deleteDoc(doc(db, 'avis_clients', id));
-      await recalculerNoteMoyenne(proId);
-      chargerAvisPublies();
+      if (btn.disabled) return;
+      btn.disabled = true;
+      try {
+        await deleteDoc(doc(db, 'avis_clients', id));
+        await recalculerNoteMoyenne(proId);
+        chargerAvisPublies();
+      } catch(e) { alert('Erreur: '+e.message); }
+      finally { btn.disabled = false; }
     };
 
     // ===== ALERTES =====
@@ -994,7 +1025,7 @@
               <div style="color:white;font-size:14px;font-weight:700;">${a.identite || 'Anonyme'}</div>
               <div style="color:rgba(255,255,255,0.6);font-size:12px;">${(a.description || '').substring(0, 150)}</div>
               <div style="color:rgba(255,255,255,0.3);font-size:11px;margin-top:4px;">📞 ${a.contact || '—'} | Le ${date}</div>
-              <button class="btn-non" style="margin-top:8px;" onclick="window.supprimerAnnonceUnique('${cat}', '${d.id}')">🗑️ Supprimer</button>
+              <button class="btn-non" style="margin-top:8px;" onclick="window.supprimerAnnonceUnique('${cat}', '${d.id}', this)">🗑️ Supprimer</button>
             </div>
           </div>`;
         }).join('');
@@ -1014,18 +1045,21 @@
       }
     };
 
-    window.supprimerAnnonceUnique = async function(cat, id) {
+    window.supprimerAnnonceUnique = async function(cat, id, btn) {
       if (!confirm('Supprimer cette annonce ?')) return;
+      if (btn) { if (btn.disabled) return; btn.disabled = true; }
       try {
         await deleteDoc(doc(db, collectionsAnnonces[cat], id));
         await journaliserAction('Suppression annonce', `Categorie: ${cat}, ID: ${id}`);
         chargerAnnoncesAdmin(cat);
-      } catch (e) { alert('Erreur: ' + e.message); }
+      } catch (e) { alert('Erreur: ' + e.message); if (btn) btn.disabled = false; }
     };
 
     window.supprimerAnnoncesSelection = async function() {
       if (selectionAnnonces.size === 0) return;
       if (!confirm(`Supprimer les ${selectionAnnonces.size} annonces selectionnees ?`)) return;
+      const btn = document.getElementById('btn-suppr-groupe-annonces');
+      if (btn) { if (btn.disabled) return; btn.disabled = true; }
       try {
         for (const id of selectionAnnonces) {
           await deleteDoc(doc(db, collectionsAnnonces[categorieAnnonceActive], id));
@@ -1035,6 +1069,7 @@
         document.getElementById('barre-selection-annonces').classList.remove('actif');
         chargerAnnoncesAdmin(categorieAnnonceActive);
       } catch (e) { alert('Erreur: ' + e.message); }
+      finally { if (btn) btn.disabled = false; }
     };
 
     // ===== PAIEMENTS (Stripe + alertes suspectes) =====
@@ -1099,9 +1134,20 @@
       document.getElementById('a-titre-alerte').focus();
     };
 
+    window.effacerFormulaireAlerte = function() {
+      document.getElementById('a-type-alerte').value = 'ferry';
+      document.getElementById('a-titre-alerte').value = '';
+      document.getElementById('a-details-alerte').value = '';
+      document.getElementById('a-source-alerte').value = '';
+      document.getElementById('alerte-succes').style.display = 'none';
+    };
+
     window.publierAlerte = async function() {
       const titre = document.getElementById('a-titre-alerte').value.trim();
       if (!titre) { alert('Titre obligatoire'); return; }
+      const btn = document.getElementById('btn-publier-alerte');
+      if (btn.disabled) return;
+      btn.disabled = true;
       try {
         await addDoc(collection(db, 'alertes_transport'), {
           type: document.getElementById('a-type-alerte').value,
@@ -1117,13 +1163,19 @@
         setTimeout(() => document.getElementById('alerte-succes').style.display = 'none', 3000);
         chargerAlertes();
       } catch(e) { alert('Erreur: '+e.message); }
+      finally { btn.disabled = false; }
     };
 
     window.supprimerAlerte = async function(btn) {
       const id = btn.dataset?.id || btn;
       if (!confirm('Supprimer cette alerte ?')) return;
-      await deleteDoc(doc(db, 'alertes_transport', id));
-      chargerAlertes();
+      if (btn.disabled) return;
+      btn.disabled = true;
+      try {
+        await deleteDoc(doc(db, 'alertes_transport', id));
+        chargerAlertes();
+      } catch(e) { alert('Erreur: ' + e.message); }
+      finally { btn.disabled = false; }
     };
 
     // ===== AJOUTER PRO =====
@@ -1132,6 +1184,9 @@
       for (const id of requis) {
         if (!document.getElementById(id)?.value?.trim()) { alert('Remplissez tous les champs obligatoires (*)'); return; }
       }
+      const btn = document.getElementById('btn-publier-pro');
+      if (btn.disabled) return;
+      btn.disabled = true;
       try {
         await addDoc(collection(db, 'professionnels'), {
           profession: document.getElementById('profession').value,
@@ -1157,6 +1212,7 @@
         document.getElementById('succes-pro').style.display = 'block';
         setTimeout(() => { document.getElementById('succes-pro').style.display = 'none'; viderFormulaire(); }, 3000);
       } catch(e) { alert('Erreur: '+e.message); }
+      finally { btn.disabled = false; }
     };
 
 

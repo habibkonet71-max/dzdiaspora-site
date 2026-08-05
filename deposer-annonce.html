@@ -142,7 +142,10 @@
         <input type="text" id="champContact" required>
       </div>
 
-      <button type="submit" class="btn-telecharger" style="width: 100%; padding: 12px; margin-top: 10px;">📤 Publier l annonce</button>
+      <div style="display:flex;gap:10px;margin-top:10px;">
+        <button type="submit" id="btnPublierAnnonce" class="btn-telecharger" style="flex:2;padding:12px;">📤 Publier l annonce</button>
+        <button type="button" id="btnEffacerAnnonce" onclick="window.effacerFormulaireAnnonce()" style="flex:1;padding:12px;background:transparent;border:1px solid #4DD0E1;color:#4DD0E1;border-radius:8px;font-weight:700;cursor:pointer;">🗑️ Effacer</button>
+      </div>
     </form>
   </main>
 
@@ -262,6 +265,14 @@
       return motsInterdits.some((mot) => texteMin.includes(mot));
     }
 
+    window.effacerFormulaireAnnonce = function () {
+      document.getElementById("formAnnonce").reset();
+      document.querySelector("#champNomPseudo label").textContent = "Votre nom";
+      changerCategorieForm("immobilier");
+      document.getElementById("msgErreur").style.display = "none";
+      document.getElementById("msgSucces").style.display = "none";
+    };
+
     document.getElementById("formAnnonce").addEventListener("submit", async function (e) {
       e.preventDefault();
       const msgErreur = document.getElementById("msgErreur");
@@ -278,6 +289,9 @@
         return;
       }
 
+      const btn = document.getElementById("btnPublierAnnonce");
+      btn.disabled = true;
+      try {
       const userEmail = auth.currentUser ? auth.currentUser.email : null;
       if (userEmail) {
         let totalAnnonces = 0;
@@ -355,6 +369,9 @@
       } catch (err) {
         msgErreur.textContent = "❌ Erreur lors de la publication. Veuillez reessayer.";
         msgErreur.style.display = "block";
+      }
+      } finally {
+        btn.disabled = false;
       }
     });
 
