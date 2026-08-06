@@ -38,6 +38,27 @@
     .onglets-nav { display:flex; gap:6px; overflow-x:auto; margin-bottom:20px; padding-bottom:4px; border-bottom:1px solid rgba(255,255,255,0.1); }
     .onglet-btn { background:none; border:none; color:rgba(255,255,255,0.5); padding:10px 14px; font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap; border-bottom:2px solid transparent; }
     .onglet-btn.actif { color:#4DD0E1; border-bottom:2px solid #4DD0E1; }
+    .table-wrap { overflow-x:auto; border-radius:12px; border:1px solid rgba(255,255,255,0.08); }
+    .table-ip { width:100%; border-collapse:collapse; font-size:13px; min-width:560px; }
+    .table-ip thead th { position:sticky; top:0; background:#151b23; color:rgba(255,255,255,0.5); text-align:left; font-size:11px; font-weight:700; letter-spacing:0.03em; text-transform:uppercase; padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.08); }
+    .table-ip tbody td { padding:11px 14px; border-bottom:1px solid rgba(255,255,255,0.05); color:white; vertical-align:middle; }
+    .table-ip tbody tr:nth-child(even) { background:rgba(255,255,255,0.015); }
+    .table-ip tbody tr:hover { background:rgba(77,208,225,0.05); }
+    .table-ip .ip-cell { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12.5px; color:rgba(255,255,255,0.85); }
+    .pastille { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; }
+    .pastille::before { content:''; width:6px; height:6px; border-radius:50%; }
+    .pastille.ok { background:rgba(168,224,99,0.12); color:#A8E063; }
+    .pastille.ok::before { background:#A8E063; }
+    .pastille.bloque { background:rgba(214,16,52,0.12); color:#ff6b6b; }
+    .pastille.bloque::before { background:#ff6b6b; }
+    .pastille.manuel { background:rgba(255,193,7,0.12); color:#FFC107; margin-left:6px; }
+    .pastille.manuel::before { background:#FFC107; }
+    .echecs-jauge { display:inline-flex; gap:3px; vertical-align:middle; margin-right:6px; }
+    .echecs-jauge span { width:6px; height:14px; border-radius:2px; background:rgba(255,255,255,0.1); }
+    .echecs-jauge span.plein { background:#ff6b6b; }
+    .btn-table-action { padding:6px 13px; border-radius:8px; font-size:11.5px; font-weight:700; cursor:pointer; border:1px solid; white-space:nowrap; }
+    .btn-table-action.debannir { background:rgba(168,224,99,0.1); border-color:#A8E063; color:#A8E063; }
+    .btn-table-action.bannir { background:rgba(214,16,52,0.1); border-color:#D21034; color:#ff6b6b; }
     .onglet-badge { background:#D21034; color:white; border-radius:10px; padding:1px 7px; font-size:10px; margin-left:6px; }
     .onglet-contenu { display:none; }
     .onglet-contenu.actif { display:block; }
@@ -127,6 +148,7 @@
       <button class="onglet-btn" data-onglet="outils" onclick="window.changerOnglet('outils')">🛠️ Outils</button>
       <button class="onglet-btn" data-onglet="historique" onclick="window.changerOnglet('historique')">🕐 Historique</button>
       <button class="onglet-btn" data-onglet="transactions" onclick="window.changerOnglet('transactions')">🧾 Transactions</button>
+      <button class="onglet-btn" data-onglet="ip-tentatives" onclick="window.changerOnglet('ip-tentatives')">🚫 IP &amp; tentatives</button>
     </div>
 
     <div class="onglet-contenu actif" id="onglet-vue-ensemble">
@@ -378,6 +400,11 @@
       <div id="liste-transactions"><p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Chargement...</p></div>
     </div>
 
+    <div class="onglet-contenu" id="onglet-ip-tentatives">
+      <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-bottom:12px;">Adresses IP ayant tente une verification d'objet trouve (echecs, bannissement automatique apres 3 echecs ou manuel). Utile pour couper l'acces a une IP qui abuse du systeme (depots bacles, tentatives de force brute).</p>
+      <div id="liste-ip-tentatives"><p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Chargement...</p></div>
+    </div>
+
   </main>
   </div>
 
@@ -467,6 +494,7 @@
       document.getElementById('onglet-' + nom)?.classList.add('actif');
       if (nom === 'paiements') chargerPaiements();
       if (nom === 'historique') chargerHistorique();
+      if (nom === 'ip-tentatives') chargerIPTentatives();
     };
 
     function majMajInfo() {
@@ -518,6 +546,74 @@
         }).join('');
       } catch (e) { container.innerHTML = '<p style="color:#ff6b6b;">Erreur: ' + e.message + '</p>'; }
     }
+
+    // ===== IP & TENTATIVES (objets trouves) =====
+    function echapperTexte(s) {
+      return (s || '').toString().replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    async function chargerIPTentatives() {
+      const container = document.getElementById('liste-ip-tentatives');
+      if (!container) return;
+      try {
+        const snap = await getDocs(collection(db, 'verification_tentatives'));
+        if (snap.empty) { container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune tentative enregistree</p>'; return; }
+        const lignes = [];
+        snap.forEach((d) => lignes.push({docId: d.id, ...d.data()}));
+        lignes.sort((a, b) => (b.banni === true) - (a.banni === true) || (b.nombre_echecs || 0) - (a.nombre_echecs || 0));
+
+        const rangees = lignes.map((l) => {
+          const ip = l.ip || l.docId;
+          const ipAffiche = echapperTexte(ip);
+          const derniereDate = (l.date_bannissement?.toDate?.() || l.dernier_essai?.toDate?.())?.toLocaleString('fr-FR') || '—';
+          const echecs = l.nombre_echecs || 0;
+          const jauge = [0, 1, 2].map((i) => `<span class="${i < echecs ? 'plein' : ''}"></span>`).join('');
+          return `<tr>
+            <td class="ip-cell">${ipAffiche}</td>
+            <td>
+              <span class="pastille ${l.banni ? 'bloque' : 'ok'}">${l.banni ? 'Bloquee' : 'Active'}</span>
+              ${l.banni_manuellement ? '<span class="pastille manuel">Manuel</span>' : ''}
+            </td>
+            <td><span class="echecs-jauge">${jauge}</span>${echecs}/3</td>
+            <td style="color:rgba(255,255,255,0.5);font-size:12px;">${derniereDate}</td>
+            <td style="text-align:right;">
+              ${l.banni
+                ? `<button class="btn-table-action debannir" onclick="window.otDebannirIP('${ip}')">Debannir</button>`
+                : `<button class="btn-table-action bannir" onclick="window.otBannirIP('${ip}')">Bannir</button>`}
+            </td>
+          </tr>`;
+        }).join('');
+
+        container.innerHTML = `<div class="table-wrap"><table class="table-ip">
+          <thead><tr><th>Adresse IP</th><th>Statut</th><th>Echecs</th><th>Derniere activite</th><th></th></tr></thead>
+          <tbody>${rangees}</tbody>
+        </table></div>`;
+      } catch (e) { container.innerHTML = '<p style="color:#ff6b6b;">Erreur: ' + e.message + '</p>'; }
+    }
+
+    window.otBannirIP = async function(ip) {
+      if (!confirm(`Bannir l'IP ${ip} ? Elle ne pourra plus verifier de reponse ni deposer via cette adresse tant qu'elle n'est pas debannie manuellement.`)) return;
+      try {
+        const functions = getFunctions(app);
+        const bannir = httpsCallable(functions, 'bannirIP');
+        await bannir({ip});
+        await chargerIPTentatives();
+      } catch (e) {
+        alert('Erreur : ' + e.message);
+      }
+    };
+
+    window.otDebannirIP = async function(ip) {
+      if (!confirm(`Debannir l'IP ${ip} ?`)) return;
+      try {
+        const functions = getFunctions(app);
+        const debannir = httpsCallable(functions, 'debannirIP');
+        await debannir({ip});
+        await chargerIPTentatives();
+      } catch (e) {
+        alert('Erreur : ' + e.message);
+      }
+    };
 
     // ===== HISTORIQUE TRANSACTIONS (lecture seule, ecriture Cloud Functions uniquement) =====
     const COULEURS_TYPE_TRANSACTION = {
