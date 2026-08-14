@@ -105,12 +105,16 @@
       if (!question) return;
       afficherMessage(question, true);
       input.value = "";
+      const historique = messages.slice(-6);
+      messages.push({ role: "user", texte: question });
       try {
         const fb = await initFirebase();
         const demander = fb.httpsCallable(fb.instance, "demanderAssistant");
-        const result = await demander({ question });
+        const result = await demander({ question, historique });
+        const reponse = result.data.reponse || "Je n ai pas pu generer de reponse.";
         const sources = (result.data.sources || []).map((s) => s.titre).filter(Boolean);
-        afficherMessage(result.data.reponse || "Je n ai pas pu generer de reponse.", false, sources, result.data.lien_secours);
+        afficherMessage(reponse, false, sources, result.data.lien_secours);
+        messages.push({ role: "model", texte: reponse });
       } catch (e) {
         afficherMessage("Karina n arrive pas a repondre pour le moment. Reessayez dans un instant, ou signalez le probleme via le bouton ⚠️ ci-dessus.", false);
       }
