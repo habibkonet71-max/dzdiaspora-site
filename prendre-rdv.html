@@ -302,7 +302,7 @@
               pro_email: proEmail,
               secteur: 'Rendez-vous',
               wilaya: window._proData?.wilaya || '',
-              urgent: window._typeRdv === 'urgence' ? 'OUI' : 'Non',
+              urgent: motif === 'urgence' ? 'OUI' : 'Non',
               description: 'Nouveau RDV de ' + nom + ' le ' + date + ' à ' + window._creneau + ' (' + window._typeRdv + ')\n\nMotif: ' + motif + '\nTéléphone: ' + document.getElementById('rdv-tel').value + '\n\n--- Répondez directement ---\n✅ Confirmer: https://us-central1-dzdiaspora-7260a.cloudfunctions.net/repondreRdv?id=' + _rdvRef.id + '&token=' + _token + '&action=confirmer\n❌ Refuser: https://us-central1-dzdiaspora-7260a.cloudfunctions.net/repondreRdv?id=' + _rdvRef.id + '&token=' + _token + '&action=refuser\n📅 Proposer un autre créneau: https://us-central1-dzdiaspora-7260a.cloudfunctions.net/repondreRdv?id=' + _rdvRef.id + '&token=' + _token + '&action=proposer',
             });
           }
