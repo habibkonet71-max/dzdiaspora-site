@@ -149,6 +149,7 @@
       <button class="onglet-btn" data-onglet="historique" onclick="window.changerOnglet('historique')">🕐 Historique</button>
       <button class="onglet-btn" data-onglet="transactions" onclick="window.changerOnglet('transactions')">🧾 Transactions</button>
       <button class="onglet-btn" data-onglet="ip-tentatives" onclick="window.changerOnglet('ip-tentatives')">🚫 IP &amp; tentatives</button>
+      <button class="onglet-btn" data-onglet="base-karina" onclick="window.changerOnglet('base-karina')">🧠 Base Karina</button>
     </div>
 
     <div class="onglet-contenu actif" id="onglet-vue-ensemble">
@@ -405,6 +406,25 @@
       <div id="liste-ip-tentatives"><p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Chargement...</p></div>
     </div>
 
+    <div class="onglet-contenu" id="onglet-base-karina">
+      <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-bottom:12px;">Gerez les connaissances utilisees par l'assistant Karina DZ pour repondre aux questions des utilisateurs. Plus les mots-cles sont precis, plus Karina trouvera cette entree pertinente.</p>
+      <section class="bloc" style="border-color:rgba(77,208,225,0.4);">
+        <h2 style="color:#4DD0E1;">🧠 Ajouter / modifier une entree</h2>
+        <input type="hidden" id="kb-id">
+        <div class="form-group"><label>Titre *</label><input type="text" id="kb-titre" placeholder="Ex: Horaires consulat Paris"></div>
+        <div class="form-group"><label>Contenu *</label><textarea id="kb-content" rows="5" placeholder="Le contenu que Karina utilisera pour repondre..."></textarea></div>
+        <div class="form-group"><label>Mots-cles *</label><input type="text" id="kb-tags" placeholder="Separes par des virgules. Ex: consulat, paris, horaires, rdv"></div>
+        <div class="form-group"><label>Page source (optionnel)</label><input type="text" id="kb-source" placeholder="Ex: administratif.html"></div>
+        <div id="kb-succes" style="display:none;background:rgba(168,224,99,0.1);border:1px solid rgba(168,224,99,0.4);border-radius:10px;padding:12px;color:#A8E063;text-align:center;margin-bottom:12px;">✅ Entree enregistree !</div>
+        <div style="display:flex;gap:10px;">
+          <button id="kb-btn-enregistrer" onclick="window.enregistrerEntreeKB()" style="flex:2;padding:13px;background:#4DD0E1;color:#0D1117;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">💾 Enregistrer</button>
+          <button id="kb-btn-annuler" onclick="window.annulerEditionKB()" style="flex:1;padding:13px;background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;display:none;">Annuler</button>
+        </div>
+      </section>
+      <h3 style="color:#4DD0E1;font-size:14px;margin:20px 0 8px;">📚 Entrees existantes</h3>
+      <div id="liste-kb"><p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Chargement...</p></div>
+    </div>
+
   </main>
   </div>
 
@@ -500,6 +520,7 @@
       if (nom === 'paiements') chargerPaiements();
       if (nom === 'historique') chargerHistorique();
       if (nom === 'ip-tentatives') chargerIPTentatives();
+      if (nom === 'base-karina') chargerKB();
     };
 
     function majMajInfo() {
@@ -1277,6 +1298,86 @@
         chargerAlertes();
       } catch(e) { alert('Erreur: ' + e.message); }
       finally { btn.disabled = false; }
+    };
+
+    // ===== BASE DE CONNAISSANCES KARINA =====
+    async function chargerKB() {
+      const zone = document.getElementById('liste-kb');
+      try {
+        const snap = await getDocs(query(collection(db, 'knowledge_base'), orderBy('titre')));
+        if (snap.empty) { zone.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune entree pour le moment.</p>'; return; }
+        zone.innerHTML = snap.docs.map((d) => {
+          const k = d.data();
+          const tags = (k.tags || []).join(', ');
+          return `
+          <div class="card-avis">
+            <div style="color:white;font-weight:700;font-size:13px;margin-bottom:4px;">${k.titre || ''}</div>
+            <div style="color:rgba(255,255,255,0.5);font-size:12px;margin-bottom:6px;">${(k.content || '').slice(0,140)}${(k.content||'').length>140?'…':''}</div>
+            <div style="color:#4DD0E1;font-size:11px;margin-bottom:8px;">🏷️ ${tags}</div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn-table-action debannir" onclick='window.editerEntreeKB(${JSON.stringify(d.id)})'>✏️ Modifier</button>
+              <button class="btn-table-action bannir" onclick='window.supprimerEntreeKB(${JSON.stringify(d.id)})'>🗑️ Supprimer</button>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(e) { zone.innerHTML = '<p style="color:#ff6b6b;font-size:12px;text-align:center;">Erreur de chargement.</p>'; }
+    }
+
+    window.editerEntreeKB = async function(id) {
+      const snap = await getDoc(doc(db, 'knowledge_base', id));
+      if (!snap.exists()) return;
+      const k = snap.data();
+      document.getElementById('kb-id').value = id;
+      document.getElementById('kb-titre').value = k.titre || '';
+      document.getElementById('kb-content').value = k.content || '';
+      document.getElementById('kb-tags').value = (k.tags || []).join(', ');
+      document.getElementById('kb-source').value = k.page_source || '';
+      document.getElementById('kb-btn-annuler').style.display = 'block';
+      document.getElementById('kb-titre').scrollIntoView({behavior:'smooth'});
+    };
+
+    window.annulerEditionKB = function() {
+      document.getElementById('kb-id').value = '';
+      document.getElementById('kb-titre').value = '';
+      document.getElementById('kb-content').value = '';
+      document.getElementById('kb-tags').value = '';
+      document.getElementById('kb-source').value = '';
+      document.getElementById('kb-btn-annuler').style.display = 'none';
+    };
+
+    window.enregistrerEntreeKB = async function() {
+      const titre = document.getElementById('kb-titre').value.trim();
+      const content = document.getElementById('kb-content').value.trim();
+      const tags = document.getElementById('kb-tags').value.split(',').map((t) => t.trim()).filter(Boolean);
+      const page_source = document.getElementById('kb-source').value.trim() || null;
+      if (!titre || !content || tags.length === 0) { alert('Titre, contenu et au moins un mot-cle sont obligatoires.'); return; }
+      const id = document.getElementById('kb-id').value;
+      const btn = document.getElementById('kb-btn-enregistrer');
+      if (btn.disabled) return;
+      btn.disabled = true;
+      try {
+        if (id) {
+          await updateDoc(doc(db, 'knowledge_base', id), {titre, content, tags, page_source});
+          await journaliserAction('Modification entree Base Karina', titre);
+        } else {
+          await addDoc(collection(db, 'knowledge_base'), {titre, content, tags, page_source});
+          await journaliserAction('Ajout entree Base Karina', titre);
+        }
+        document.getElementById('kb-succes').style.display = 'block';
+        setTimeout(() => document.getElementById('kb-succes').style.display = 'none', 3000);
+        window.annulerEditionKB();
+        chargerKB();
+      } catch(e) { alert('Erreur: ' + e.message); }
+      finally { btn.disabled = false; }
+    };
+
+    window.supprimerEntreeKB = async function(id) {
+      if (!confirm('Supprimer cette entree de la base de connaissances de Karina ?')) return;
+      try {
+        await deleteDoc(doc(db, 'knowledge_base', id));
+        await journaliserAction('Suppression entree Base Karina', id);
+        chargerKB();
+      } catch(e) { alert('Erreur: ' + e.message); }
     };
 
     // ===== AJOUTER PRO =====
