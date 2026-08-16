@@ -238,7 +238,7 @@
         toutesCommandes = toutesCommandes.map(c => c.id === id ? {...c, statut} : c);
         afficherStats();
         window.filtrer(filtreActif, document.querySelector('.filtre-btn.actif'));
-      } catch (e) {
+      } catch {
         alert('Erreur lors de la mise a jour du statut. Reessayez.');
       } finally {
         if (btn) btn.disabled = false;
@@ -252,7 +252,7 @@
         const notes = document.getElementById('notes-'+id)?.value;
         await updateDoc(doc(db, 'commandes_pub', id), { tarif: tarif ? Number(tarif) : null, notes });
         alert('✅ Sauvegardé !');
-      } catch (e) {
+      } catch {
         alert('Erreur lors de la sauvegarde. Reessayez.');
       } finally {
         if (btn) btn.disabled = false;
@@ -306,7 +306,7 @@
         await updateDoc(doc(db, 'demandes_pub', id), { statut, date_maj: Timestamp.now() });
         tousDevis = tousDevis.map(d => d.id === id ? {...d, statut} : d);
         afficherDevis();
-      } catch (e) {
+      } catch {
         alert('Erreur lors de la mise a jour du statut. Reessayez.');
       } finally {
         if (btn) btn.disabled = false;

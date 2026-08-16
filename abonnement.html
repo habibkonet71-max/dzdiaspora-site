@@ -272,7 +272,7 @@
         const creer = httpsCallable(functions, "creerSessionAbonnementPro");
         const result = await creer({ typeAbonnement: type });
         if (result.data.url) window.location.href = result.data.url;
-      } catch (e) {
+      } catch {
         alert("Erreur lors de la creation du paiement. Reessayez.");
       } finally {
         if (btnEl) btnEl.disabled = false;
@@ -284,7 +284,7 @@
         const creer = httpsCallable(functions, "creerSessionProMetier");
         const result = await creer({ typeAbonnement: type });
         if (result.data.url) window.location.href = result.data.url;
-      } catch (e) {
+      } catch {
         alert("Erreur lors de la creation du paiement. Reessayez.");
       } finally {
         if (btnEl) btnEl.disabled = false;

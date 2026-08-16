@@ -115,7 +115,7 @@
         const sources = (result.data.sources || []).map((s) => s.titre).filter(Boolean);
         afficherMessage(reponse, false, sources, result.data.lien_secours);
         messages.push({ role: "model", texte: reponse });
-      } catch (e) {
+      } catch {
         afficherMessage("Karina n arrive pas a repondre pour le moment. Reessayez dans un instant, ou signalez le probleme via le bouton ⚠️ ci-dessus.", false);
       }
     }
@@ -144,7 +144,7 @@
           await signaler({ categorie, description, emailUtilisateur: "anonyme" });
           div.innerHTML = "";
           afficherMessage("✅ Signalement envoye a l admin. Merci !", false);
-        } catch (e) {
+        } catch {
           div.innerHTML = "";
           afficherMessage("❌ Erreur lors du signalement.", false);
         }

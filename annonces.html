@@ -192,7 +192,7 @@
           html += construireFiche(categorie, d);
         });
         container.innerHTML = html;
-      } catch (e) {
+      } catch {
         container.innerHTML = "<p style=\"color: rgba(255,255,255,0.4); text-align: center; padding: 30px 0;\">Annonces indisponibles pour le moment.</p>";
       }
     }

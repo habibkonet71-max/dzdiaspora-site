@@ -2103,6 +2103,7 @@ function effacerCookiesGT() {
   document.cookie = 'googtrans=; ' + e + '; path=/; domain=.' + d;
 }
 
+// eslint-disable-next-line no-unused-vars -- appelee via onclick="changerLangueSite(...)" inline dans le HTML de chaque page
 function changerLangueSite(lang) {
   document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.remove('active'); });
   var btn = document.querySelector('.lang-btn[data-lang="' + lang + '"]');
@@ -2126,6 +2127,7 @@ function changerLangueSite(lang) {
 }
 
 window._gtDone = false;
+// eslint-disable-next-line no-unused-vars -- callback du script externe Google Translate (cb=googleTranslateElementInit)
 function googleTranslateElementInit() {
   if (window._gtDone) return;
   window._gtDone = true;
@@ -2134,7 +2136,7 @@ function googleTranslateElementInit() {
       {pageLanguage: 'fr', includedLanguages: 'fr,en,zh-CN,ar', autoDisplay: false},
       'google_translate_element'
     );
-  } catch(e) {}
+  } catch(e) { console.log(e); }
 }
 
 document.addEventListener('DOMContentLoaded', function() {

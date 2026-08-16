@@ -126,7 +126,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, doc, getDoc, updateDoc, increment, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const cfg = { apiKey:"AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ", appId:"1:223003656315:web:100de190b8b5e74ddae2de", messagingSenderId:"223003656315", projectId:"dzdiaspora-7260a", authDomain:"dzdiaspora-7260a.firebaseapp.com", storageBucket:"dzdiaspora-7260a.firebasestorage.app" };
     const app = initializeApp(cfg);
@@ -183,7 +183,7 @@
           });
         } catch(e) { console.log('Email non envoyé:', e); }
         window.scrollTo(0, 0);
-      } catch(e) { alert('Erreur. Réessayez.'); }
+      } catch { alert('Erreur. Réessayez.'); }
       finally { btn.disabled = false; }
     };
 

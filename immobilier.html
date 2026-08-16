@@ -205,7 +205,7 @@
           `;
         });
         container.innerHTML = html;
-      } catch (e) {
+      } catch {
         container.innerHTML = "<p style=\"color: rgba(255,255,255,0.4); text-align: center; padding: 20px 0;\">Actualites indisponibles pour le moment</p>";
       }
     }
@@ -221,7 +221,7 @@
         } else {
           badge.innerHTML = `<p style="color: #A8E063; font-weight: bold; font-size: 14px;">🔔 ${nombre} annonce${nombre > 1 ? "s" : ""} immobiliere${nombre > 1 ? "s" : ""} disponible${nombre > 1 ? "s" : ""} — Consulter sur la page Annonces →</p>`;
         }
-      } catch (e) {
+      } catch {
         badge.innerHTML = "<p style=\"color: rgba(255,255,255,0.4); font-size: 13px;\">Annonces indisponibles pour le moment</p>";
       }
     }

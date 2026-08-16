@@ -400,7 +400,6 @@
         // Envoyer emails aux pros concernes
         try {
           emailjs.init('lj-ndl5zGAWGWkJqc');
-          const profession = data.secteur === 'juridique' ? 'avocat' : data.secteur === 'medical' ? data.specialite || 'medecin' : 'immobilier';
           const qPros = query(
             collection(db, 'professionnels'),
             where('statut', '==', 'valide')

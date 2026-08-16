@@ -178,7 +178,7 @@
             chargerReponses(d.id);
           }
         }
-      } catch(e) { container.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);">Erreur de chargement</div>'; }
+      } catch { container.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);">Erreur de chargement</div>'; }
     }
 
     async function chargerReponses(demandeId) {
@@ -203,7 +203,11 @@
             </div>
           </div>`;
         }).join('');
-      } catch(e) {}
+      } catch(e) {
+        console.log(e);
+        const container = document.getElementById('reponses-'+demandeId);
+        if (container) container.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:12px;">⚠️ Erreur de chargement</div>';
+      }
     }
 
     window.fermerDemande = async function(id) {
@@ -213,7 +217,7 @@
       try {
         await updateDoc(doc(db, 'demandes_clients', id), { statut: 'fermee', date_fermeture: Timestamp.now() });
         location.reload();
-      } catch(e) {
+      } catch {
         alert('Erreur. Réessayez.');
         if (btn) btn.disabled = false;
       }

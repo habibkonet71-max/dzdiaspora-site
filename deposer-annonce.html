@@ -304,7 +304,7 @@
             const result = await fetch("https://us-central1-dzdiaspora-7260a.cloudfunctions.net/creerPaiementAnnonce", { method: "POST" });
             const data = await result.json();
             if (data.url) { window.location.href = data.url; return; }
-          } catch (err) {
+          } catch {
             msgErreur.textContent = "❌ Erreur lors de la redirection vers le paiement. Reessayez.";
             msgErreur.style.display = "block";
             return;
@@ -366,7 +366,7 @@
         document.getElementById("formAnnonce").reset();
         window.scrollTo(0, 0);
         setTimeout(() => { window.location.href = "annonces.html"; }, 2500);
-      } catch (err) {
+      } catch {
         msgErreur.textContent = "❌ Erreur lors de la publication. Veuillez reessayer.";
         msgErreur.style.display = "block";
       }

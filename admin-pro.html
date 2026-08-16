@@ -439,7 +439,7 @@
     import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app-check.js";
     import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, setDoc, getDocs, getDoc, query, where, orderBy, limit, deleteDoc, doc, updateDoc, increment, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, setDoc, getDocs, getDoc, query, where, orderBy, limit, deleteDoc, doc, updateDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const cfg = { apiKey:"AIzaSyDdOF-MYm0nTq0aNG6pk-wQLaYujiNuMWQ", appId:"1:223003656315:web:100de190b8b5e74ddae2de", messagingSenderId:"223003656315", projectId:"dzdiaspora-7260a", authDomain:"dzdiaspora-7260a.firebaseapp.com", storageBucket:"dzdiaspora-7260a.firebasestorage.app" };
     const app = initializeApp(cfg);
@@ -552,7 +552,7 @@
         await addDoc(collection(db, 'historique_admin'), {
           action, details, admin: ADMIN, date: Timestamp.now(),
         });
-      } catch (e) { /* silencieux, l historique ne doit jamais bloquer une action */ }
+      } catch { /* silencieux, l historique ne doit jamais bloquer une action */ }
     }
 
     async function chargerHistorique() {
@@ -840,7 +840,7 @@
               urgent: 'Non',
               description: messageBonus,
             });
-          } catch (mailErr) { /* email non bloquant */ }
+          } catch { /* email non bloquant */ }
         }
         await journaliserAction('Validation inscription pro', (data.prenom || '') + ' ' + (data.nom || '') + ' (' + (data.email || '') + ')' + (bonus ? ' — bonus active' : ''));
         alert(bonus ? '✅ Professionnel publié dans l\'annuaire avec le bonus de bienvenue, email envoyé !' : '✅ Professionnel publié dans l\'annuaire, email envoyé !');
@@ -871,7 +871,7 @@
               urgent: 'Non',
               description: 'Apres etude de votre dossier, nous ne sommes pas en mesure de valider votre inscription pour le moment. N hesitez pas a nous contacter pour plus d informations ou a soumettre a nouveau votre demande avec des pieces completes.',
             });
-          } catch (mailErr) { /* email non bloquant */ }
+          } catch { /* email non bloquant */ }
         }
         await journaliserAction('Refus inscription pro', (data?.prenom || '') + ' ' + (data?.nom || '') + ' (' + (data?.email || '') + ')');
         chargerDemandesPros();
@@ -1111,7 +1111,10 @@
               <button onclick="remplirFormAlerte(this)" data-titre="${a.titre||''}" data-type="${a.type||''}" data-details="${a.details||''}" data-source="${a.source||''}" style="background:rgba(255,193,7,0.1);border:1px solid #FFC107;color:#FFC107;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">✏️ Modifier</button>
             </div>`;
           }).join('');
-      } catch(e) {}
+      } catch(e) {
+        console.log(e);
+        container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;">⚠️ Erreur de chargement des alertes.</p>';
+      }
     }
 
     // ===== ANNONCES (moderation + suppression groupee) =====
@@ -1320,7 +1323,7 @@
             </div>
           </div>`;
         }).join('');
-      } catch(e) { zone.innerHTML = '<p style="color:#ff6b6b;font-size:12px;text-align:center;">Erreur de chargement.</p>'; }
+      } catch { zone.innerHTML = '<p style="color:#ff6b6b;font-size:12px;text-align:center;">Erreur de chargement.</p>'; }
     }
 
     window.editerEntreeKB = async function(id) {

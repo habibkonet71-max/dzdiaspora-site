@@ -207,7 +207,7 @@
         tousRdv = tousRdv.map(r => r.id === id ? {...r, statut} : r);
         afficherStats();
         window.filtrer(filtreActif, document.querySelector('.filtre-btn.actif'));
-      } catch (e) {
+      } catch {
         alert('Erreur lors de la mise a jour du statut. Reessayez.');
       } finally {
         if (btn) btn.disabled = false;

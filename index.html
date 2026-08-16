@@ -499,7 +499,7 @@
         });
         const texte = morceaux.join(' &nbsp;•&nbsp; ');
         el.innerHTML = '<div class="bandeau-track"><span>' + texte + ' &nbsp;&nbsp;&nbsp; ' + texte + '</span></div>';
-      } catch(e) {
+      } catch {
         el.innerHTML = '<div class="bandeau-track"><span>🌡️ Alger : chargement... &nbsp;•&nbsp; 🌡️ Oran : chargement...</span></div>';
       }
     }
@@ -519,7 +519,7 @@
         const cad = d.rates?.CAD?.toFixed(2) || '1.46';
         const texte = '💱 1€ = ' + dzd + ' DZD | 1€ = ' + usd + ' USD | 1€ = ' + gbp + ' GBP | 1€ = ' + cad + ' CAD';
         el.innerHTML = '<div class="bandeau-devises-track"><span>' + texte + ' &nbsp;&nbsp;&nbsp; ' + texte + '</span></div>';
-      } catch(e) {
+      } catch {
         el.innerHTML = '<div class="bandeau-devises-track"><span>💱 1€ ≈ 148 DZD | 1€ ≈ 1.08 USD | 1€ ≈ 0.84 GBP</span></div>';
       }
     }
@@ -561,7 +561,7 @@
             '<span style="color:#4DD0E1;font-weight:bold;">'+heure+'</span></div>'
           ).join('');
         }
-      } catch(e) {
+      } catch {
         contenu.innerHTML = '<p style="color:#ff6b6b;">Horaires non disponibles</p>';
       }
     };
@@ -588,7 +588,7 @@
             el.style.display = 'block';
           }
         }
-      } catch(e) {}
+      } catch(e) { console.log(e); }
     }
 
     window.voirAlertes = function() { window.location.href = 'transport.html'; };

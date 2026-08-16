@@ -211,7 +211,7 @@
           <span>1 GBP = ${(dzd/gbp).toFixed(2)} DZD</span>
           <span>1 CAD = ${(dzd/cad).toFixed(2)} DZD</span>
         `;
-      } catch (e) {
+      } catch {
         document.getElementById("devisesTrack").innerHTML = "<span>Devises indisponibles</span>";
       }
     }

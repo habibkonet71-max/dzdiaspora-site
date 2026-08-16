@@ -248,7 +248,7 @@
         document.getElementById('reply-'+demandeId).style.display = 'none';
         alert('✅ Réponse envoyée ! Le client va vous contacter.');
         await chargerDemandes();
-      } catch(e) { alert('Erreur. Réessayez.'); }
+      } catch { alert('Erreur. Réessayez.'); }
       finally { if (btn) btn.disabled = false; }
     };
 
