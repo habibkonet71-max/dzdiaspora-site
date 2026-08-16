@@ -188,7 +188,10 @@
             ${statut === 'valide' && c.tarif ? `<div style="margin-top:10px;background:rgba(255,193,7,0.08);border-radius:8px;padding:10px;text-align:center;"><span style="color:#FFC107;font-size:13px;">💳 Tarif validé : <b>${c.tarif}€</b> — En attente de votre paiement.<br>Contactez-nous : kourrak.habib@hotmail.com</span></div>` : ''}
           </div>`;
         }).join('');
-      } catch(e) { console.log(e); }
+      } catch(e) {
+        console.log(e);
+        document.getElementById('liste-pubs').innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);padding:30px;">⚠️ Erreur de chargement. Réessayez plus tard.</div>';
+      }
     }
 
     async function chargerFichePro(email) {
@@ -221,7 +224,10 @@
         } else {
           container.innerHTML = `<div style="text-align:center;color:rgba(255,255,255,0.3);padding:30px;"><div style="font-size:40px;margin-bottom:10px;">👨‍⚕️</div>Pas encore de fiche professionnelle</div>`;
         }
-      } catch(e) { console.log(e); }
+      } catch(e) {
+        console.log(e);
+        document.getElementById('contenu-pro').innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);padding:30px;">⚠️ Erreur de chargement. Réessayez plus tard.</div>';
+      }
     }
 
     window.afficherOnglet = function(onglet) {
