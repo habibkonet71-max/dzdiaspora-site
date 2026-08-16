@@ -424,6 +424,7 @@
               });
             }
           }
+        // eslint-disable-next-line local/no-silent-catch -- email de notification non bloquant, la demande est deja enregistree
         } catch(emailErr) { console.log('Email non envoye:', emailErr); }
       } catch(e) { alert(e.message || 'Erreur. Réessayez.'); }
       finally { btn.disabled = false; }

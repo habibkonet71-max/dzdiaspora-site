@@ -339,6 +339,7 @@
               ? 'Votre demande a bien été reçue. Vous allez être redirigé vers le paiement en ligne.\n\nkourrak.habib@hotmail.com | +213 (0) 799 87 28 90'
               : 'Votre demande a bien été reçue. Notre équipe vous contacte sous 48h pour validation et paiement.\n\nkourrak.habib@hotmail.com | +213 (0) 799 87 28 90',
           });
+        // eslint-disable-next-line local/no-silent-catch -- email de notification non bloquant, la demande est deja enregistree
         } catch(e) { console.log('Email non envoyé:', e); }
 
         const msg = document.getElementById('msgSucces');

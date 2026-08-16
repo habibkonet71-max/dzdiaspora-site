@@ -19,5 +19,14 @@ jobs:
       - name: Installer les dependances
         run: npm ci
 
-      - name: Linter (no-unused-vars, no-empty)
+      - name: Linter JS (no-unused-vars, no-empty, no-silent-catch)
         run: npm run lint
+
+      - name: Validite structurelle du HTML (balises mal fermees)
+        run: npm run lint:html
+
+      - name: Liens/cartes dupliques dans les menus et grilles
+        run: npm run lint:doublons
+
+      - name: Pages admin protegees (verrou PIN)
+        run: npm run lint:admin

@@ -2136,6 +2136,7 @@ function googleTranslateElementInit() {
       {pageLanguage: 'fr', includedLanguages: 'fr,en,zh-CN,ar', autoDisplay: false},
       'google_translate_element'
     );
+  // eslint-disable-next-line local/no-silent-catch -- widget de traduction externe non critique, degradation silencieuse voulue
   } catch(e) { console.log(e); }
 }
 

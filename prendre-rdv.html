@@ -306,6 +306,7 @@
               description: 'Nouveau RDV de ' + nom + ' le ' + date + ' à ' + window._creneau + ' (' + window._typeRdv + ')\n\nMotif: ' + motif + '\nTéléphone: ' + document.getElementById('rdv-tel').value + '\n\n--- Répondez directement ---\n✅ Confirmer: https://us-central1-dzdiaspora-7260a.cloudfunctions.net/repondreRdv?id=' + _rdvRef.id + '&token=' + _token + '&action=confirmer\n❌ Refuser: https://us-central1-dzdiaspora-7260a.cloudfunctions.net/repondreRdv?id=' + _rdvRef.id + '&token=' + _token + '&action=refuser\n📅 Proposer un autre créneau: https://us-central1-dzdiaspora-7260a.cloudfunctions.net/repondreRdv?id=' + _rdvRef.id + '&token=' + _token + '&action=proposer',
             });
           }
+        // eslint-disable-next-line local/no-silent-catch -- email de notification non bloquant, le RDV est deja enregistre
         } catch(emailErr) { console.log('Email non envoyé:', emailErr); }
       } catch(e) {
         console.error(e);

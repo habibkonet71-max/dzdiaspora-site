@@ -181,6 +181,7 @@
             sujet: 'Avis reçu — DZ Diaspora',
             message: 'Merci pour votre avis ! Il sera publié après validation par notre équipe sous 24h.\n\nkourrak.habib@hotmail.com',
           });
+        // eslint-disable-next-line local/no-silent-catch -- email de notification non bloquant, l avis est deja enregistre
         } catch(e) { console.log('Email non envoyé:', e); }
         window.scrollTo(0, 0);
       } catch { alert('Erreur. Réessayez.'); }

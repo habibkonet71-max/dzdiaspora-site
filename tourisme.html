@@ -399,6 +399,7 @@
           </div>`;
         }).join('');
         document.getElementById('section-pros-tourisme').style.display = 'block';
+      // eslint-disable-next-line local/no-silent-catch -- section optionnelle, reste simplement masquee (display:none) en cas d echec
       } catch(e) { console.log('Erreur chargement pros tourisme:', e); }
     })();
     onAuthStateChanged(auth, (user) => {
