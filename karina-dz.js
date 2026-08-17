@@ -24,8 +24,21 @@
   async function initFirebase() {
     if (functions) return functions;
     const { initializeApp, getApps } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+    const { initializeAppCheck, ReCaptchaV3Provider } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app-check.js");
     const { getFunctions, httpsCallable } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js");
-    const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+    // Instance Firebase nommee et independante de celle de la page hote (qui
+    // peut deja exister sans App Check, ou etre initialisee apres celle-ci
+    // selon l'ordre d'execution) : evite tout conflit avec le "[DEFAULT]"
+    // app de la page, quel que soit l'ordre, et garantit un jeton App Check
+    // valide sur les appels de Karina meme sur les pages sans App Check.
+    const appExistante = getApps().find((a) => a.name === "karina");
+    const app = appExistante || initializeApp(firebaseConfig, "karina");
+    if (!appExistante) {
+      initializeAppCheck(app, {
+        provider: new ReCaptchaV3Provider("6LcRyHgtAAAAAOmFCDg5MU0qk7hd2yYykZHX9g9_"),
+        isTokenAutoRefreshEnabled: true,
+      });
+    }
     functions = { instance: getFunctions(app), httpsCallable };
     return functions;
   }
