@@ -69,7 +69,12 @@ jobs:
           fi
           for page in admin-pro admin-pub admin-rdv; do
             html=$(curl -s --max-time 15 "https://dzdiaspora.online/$page.html")
-            if ! echo "$html" | grep -q 'id="ecran-pin"' || ! echo "$html" | grep -q "validerPin"; then
+            # here-string plutot que echo "$html" | grep -q : le shell des
+            # runners GitHub Actions active pipefail par defaut, et sur un
+            # gros contenu (~90 Ko) grep -q peut fermer le tuyau des sa
+            # premiere correspondance, causant un SIGPIPE cote echo qui
+            # remonte comme un echec meme quand le motif a bien ete trouve.
+            if ! grep -q 'id="ecran-pin"' <<< "$html" || ! grep -q "validerPin" <<< "$html"; then
               echo "Verrou PIN absent sur $page.html (site en ligne)"
               exit 1
             fi
