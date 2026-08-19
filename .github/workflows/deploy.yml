@@ -16,6 +16,9 @@ jobs:
         with:
           node-version: 22
 
+      - name: Verifier l'absence de paquets npm compromis
+        run: node .github/scripts/verifier-paquets-compromis.js
+
       - name: Installer les dependances
         run: npm ci
 
