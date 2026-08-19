@@ -1,0 +1,173 @@
+name: Sentinelle DZ Diaspora Site
+
+on:
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Mode test : detecte et decide, mais ne pousse ni ne redeploie reellement"
+        type: boolean
+        default: true
+
+jobs:
+  sentinelle:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Verifier la sante globale
+        id: health
+        run: |
+          set +e
+          resultat=$(.github/scripts/verifier-sante-globale.sh 2>details.txt | tail -n 1)
+          set -e
+          echo "statut=$resultat" >> "$GITHUB_OUTPUT"
+          {
+            echo "details<<SENTINELLE_EOF"
+            cat details.txt
+            echo "SENTINELLE_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Identifier last-known-good et le commit actuel
+        if: steps.health.outputs.statut == 'souci_majeur'
+        id: lkg
+        run: |
+          current_sha=$(git rev-parse HEAD)
+          echo "current_sha=$current_sha" >> "$GITHUB_OUTPUT"
+
+          set +e
+          lkg_sha=$(git rev-list -n 1 last-known-good 2>&1)
+          lkg_status=$?
+          set -e
+
+          if [ $lkg_status -ne 0 ]; then
+            echo "Le tag last-known-good est introuvable (probablement la toute premiere execution du workflow, avant que le tag n'ait jamais ete pose) : $lkg_sha"
+            echo "lkg_sha=" >> "$GITHUB_OUTPUT"
+            echo "rien_a_restaurer=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "lkg_sha=$lkg_sha" >> "$GITHUB_OUTPUT"
+            # Tout le depot est le contenu Hosting ("public": "." dans
+            # firebase.json), sauf .github/ (pipeline lui-meme, jamais
+            # restaure automatiquement - voir la lecon de l'incident OT
+            # Public ou un contenu de test dans .github/ avait fuite vers
+            # main via le push de restauration).
+            if git diff --quiet last-known-good HEAD -- . ':(exclude).github'; then
+              echo "rien_a_restaurer=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "rien_a_restaurer=false" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
+      # Restauration reelle : seulement si (a) un souci majeur est detecte,
+      # (b) il y a bien quelque chose a restaurer (last-known-good differe
+      # du commit actuel, hors .github/), et (c) on n'est pas en mode test
+      # manuel (dry_run) - les executions planifiees (schedule) sont
+      # toujours "en vrai", jamais en dry-run.
+      - name: Restaurer vers last-known-good et redeployer
+        if: |
+          steps.health.outputs.statut == 'souci_majeur' &&
+          steps.lkg.outputs.rien_a_restaurer == 'false' &&
+          (github.event_name == 'schedule' || github.event.inputs.dry_run != 'true')
+        id: restore
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Liste dynamique : tout ce que last-known-good suivait a la
+          # racine, sauf .github/ - evite de devoir enumerer a la main
+          # toutes les pages HTML du depot (et reste correct si de
+          # nouvelles pages sont ajoutees plus tard).
+          mapfile -t restore_paths < <(git ls-tree --name-only last-known-good | grep -v '^\.github$')
+
+          git checkout last-known-good -- "${restore_paths[@]}"
+          git commit -m "Restauration automatique (sentinelle) vers last-known-good ${{ steps.lkg.outputs.lkg_sha }} [skip ci]"
+          git push origin HEAD:main
+          echo "restaure=true" >> "$GITHUB_OUTPUT"
+
+      - uses: google-github-actions/auth@v2
+        if: steps.restore.outcome == 'success'
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Installer Firebase CLI
+        if: steps.restore.outcome == 'success'
+        run: npm install -g firebase-tools
+
+      - name: Redeployer l'etat restaure
+        if: steps.restore.outcome == 'success'
+        run: firebase deploy --only hosting --project dzdiaspora-7260a --non-interactive
+
+      - name: Reverifier la sante apres restauration
+        if: steps.restore.outcome == 'success'
+        id: recheck
+        run: |
+          set +e
+          resultat=$(.github/scripts/verifier-sante-globale.sh 2>details_apres.txt | tail -n 1)
+          set -e
+          echo "statut=$resultat" >> "$GITHUB_OUTPUT"
+
+      - name: Composer et envoyer le rapport email
+        if: always() && (steps.health.outputs.statut == 'souci_majeur' || steps.health.outputs.statut == '')
+        env:
+          GMAIL_APP_PASSWORD_SENTINELLE: ${{ secrets.GMAIL_APP_PASSWORD_SENTINELLE }}
+          HEALTH_DETAILS: ${{ steps.health.outputs.details }}
+          LKG_SHA: ${{ steps.lkg.outputs.lkg_sha }}
+        run: |
+          if [ -z "${{ steps.health.outputs.statut }}" ]; then
+            sujet="[DZ Site Sentinelle] Echec du script de verification - etat indetermine"
+            corps="Le script de verification de sante (verifier-sante-globale.sh) n'a pas produit de resultat exploitable - impossible de determiner si le site est sain ou non. Le script est peut-etre manquant, non executable, ou a echoue de maniere inattendue.
+
+          INTERVENTION MANUELLE REQUISE. Run : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          elif [ "${{ steps.lkg.outputs.rien_a_restaurer }}" = "true" ]; then
+            sujet="[DZ Site Sentinelle] Souci majeur detecte - cause probablement externe"
+            corps="Souci majeur detecte sur dzdiaspora.online, mais aucun deploiement recent n'en est la cause (last-known-good == commit actuel hors .github/) : aucune restauration tentee.
+
+          Details des verifications en echec :
+          $HEALTH_DETAILS
+
+          Intervention manuelle requise. Voir le run : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            sujet="[DZ Site Sentinelle] TEST (dry-run) - souci detecte, aucune action reelle"
+            corps="Execution manuelle en mode test (dry-run) : un souci majeur a ete simule/detecte, mais aucune restauration ni redeploiement reel n'a ete effectue.
+
+          Details :
+          $HEALTH_DETAILS
+
+          Cible qui aurait ete restauree : $LKG_SHA
+          Run : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          elif [ "${{ steps.restore.outcome }}" != "success" ]; then
+            sujet="[DZ Site Sentinelle] Echec de l'etape de restauration - aucun redeploiement effectue"
+            corps="Un souci majeur a ete detecte sur dzdiaspora.online et une restauration vers last-known-good ($LKG_SHA) a ete tentee, mais l'etape de restauration elle-meme a echoue avant d'avoir pu redeployer quoi que ce soit. Aucun redeploiement n'a eu lieu et aucune reverification post-restauration n'a ete effectuee.
+
+          Consultez les logs de l'etape \"Restaurer vers last-known-good et redeployer\" de ce run pour la cause exacte (ex : push rejete par la branche main, conflit de checkout, etc.).
+
+          Details du souci initial :
+          $HEALTH_DETAILS
+
+          INTERVENTION MANUELLE REQUISE. Run : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          elif [ "${{ steps.recheck.outputs.statut }}" = "sain" ]; then
+            sujet="[DZ Site Sentinelle] Restauration automatique effectuee avec succes"
+            corps="Un souci majeur a ete detecte sur dzdiaspora.online, la sentinelle a restaure automatiquement vers last-known-good ($LKG_SHA) et redeploye. La reverification post-restauration confirme que le site est de nouveau sain.
+
+          Details du souci initial :
+          $HEALTH_DETAILS
+
+          Merci de verifier cette action. Run : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          else
+            sujet="[DZ Site Sentinelle] Restauration tentee mais souci persistant"
+            corps="Un souci majeur a ete detecte, la sentinelle a tente une restauration vers last-known-good ($LKG_SHA) et redeploye, mais la reverification post-restauration montre que le probleme persiste. Aucune nouvelle tentative ne sera faite automatiquement.
+
+          Details du souci initial :
+          $HEALTH_DETAILS
+
+          INTERVENTION MANUELLE REQUISE. Run : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          fi
+          export SENTINELLE_SUJET="$sujet"
+          export SENTINELLE_CORPS="$corps"
+          python3 .github/scripts/envoyer-email-sentinelle.py

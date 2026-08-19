@@ -68,3 +68,9 @@ node_modules/
 # dataconnect generated files
 .dataconnect
 public/
+
+# Worktrees isoles (superpowers:using-git-worktrees)
+.worktrees/
+
+# Cache Python (scripts/envoyer-email-sentinelle.py)
+__pycache__/

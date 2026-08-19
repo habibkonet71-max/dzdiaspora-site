@@ -1,0 +1,106 @@
+name: Deploy DZ Diaspora Site
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - ".github/**"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Installer les dependances
+        run: npm ci
+
+      - name: Linter JS (no-unused-vars, no-empty, no-silent-catch)
+        run: npm run lint
+
+      - name: Validite structurelle du HTML (balises mal fermees)
+        run: npm run lint:html
+
+      - name: Liens/cartes dupliques dans les menus et grilles
+        run: npm run lint:doublons
+
+      - name: Pages admin protegees (verrou PIN)
+        run: npm run lint:admin
+
+  deploy:
+    needs: lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Installer Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Deployer
+        id: deploy
+        run: firebase deploy --only hosting --project dzdiaspora-7260a --non-interactive
+
+      # Test de fumee : verifie que le commit qu'on vient de deployer n'a pas
+      # casse le site ou fait disparaitre le verrou PIN d'une page admin sur
+      # le HTML reellement servi (pas juste dans le code source - c'est ce
+      # que verifie deja npm run lint:admin ci-dessus). Signal etroit et
+      # immediat (ce deploiement precis), pas un jugement large sur une
+      # fenetre de 24h.
+      - name: Test de fumee
+        id: smoke
+        run: |
+          sleep 10
+          code_site=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 "https://dzdiaspora.online/")
+          if [ "$code_site" != "200" ]; then
+            echo "Site injoignable (code $code_site)"
+            exit 1
+          fi
+          for page in admin-pro admin-pub admin-rdv; do
+            html=$(curl -s --max-time 15 "https://dzdiaspora.online/$page.html")
+            if ! echo "$html" | grep -q 'id="ecran-pin"' || ! echo "$html" | grep -q "validerPin"; then
+              echo "Verrou PIN absent sur $page.html (site en ligne)"
+              exit 1
+            fi
+          done
+          echo "Test de fumee OK"
+
+      # Avance le tag mobile last-known-good sur ce commit : c'est la cible
+      # que la sentinelle (workflow separe et planifie quotidien,
+      # sentinelle.yml) restaurera en cas de souci majeur detecte plus tard.
+      # Distinct des points de restauration manuels (vX.Y-stable-...), qui
+      # restent un mecanisme separe pour vos propres jalons volontaires.
+      - name: Avancer le tag last-known-good
+        if: steps.smoke.outcome == 'success'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -f last-known-good
+          git push origin last-known-good --force
+
+      # Restauration automatique : uniquement si le test de fumee echoue
+      # juste apres CE deploiement precis. Annule le commit (git revert,
+      # historique conserve) et redeploie l'etat precedent.
+      - name: Restauration automatique si echec
+        if: failure() && steps.deploy.outcome == 'success' && steps.smoke.outcome == 'failure'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git revert --no-edit HEAD
+          firebase deploy --only hosting --project dzdiaspora-7260a --non-interactive
+          git push origin main
+
+      - name: Alerte si la restauration elle-meme echoue
+        if: failure()
+        run: echo "::error::Deploiement et/ou restauration automatique en echec — verification manuelle requise."
