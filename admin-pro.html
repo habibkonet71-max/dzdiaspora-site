@@ -53,6 +53,8 @@
     .pastille.bloque::before { background:#ff6b6b; }
     .pastille.manuel { background:rgba(255,193,7,0.12); color:#FFC107; margin-left:6px; }
     .pastille.manuel::before { background:#FFC107; }
+    .pastille.retard { background:rgba(255,193,7,0.12); color:#FFC107; margin-left:6px; }
+    .pastille.retard::before { background:#FFC107; }
     .echecs-jauge { display:inline-flex; gap:3px; vertical-align:middle; margin-right:6px; }
     .echecs-jauge span { width:6px; height:14px; border-radius:2px; background:rgba(255,255,255,0.1); }
     .echecs-jauge span.plein { background:#ff6b6b; }
@@ -150,6 +152,7 @@
       <button class="onglet-btn" data-onglet="transactions" onclick="window.changerOnglet('transactions')">🧾 Transactions</button>
       <button class="onglet-btn" data-onglet="ip-tentatives" onclick="window.changerOnglet('ip-tentatives')">🚫 IP &amp; tentatives</button>
       <button class="onglet-btn" data-onglet="base-karina" onclick="window.changerOnglet('base-karina')">🧠 Base Karina</button>
+      <button class="onglet-btn" data-onglet="sentinelles" onclick="window.changerOnglet('sentinelles')">🛰️ Sentinelles<span class="onglet-badge" id="badge-sentinelles" style="display:none;">0</span></button>
     </div>
 
     <div class="onglet-contenu actif" id="onglet-vue-ensemble">
@@ -425,6 +428,11 @@
       <div id="liste-kb"><p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Chargement...</p></div>
     </div>
 
+    <div class="onglet-contenu" id="onglet-sentinelles">
+      <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-bottom:12px;">Etat de sante des sentinelles automatiques (verification deploiement, veille SEO Google...). Lecture seule : chaque ligne est le dernier compte-rendu que la sentinelle a ecrit en fin d'execution. Une pastille ambre <b>En retard</b> signifie que la sentinelle n'a pas tourne depuis plus d'1,5x sa frequence attendue — elle s'est peut-etre arretee en silence, a verifier.</p>
+      <div id="liste-sentinelles"><p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Chargement...</p></div>
+    </div>
+
   </main>
   </div>
 
@@ -434,6 +442,7 @@
     <a href="index.html" style="color:#4DD0E1;">← Retour</a>
   </div>
 
+  <script src="sentinelles-sante.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app-check.js";
@@ -521,6 +530,7 @@
       if (nom === 'historique') chargerHistorique();
       if (nom === 'ip-tentatives') chargerIPTentatives();
       if (nom === 'base-karina') chargerKB();
+      if (nom === 'sentinelles') chargerSentinelles();
     };
 
     function majMajInfo() {
@@ -666,6 +676,40 @@
       } catch (e) { container.innerHTML = '<p style="color:#ff6b6b;">Erreur: ' + e.message + '</p>'; }
     }
 
+    // ===== SENTINELLES — sante des surveillances automatiques (lecture seule) =====
+    // Toute la logique (fraicheur cote client, tri, rendu des cartes) vit
+    // dans sentinelles-sante.js (charge en <script src>, teste hors-ligne).
+    // Ici : seulement lire etat_securite_global et brancher le resultat au DOM.
+    async function chargerSentinelles() {
+      const container = document.getElementById('liste-sentinelles');
+      if (!container) return;
+      try {
+        const snap = await getDocs(collection(db, 'etat_securite_global'));
+        if (snap.empty) {
+          container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune sentinelle n\'a encore rapporte son etat.</p>';
+          majBadgeSentinelles(0);
+          return;
+        }
+        const maintenant = Date.now();
+        const classees = snap.docs.map((d) => {
+          const data = d.data();
+          const execMs = data.derniere_execution?.toDate?.()?.getTime?.() ?? null;
+          return window.SentinellesSante.classerSentinelle({ ...data, derniere_execution_ms: execMs }, maintenant);
+        });
+        window.SentinellesSante.trierSentinelles(classees);
+        container.innerHTML = classees.map((s) => window.SentinellesSante.carteSentinelle(s)).join('');
+        majBadgeSentinelles(classees.filter((s) => s.statut === 'anomalie' || s.enRetard).length);
+      } catch (e) {
+        container.innerHTML = '<p style="color:#ff6b6b;">Erreur: ' + e.message + '</p>';
+      }
+    }
+
+    function majBadgeSentinelles(nbProblemes) {
+      const badge = document.getElementById('badge-sentinelles');
+      if (!badge) return;
+      badge.style.display = nbProblemes > 0 ? 'inline-block' : 'none';
+      badge.textContent = nbProblemes;
+    }
 
     // ===== DEMANDES PROS =====
     async function chargerDemandesPros() {
