@@ -430,6 +430,7 @@
 
     <div class="onglet-contenu" id="onglet-sentinelles">
       <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-bottom:12px;">Etat de sante des sentinelles automatiques (verification deploiement, veille SEO Google...). Lecture seule : chaque ligne est le dernier compte-rendu que la sentinelle a ecrit en fin d'execution. Une pastille ambre <b>En retard</b> signifie que la sentinelle n'a pas tourne depuis plus d'1,5x sa frequence attendue — elle s'est peut-etre arretee en silence, a verifier.</p>
+      <div id="panneau-cheffe"></div>
       <div id="liste-sentinelles"><p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Chargement...</p></div>
     </div>
 
@@ -682,23 +683,40 @@
     // Ici : seulement lire etat_securite_global et brancher le resultat au DOM.
     async function chargerSentinelles() {
       const container = document.getElementById('liste-sentinelles');
+      const panneauCheffe = document.getElementById('panneau-cheffe');
       if (!container) return;
       try {
         const snap = await getDocs(collection(db, 'etat_securite_global'));
         if (snap.empty) {
           container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune sentinelle n\'a encore rapporte son etat.</p>';
+          if (panneauCheffe) panneauCheffe.innerHTML = '';
           majBadgeSentinelles(0);
           return;
         }
+        const S = window.SentinellesSante;
         const maintenant = Date.now();
-        const classees = snap.docs.map((d) => {
-          const data = d.data();
-          const execMs = data.derniere_execution?.toDate?.()?.getTime?.() ?? null;
-          return window.SentinellesSante.classerSentinelle({ ...data, derniere_execution_ms: execMs }, maintenant);
-        });
-        window.SentinellesSante.trierSentinelles(classees);
-        container.innerHTML = classees.map((s) => window.SentinellesSante.carteSentinelle(s)).join('');
-        majBadgeSentinelles(classees.filter((s) => s.statut === 'anomalie' || s.enRetard).length);
+        const aplati = (d) => ({ ...d.data(), derniere_execution_ms: d.data().derniere_execution?.toDate?.()?.getTime?.() ?? null });
+
+        // La cheffe a sa propre section, jamais melangee aux cartes.
+        const docCheffe = snap.docs.find((d) => d.id === S.NOM_CHEFFE);
+        if (panneauCheffe) {
+          panneauCheffe.innerHTML = docCheffe ? S.panneauCheffe(aplati(docCheffe), maintenant) : '';
+        }
+
+        const classees = snap.docs
+          .filter((d) => d.id !== S.NOM_CHEFFE)
+          .map((d) => S.classerSentinelle(aplati(d), maintenant));
+        S.trierSentinelles(classees);
+        container.innerHTML = classees.length
+          ? classees.map((s) => S.carteSentinelle(s)).join('')
+          : '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune sentinelle surveillee.</p>';
+
+        let nbProblemes = classees.filter((s) => s.statut === 'anomalie' || s.enRetard).length;
+        if (docCheffe) {
+          const c = S.classerSentinelle(aplati(docCheffe), maintenant);
+          if (c.statut === 'anomalie' || c.enRetard) nbProblemes += 1;
+        }
+        majBadgeSentinelles(nbProblemes);
       } catch (e) {
         container.innerHTML = '<p style="color:#ff6b6b;">Erreur: ' + e.message + '</p>';
       }

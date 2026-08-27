@@ -175,13 +175,71 @@
     );
   }
 
+  // Nom du doc de la cheffe dans etat_securite_global. DOIT correspondre a
+  // NOM_CHEFFE de functions/cheffeSentinelle.js cote dzdiaspora_app.
+  var NOM_CHEFFE = "sentinelleCheffe";
+
+  // Panneau dedie a la cheffe sentinelle (meta-supervision). doc = le
+  // document brut etat_securite_global/sentinelleCheffe, avec en plus les
+  // tableaux silencieuses / incoherentes ([{nom, raison}]) ecrits par la
+  // Cloud Function (etape 6). La cheffe a SA PROPRE section, jamais
+  // melangee aux cartes par sentinelle. Sa propre panne = pastille "En
+  // retard" calculee ici, cote client (aucune detection serveur).
+  function panneauCheffe(doc, maintenantMs) {
+    var d = doc || {};
+    var c = classerSentinelle(d, maintenantMs);
+
+    var pastilleStatut = c.statut === "anomalie"
+      ? '<span class="pastille bloque">Anomalie</span>'
+      : '<span class="pastille ok">Sain</span>';
+    var pastilleRetard = "";
+    if (c.jamaisExecutee) pastilleRetard = '<span class="pastille retard">Jamais executee</span>';
+    else if (c.enRetard) pastilleRetard = '<span class="pastille retard">En retard</span>';
+
+    var silencieuses = Array.isArray(d.silencieuses) ? d.silencieuses : [];
+    var incoherentes = Array.isArray(d.incoherentes) ? d.incoherentes : [];
+
+    function liste(titre, items, couleur) {
+      if (!items.length) return "";
+      var lignes = items.map(function (it) {
+        var nom = echapper(it && it.nom != null ? it.nom : "(?)");
+        var raison = it && it.raison != null ? " &mdash; " + echapper(it.raison) : "";
+        return '<li style="margin-bottom:3px;">' + nom + raison + "</li>";
+      }).join("");
+      return '<div style="margin-top:8px;"><div style="color:' + couleur +
+        ';font-size:11px;font-weight:700;">' + echapper(titre) + " (" + items.length +
+        ')</div><ul style="margin:4px 0 0 16px;color:rgba(255,255,255,0.7);font-size:12px;padding:0;">' +
+        lignes + "</ul></div>";
+    }
+
+    var age = c.jamaisExecutee ? "Jamais executee" : formaterAge(c.ageMs);
+    var detail = (silencieuses.length || incoherentes.length)
+      ? liste("Silencieuses", silencieuses, "#FFC107") + liste("Incoherences", incoherentes, "#ff6b6b")
+      : '<div style="color:rgba(168,224,99,0.85);font-size:12px;margin-top:8px;">Toutes les sentinelles surveillees sont fraiches et coherentes.</div>';
+
+    return (
+      '<div class="card-alerte" style="display:block;border-left-color:#4DD0E1;background:rgba(77,208,225,0.06);margin-bottom:16px;">' +
+      '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">' +
+      '<span style="color:#4DD0E1;font-size:14px;font-weight:700;">Cheffe sentinelle &mdash; meta-supervision</span>' +
+      pastilleStatut + pastilleRetard +
+      "</div>" +
+      '<div style="color:rgba(255,255,255,0.5);font-size:12px;">Derniere execution : ' + echapper(age) +
+      " &nbsp;|&nbsp; attendue " + echapper(formaterFrequence(c.frequenceMin)) + "</div>" +
+      (c.resume ? '<div style="color:rgba(255,255,255,0.7);font-size:12px;margin-top:6px;">' + echapper(c.resume) + "</div>" : "") +
+      detail +
+      "</div>"
+    );
+  }
+
   var api = {
     MARGE_RETARD: MARGE_RETARD,
+    NOM_CHEFFE: NOM_CHEFFE,
     classerSentinelle: classerSentinelle,
     formaterAge: formaterAge,
     formaterFrequence: formaterFrequence,
     trierSentinelles: trierSentinelles,
     carteSentinelle: carteSentinelle,
+    panneauCheffe: panneauCheffe,
   };
 
   if (typeof module !== "undefined" && module.exports) module.exports = api;
