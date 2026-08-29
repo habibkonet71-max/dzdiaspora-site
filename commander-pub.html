@@ -278,7 +278,9 @@
           <p style="font-size:11px;">JPG, PNG, GIF, MP4 — max 50MB</p>
           <p id="fichier-nom" style="color:#4DD0E1;font-size:12px;margin-top:6px;"></p>
         </div>
+        <button type="button" class="btn-submit" style="margin-top:8px; background:transparent; border:1px solid #4DD0E1; color:#4DD0E1;" onclick="document.getElementById('p-fichier-camera').click()">📷 Prendre une photo</button>
         <input type="file" id="p-fichier" style="display:none" accept="image/*,video/*" onchange="afficherFichier(this)">
+        <input type="file" id="p-fichier-camera" style="display:none" accept="image/*" capture="environment" onchange="afficherFichier(this)">
         <div class="info-devis" style="margin-top:8px;">
           ⚠️ Si vous avez une photo ou vidéo, le tarif sera établi sur devis après examen de votre contenu. Nous vous contacterons sous 48h.
         </div>
@@ -362,7 +364,7 @@
       btn.disabled = true;
       try {
         let urlFichier = null;
-        const fichier = document.getElementById('p-fichier').files[0];
+        const fichier = document.getElementById('p-fichier').files[0] || document.getElementById('p-fichier-camera').files[0];
         if (fichier) {
           const storageRef = ref(storage, 'pubs/' + Date.now() + '_' + fichier.name);
           await uploadBytes(storageRef, fichier);
@@ -421,6 +423,7 @@
       document.getElementById('p-pays').value = 'france';
       document.getElementById('bloc-virement').style.display = 'none';
       document.getElementById('p-fichier').value = '';
+      document.getElementById('p-fichier-camera').value = '';
       const fichierNom = document.getElementById('fichier-nom');
       if (fichierNom) fichierNom.textContent = '';
       document.querySelectorAll('.choix-btn.actif').forEach(b => b.classList.remove('actif'));
