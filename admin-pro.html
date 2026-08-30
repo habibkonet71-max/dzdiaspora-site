@@ -61,6 +61,12 @@
     .btn-table-action { padding:6px 13px; border-radius:8px; font-size:11.5px; font-weight:700; cursor:pointer; border:1px solid; white-space:nowrap; }
     .btn-table-action.debannir { background:rgba(168,224,99,0.1); border-color:#A8E063; color:#A8E063; }
     .btn-table-action.bannir { background:rgba(214,16,52,0.1); border-color:#D21034; color:#ff6b6b; }
+    .ot-filtres { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+    .ot-filtres button { background:#1C2333; border:1px solid rgba(255,255,255,0.12); color:rgba(255,255,255,0.6); padding:6px 12px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; }
+    .ot-filtres button.actif { border-color:#4DD0E1; color:#4DD0E1; }
+    .ot-fiche { background:#1C2333; border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px; margin-bottom:10px; display:flex; gap:14px; }
+    .ot-fiche.inactive { opacity:0.55; }
+    .ot-fiche img { width:80px; height:80px; object-fit:cover; border-radius:8px; background:#0d1117; flex:none; }
     .onglet-badge { background:#D21034; color:white; border-radius:10px; padding:1px 7px; font-size:10px; margin-left:6px; }
     .onglet-contenu { display:none; }
     .onglet-contenu.actif { display:block; }
@@ -153,6 +159,7 @@
       <button class="onglet-btn" data-onglet="ip-tentatives" onclick="window.changerOnglet('ip-tentatives')">🚫 IP &amp; tentatives</button>
       <button class="onglet-btn" data-onglet="base-karina" onclick="window.changerOnglet('base-karina')">🧠 Base Karina</button>
       <button class="onglet-btn" data-onglet="sentinelles" onclick="window.changerOnglet('sentinelles')">🛰️ Sentinelles<span class="onglet-badge" id="badge-sentinelles" style="display:none;">0</span></button>
+      <button class="onglet-btn" data-onglet="objets-trouves" onclick="window.changerOnglet('objets-trouves')">🔍 Objets trouvés</button>
     </div>
 
     <div class="onglet-contenu actif" id="onglet-vue-ensemble">
@@ -434,6 +441,17 @@
       <div id="liste-sentinelles"><p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Chargement...</p></div>
     </div>
 
+    <div class="onglet-contenu" id="onglet-objets-trouves">
+      <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-bottom:12px;">Moderation des fiches d'objets trouves deposees sur objets-trouves.html. Coordonnees et reponses d'enigme lues cote serveur (Cloud Function admin, la collection privee reste inaccessible au client). "Desactiver" retire la fiche de la recherche publique (reversible). La suppression definitive viendra dans une prochaine mise a jour.</p>
+      <div class="stats-grid" id="ot-stats"></div>
+      <div class="ot-filtres">
+        <button data-ot-filtre="toutes" class="actif" onclick="window.otFiltrer('toutes')">Toutes</button>
+        <button data-ot-filtre="actives" onclick="window.otFiltrer('actives')">Actives</button>
+        <button data-ot-filtre="inactives" onclick="window.otFiltrer('inactives')">Desactivees</button>
+      </div>
+      <div id="liste-objets-trouves"><p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Chargement...</p></div>
+    </div>
+
   </main>
   </div>
 
@@ -532,6 +550,7 @@
       if (nom === 'ip-tentatives') chargerIPTentatives();
       if (nom === 'base-karina') chargerKB();
       if (nom === 'sentinelles') chargerSentinelles();
+      if (nom === 'objets-trouves') chargerObjetsTrouves();
     };
 
     function majMajInfo() {
@@ -728,6 +747,87 @@
       badge.style.display = nbProblemes > 0 ? 'inline-block' : 'none';
       badge.textContent = nbProblemes;
     }
+
+    // ===== OBJETS TROUVES (moderation) =====
+    // La liste + les coordonnees + les reponses d'enigme viennent d'une
+    // Cloud Function admin (listerObjetsTrouvesAdmin, Admin SDK). La regle
+    // Firestore objets_trouves_prive = `allow read: if false` reste intacte :
+    // aucune lecture directe cote client.
+    let otFichesCache = [];
+    let otFiltre = 'toutes';
+
+    async function chargerObjetsTrouves() {
+      const container = document.getElementById('liste-objets-trouves');
+      if (!container) return;
+      container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Chargement...</p>';
+      try {
+        const lister = httpsCallable(getFunctions(app), 'listerObjetsTrouvesAdmin');
+        const res = await lister();
+        otFichesCache = res.data.fiches || [];
+        document.getElementById('ot-stats').innerHTML =
+          `<div class="stat-card"><div class="stat-valeur">${res.data.total}</div><div class="stat-label">Total fiches</div></div>` +
+          `<div class="stat-card"><div class="stat-valeur" style="color:#A8E063;">${res.data.actives}</div><div class="stat-label">Actives</div></div>` +
+          `<div class="stat-card"><div class="stat-valeur" style="color:#ff6b6b;">${res.data.inactives}</div><div class="stat-label">Desactivees</div></div>`;
+        afficherObjetsTrouves();
+      } catch (e) {
+        container.innerHTML = '<p style="color:#ff6b6b;font-size:12px;">Erreur de chargement : ' + echapperTexte(e.message || String(e)) + '</p>';
+      }
+    }
+
+    window.otFiltrer = function(f) {
+      otFiltre = f;
+      document.querySelectorAll('.ot-filtres button').forEach((b) => b.classList.toggle('actif', b.dataset.otFiltre === f));
+      afficherObjetsTrouves();
+    };
+
+    function afficherObjetsTrouves() {
+      const container = document.getElementById('liste-objets-trouves');
+      if (!container) return;
+      let fiches = otFichesCache;
+      if (otFiltre === 'actives') fiches = fiches.filter((f) => f.actif);
+      if (otFiltre === 'inactives') fiches = fiches.filter((f) => !f.actif);
+      if (fiches.length === 0) {
+        container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune fiche.</p>';
+        return;
+      }
+      container.innerHTML = fiches.map((f) => {
+        const p = f.priv;
+        const date = f.date ? new Date(f.date).toLocaleString('fr-FR') : '—';
+        const lieu = [f.lieu, f.pays, f.wilaya || f.ville].filter(Boolean).map(echapperTexte).join(' · ');
+        const enigme = !p ? '' : (Array.isArray(p.indices_prives)
+          ? p.indices_prives.map((i) => `${echapperTexte(i.type || '?')} : ${echapperTexte(i.reponse || '')}`).join(' | ')
+          : echapperTexte(p.reponse_attendue || ''));
+        const vignette = f.photo_url
+          ? `<img src="${echapperTexte(f.photo_url)}" alt="">`
+          : '<div style="width:80px;height:80px;background:#0d1117;border-radius:8px;flex:none;"></div>';
+        const blocPrive = p
+          ? `<div style="color:rgba(255,255,255,0.55);font-size:12px;margin-top:6px;">Contact : ${echapperTexte(p.contact_nom || '')} · ${echapperTexte(p.contact_tel || '')} ${echapperTexte(p.contact_email || '')}${p.code_secret ? ' · code : ' + echapperTexte(p.code_secret) : ''}</div>
+            <div style="color:rgba(255,255,255,0.4);font-size:12px;">Enigme : ${enigme}</div>`
+          : '<div style="color:#ff6b6b;font-size:12px;margin-top:6px;">Aucune fiche privee liee</div>';
+        return `<div class="ot-fiche ${f.actif ? '' : 'inactive'}">
+          ${vignette}
+          <div style="flex:1;min-width:0;">
+            <span class="pastille ${f.actif ? 'ok' : 'bloque'}">${f.actif ? 'Active' : 'Desactivee'}</span>
+            <span style="color:rgba(255,255,255,0.4);font-size:11px;margin-left:6px;">${echapperTexte(f.type || '?')}</span>
+            <div style="margin-top:6px;font-weight:700;">${echapperTexte(f.description || '')}</div>
+            <div style="color:rgba(255,255,255,0.45);font-size:12px;margin-top:2px;">${lieu}${lieu ? ' · ' : ''}${date}</div>
+            ${blocPrive}
+            ${f.actif ? `<div style="margin-top:8px;"><button class="btn-table-action bannir" onclick="window.otDesactiverFiche('${f.id}')">Desactiver</button></div>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    window.otDesactiverFiche = async function(objetId) {
+      if (!confirm('Desactiver cette fiche ? Elle disparaitra de la recherche publique (reversible).')) return;
+      try {
+        const suppr = httpsCallable(getFunctions(app), 'supprimerObjetTrouve');
+        await suppr({ objetId });
+        await chargerObjetsTrouves();
+      } catch (e) {
+        alert('Erreur : ' + (e.message || e));
+      }
+    };
 
     // ===== DEMANDES PROS =====
     async function chargerDemandesPros() {
