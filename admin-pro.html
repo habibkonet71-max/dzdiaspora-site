@@ -64,6 +64,8 @@
     .ot-filtres { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
     .ot-filtres button { background:#1C2333; border:1px solid rgba(255,255,255,0.12); color:rgba(255,255,255,0.6); padding:6px 12px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; }
     .ot-filtres button.actif { border-color:#4DD0E1; color:#4DD0E1; }
+    #ot-recherche { width:100%; background:#1C2333; border:1px solid rgba(255,255,255,0.12); color:#fff; padding:8px 12px; border-radius:8px; font-size:13px; margin-bottom:10px; }
+    #ot-recherche::placeholder { color:rgba(255,255,255,0.35); }
     .ot-fiche { background:#1C2333; border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px; margin-bottom:10px; display:flex; gap:14px; }
     .ot-fiche.inactive { opacity:0.55; }
     .ot-fiche img { width:80px; height:80px; object-fit:cover; border-radius:8px; background:#0d1117; flex:none; }
@@ -444,6 +446,7 @@
     <div class="onglet-contenu" id="onglet-objets-trouves">
       <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-bottom:12px;">Moderation des fiches d'objets trouves deposees sur objets-trouves.html. Coordonnees et reponses d'enigme lues cote serveur (Cloud Function admin, la collection privee reste inaccessible au client). "Desactiver" retire la fiche de la recherche publique (reversible). La suppression definitive viendra dans une prochaine mise a jour.</p>
       <div class="stats-grid" id="ot-stats"></div>
+      <input type="search" id="ot-recherche" placeholder="Rechercher : ID de fiche, nom, telephone, email..." autocomplete="off" oninput="window.otRechercher(this.value)">
       <div class="ot-filtres">
         <button data-ot-filtre="toutes" class="actif" onclick="window.otFiltrer('toutes')">Toutes</button>
         <button data-ot-filtre="actives" onclick="window.otFiltrer('actives')">Actives</button>
@@ -755,10 +758,40 @@
     // aucune lecture directe cote client.
     let otFichesCache = [];
     let otFiltre = 'toutes';
+    let otRecherche = '';
+
+    // Filtre texte libre du panneau (recherche "archives") : ID de fiche, nom,
+    // email, description -> sous-chaine insensible a la casse ; le telephone
+    // est compare chiffres a chiffres (formatages "06 61.." / "0661.." se
+    // matchent). Limite connue : national 06X vs international +2136X non
+    // reconcilies -> les derniers chiffres, eux, matchent quel que soit le
+    // format. q est deja en minuscule + trim ; q vide => tout passe.
+    function otFicheMatch(f, q) {
+      if (!q) return true;
+      const p = f.priv || {};
+      const champs = [f.id, p.contact_nom, p.contact_email, f.description]
+        .filter(Boolean)
+        .map((s) => s.toString().toLowerCase());
+      if (champs.some((s) => s.includes(q))) return true;
+      const chiffresQ = q.replace(/\D/g, '');
+      if (chiffresQ) {
+        const tel = (p.contact_tel || '').replace(/\D/g, '');
+        if (tel && tel.includes(chiffresQ)) return true;
+      }
+      return false;
+    }
+
+    window.otRechercher = function(v) {
+      otRecherche = (v || '').trim().toLowerCase();
+      afficherObjetsTrouves();
+    };
 
     async function chargerObjetsTrouves() {
       const container = document.getElementById('liste-objets-trouves');
       if (!container) return;
+      otRecherche = '';
+      const champRecherche = document.getElementById('ot-recherche');
+      if (champRecherche) champRecherche.value = '';
       container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Chargement...</p>';
       try {
         const lister = httpsCallable(getFunctions(app), 'listerObjetsTrouvesAdmin');
@@ -786,11 +819,17 @@
       let fiches = otFichesCache;
       if (otFiltre === 'actives') fiches = fiches.filter((f) => f.actif);
       if (otFiltre === 'inactives') fiches = fiches.filter((f) => !f.actif);
+      fiches = fiches.filter((f) => otFicheMatch(f, otRecherche));
+
+      const infoRecherche = otRecherche
+        ? `<p style="color:rgba(255,255,255,0.4);font-size:12px;margin-bottom:8px;">${fiches.length} resultat(s) pour « ${echapperTexte(otRecherche)} »</p>`
+        : '';
+
       if (fiches.length === 0) {
-        container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune fiche.</p>';
+        container.innerHTML = infoRecherche + '<p style="color:rgba(255,255,255,0.3);font-size:12px;text-align:center;">Aucune fiche.</p>';
         return;
       }
-      container.innerHTML = fiches.map((f) => {
+      container.innerHTML = infoRecherche + fiches.map((f) => {
         const p = f.priv;
         const date = f.date ? new Date(f.date).toLocaleString('fr-FR') : '—';
         const lieu = [f.lieu, f.pays, f.wilaya || f.ville].filter(Boolean).map(echapperTexte).join(' · ');
