@@ -444,7 +444,7 @@
     </div>
 
     <div class="onglet-contenu" id="onglet-objets-trouves">
-      <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-bottom:12px;">Moderation des fiches d'objets trouves deposees sur objets-trouves.html. Coordonnees et reponses d'enigme lues cote serveur (Cloud Function admin, la collection privee reste inaccessible au client). "Desactiver" retire la fiche de la recherche publique (reversible). La suppression definitive viendra dans une prochaine mise a jour.</p>
+      <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-bottom:12px;">Moderation des fiches d'objets trouves deposees sur objets-trouves.html. Coordonnees et reponses d'enigme lues cote serveur (Cloud Function admin, la collection privee reste inaccessible au client). "Desactiver" retire la fiche de la recherche publique (reversible). "Supprimer definitivement" efface la fiche publique, la fiche privee, les fiches de restitution et l'historique de restitution lies, sans retour possible (double confirmation exigee).</p>
       <div class="stats-grid" id="ot-stats"></div>
       <input type="search" id="ot-recherche" placeholder="Rechercher : ID de fiche, nom, telephone, email..." autocomplete="off" oninput="window.otRechercher(this.value)">
       <div class="ot-filtres">
@@ -851,7 +851,10 @@
             <div style="margin-top:6px;font-weight:700;">${echapperTexte(f.description || '')}</div>
             <div style="color:rgba(255,255,255,0.45);font-size:12px;margin-top:2px;">${lieu}${lieu ? ' · ' : ''}${date}</div>
             ${blocPrive}
-            ${f.actif ? `<div style="margin-top:8px;"><button class="btn-table-action bannir" onclick="window.otDesactiverFiche('${f.id}')">Desactiver</button></div>` : ''}
+            <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+              ${f.actif ? `<button class="btn-table-action bannir" onclick="window.otDesactiverFiche('${f.id}')">Desactiver</button>` : ''}
+              <button class="btn-table-action bannir" style="background:rgba(122,26,12,0.4);border-color:#7a1a0c;color:#ff8a70;" onclick="window.otSupprimerDefinitif('${f.id}')">Supprimer definitivement</button>
+            </div>
           </div>
         </div>`;
       }).join('');
@@ -862,6 +865,41 @@
       try {
         const suppr = httpsCallable(getFunctions(app), 'supprimerObjetTrouve');
         await suppr({ objetId });
+        await chargerObjetsTrouves();
+      } catch (e) {
+        alert('Erreur : ' + (e.message || e));
+      }
+    };
+
+    // Hard delete : double confirmation obligatoire (clic accidentel exclu) --
+    // 1) confirm() detaille l'irreversible et la cascade, 2) prompt() exige la
+    // saisie exacte de SUPPRIMER. Appelle supprimerObjetTrouveDefinitivement,
+    // qui supprime cote serveur, en un batch : objets_trouves (doc public) +
+    // objets_trouves_prive + restitutions_objets + historique_transactions_admin
+    // de type restitution_objet. Les compteurs exacts sont affiches APRES via
+    // la valeur de retour (le detail des restitutions n'est pas dans le cache).
+    window.otSupprimerDefinitif = async function(objetId) {
+      const f = (otFichesCache || []).find((x) => x.id === objetId) || {};
+      const desc = (f.description || '(sans description)').toString().slice(0, 80);
+      const avert = 'SUPPRESSION DEFINITIVE (irreversible) de la fiche :\n\n'
+        + '« ' + desc + ' »\n\n'
+        + 'Seront effaces sans retour possible : la fiche publique, la fiche privee '
+        + '(contact + reponses aux enigmes), les fiches de restitution liees, et les '
+        + 'entrees d historique de restitution liees a cet objet.\n\nContinuer ?';
+      if (!confirm(avert)) return;
+      const saisie = prompt('Pour confirmer la suppression definitive, tapez SUPPRIMER (en majuscules) :');
+      if (saisie !== 'SUPPRIMER') {
+        alert('Suppression annulee (texte de confirmation incorrect).');
+        return;
+      }
+      try {
+        const fn = httpsCallable(getFunctions(app), 'supprimerObjetTrouveDefinitivement');
+        const res = await fn({ objetId });
+        const s = (res && res.data && res.data.supprime) || {};
+        alert('Fiche supprimee definitivement.\n\n'
+          + 'Fiche privee : ' + (s.prives || 0) + '\n'
+          + 'Restitutions : ' + (s.restitutions || 0) + '\n'
+          + 'Historique restitutions : ' + (s.historique || 0));
         await chargerObjetsTrouves();
       } catch (e) {
         alert('Erreur : ' + (e.message || e));
