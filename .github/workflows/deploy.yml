@@ -55,6 +55,25 @@ jobs:
         id: deploy
         run: firebase deploy --only hosting --project dzdiaspora-7260a --non-interactive
 
+      # Prealables du test de fumee navigateur : Node + Chromium headless.
+      # .npmrc a ignore-scripts=true -> npm ci NE telecharge PAS les
+      # navigateurs Playwright ; l'install explicite ci-dessous le fait
+      # (avec cache sur ~/.cache/ms-playwright, cle = hash du lockfile).
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Cache navigateurs Playwright
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Installer dependances + Chromium
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
       # Test de fumee : verifie que le commit qu'on vient de deployer n'a pas
       # casse le site ou fait disparaitre le verrou PIN d'une page admin sur
       # le HTML reellement servi (pas juste dans le code source - c'est ce
@@ -82,7 +101,20 @@ jobs:
               exit 1
             fi
           done
-          echo "Test de fumee OK"
+          echo "Test de fumee curl OK"
+          # --- verif navigateur synthetique : le JS des pages publiques
+          #     est-il vraiment vivant sur le HTML deploye ? (curl ne le
+          #     voit pas -- cf. incident el_main du 2026-08-30). ---
+          set +e
+          verdict=$(node .github/scripts/verifier-sante-navigateur.mjs 2>nav.txt | tail -n 1)
+          set -e
+          echo "--- detail verif navigateur ---"
+          cat nav.txt
+          if [ "$verdict" != "sain" ]; then
+            echo "Verif navigateur : ${verdict:-<aucun verdict>} (voir detail ci-dessus)"
+            exit 1
+          fi
+          echo "Test de fumee navigateur OK"
 
       # Avance le tag mobile last-known-good sur ce commit : c'est la cible
       # que la sentinelle (workflow separe et planifie quotidien,
