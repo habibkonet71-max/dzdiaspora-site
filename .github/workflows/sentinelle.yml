@@ -21,12 +21,41 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
+      # Prealables de la verification navigateur : Node + Chromium headless.
+      # .npmrc a ignore-scripts=true -> npm ci ne telecharge pas les
+      # navigateurs Playwright ; l'install explicite le fait (cache sur
+      # ~/.cache/ms-playwright, cle = hash du lockfile).
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Cache navigateurs Playwright
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Installer dependances + Chromium
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
       - name: Verifier la sante globale
         id: health
         run: |
           set +e
-          resultat=$(.github/scripts/verifier-sante-globale.sh 2>details.txt | tail -n 1)
+          r_curl=$(.github/scripts/verifier-sante-globale.sh 2>details.txt | tail -n 1)
+          echo "" >> details.txt
+          echo "--- verification navigateur synthetique ---" >> details.txt
+          r_nav=$(node .github/scripts/verifier-sante-navigateur.mjs 2>>details.txt | tail -n 1)
           set -e
+          if [ "$r_curl" = "souci_majeur" ] || [ "$r_nav" = "souci_majeur" ]; then
+            resultat=souci_majeur
+          elif [ -z "$r_curl" ] || [ -z "$r_nav" ]; then
+            resultat=
+          else
+            resultat=sain
+          fi
           echo "statut=$resultat" >> "$GITHUB_OUTPUT"
           {
             echo "details<<SENTINELLE_EOF"
@@ -108,8 +137,17 @@ jobs:
         id: recheck
         run: |
           set +e
-          resultat=$(.github/scripts/verifier-sante-globale.sh 2>details_apres.txt | tail -n 1)
+          r_curl=$(.github/scripts/verifier-sante-globale.sh 2>details_apres.txt | tail -n 1)
+          r_nav=$(node .github/scripts/verifier-sante-navigateur.mjs 2>>details_apres.txt | tail -n 1)
           set -e
+          # "sain" UNIQUEMENT si les deux verifications passent : une
+          # restauration ne doit jamais etre declaree saine si le JS des
+          # pages reste casse (ou si un des deux scripts n'a rien produit).
+          if [ "$r_curl" = "sain" ] && [ "$r_nav" = "sain" ]; then
+            resultat=sain
+          else
+            resultat=souci_majeur
+          fi
           echo "statut=$resultat" >> "$GITHUB_OUTPUT"
 
       - name: Composer et envoyer le rapport email
