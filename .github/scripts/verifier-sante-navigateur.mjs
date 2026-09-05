@@ -37,7 +37,15 @@ const HOTES_IGNORES = ["firebaseappcheck.googleapis.com", "gc.zgo.at"];
 // Erreurs console tierces benignes -> ignorees. Demarrer TRES court ;
 // n'elargir que sur preuve d'un faux positif recurrent (rodage sur les
 // premiers runs, cf. design du chantier).
-const CONSOLE_ALLOWLIST = [/gc\.zgo\.at/, /translate\.googleapis\.com/];
+// requestStorageAccess : reCAPTCHA v3 (charge par initializeAppCheck sur
+// objets-trouves.html, seule page a l'utiliser) ne peut pas obtenir l'acces
+// au storage dans un contexte synthetique sans geste utilisateur -- meme
+// cause deja excusee cote reseau via HOTES_IGNORES ("firebaseappcheck :
+// reCAPTCHA v3 ne peut pas aboutir sans jeton de debug"), simplement
+// jamais ajoutee cote console. Preuve de recurrence : 3 occurrences reelles
+// sur cette page (deploy.yml du 2026-09-03, health-check + recheck de
+// sentinelle.yml du 2026-09-04).
+const CONSOLE_ALLOWLIST = [/gc\.zgo\.at/, /translate\.googleapis\.com/, /requestStorageAccess/];
 
 const TIMEOUT_GOTO_MS = 20000;
 const SETTLE_MS = 3500; // laisse chargerAlertes / l'init traduction tourner
