@@ -130,14 +130,32 @@ jobs:
           git push origin last-known-good --force
 
       # Restauration automatique : uniquement si le test de fumee echoue
-      # juste apres CE deploiement precis. Annule le commit (git revert,
-      # historique conserve) et redeploie l'etat precedent.
+      # juste apres CE deploiement precis. Restaure tout le contenu suivi
+      # (hors .github/) a son etat last-known-good (le tag n'a PAS ete avance
+      # -- "Avancer le tag last-known-good" ne tourne que sur smoke OK), puis
+      # redeploie. MEME mecanisme que sentinelle.yml, volontairement PAS
+      # `git revert HEAD` : (1) reverter un commit qui touche
+      # .github/workflows/ est rejete au push ("refusing to allow a GitHub
+      # App to create or update workflow ... without workflows permission") ;
+      # (2) les fichiers de pipeline ne sont pas servis par Firebase Hosting,
+      # les restaurer n'a aucun effet ; (3) restaurer vers un etat eprouve
+      # est immunise contre les boucles.
       - name: Restauration automatique si echec
         if: failure() && steps.deploy.outcome == 'success' && steps.smoke.outcome == 'failure'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git revert --no-edit HEAD
+          if ! git rev-parse -q --verify refs/tags/last-known-good >/dev/null; then
+            echo "::error::last-known-good introuvable -- restauration impossible, verification manuelle requise."
+            exit 1
+          fi
+          mapfile -t restore_paths < <(git ls-tree --name-only last-known-good | grep -v '^\.github$')
+          git checkout last-known-good -- "${restore_paths[@]}"
+          if git diff --cached --quiet; then
+            echo "::error::Rien a restaurer hors .github/ -- verification manuelle requise."
+            exit 1
+          fi
+          git commit -m "Restauration automatique (deploy) vers last-known-good"
           firebase deploy --only hosting --project dzdiaspora-7260a --non-interactive
           git push origin main
 
