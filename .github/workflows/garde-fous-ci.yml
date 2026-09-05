@@ -1,0 +1,43 @@
+name: Garde-fous CI
+
+# Verifie la configuration de la CI elle-meme : les workflows sous .github/.
+# Cet "objet surveille" a un cycle de changement distinct du code applicatif
+# -- il se modifie en editant les fichiers de .github/, pas en poussant le
+# contenu du site. Il a donc son PROPRE declencheur, au lieu d'etre accroche
+# au job lint de deploy.yml : celui-ci se declenche sur tout push SAUF
+# .github/** (paths-ignore), c'est-a-dire justement jamais quand on edite un
+# workflow.
+#
+# Trou constate le 2026-09-03 : les blocs `run:` des workflows n'etaient
+# verifies (actionlint + shellcheck) qu'en LOCAL avant commit, jamais en CI
+# -- le bug rollback `git revert --no-edit HEAD` (qui revertait
+# .github/workflows/ -> push rejete "without workflows permission") est
+# passe inapercu jusqu'a un echec reel en prod (run 33745506552). Job
+# reproduit tel quel depuis dzdiaspora_app (commit 6a20d46) et ot_app
+# (commit a838021).
+#
+# Job volontairement leger : checkout + une image Docker epinglee, AUCUN
+# deploiement, aucun secret.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/**"
+      - ".github/scripts/**"
+  workflow_dispatch:
+
+jobs:
+  lint-workflows:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # actionlint valide la syntaxe + le schema de tous les
+      # .github/workflows/*.yml ET lance shellcheck sur chaque bloc `run:`
+      # (l'image officielle rhysd/actionlint embarque shellcheck). Version
+      # epinglee. Aucun secret, aucun acces reseau au-dela du pull d'image.
+      - name: actionlint + shellcheck sur les workflows
+        uses: docker://rhysd/actionlint:1.7.7
+        with:
+          args: -color
