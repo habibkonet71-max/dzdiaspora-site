@@ -28,6 +28,23 @@ on:
   workflow_dispatch:
 
 jobs:
+  garde-fous:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Mutex deploy.yml <-> sentinelle.yml : meme groupe de concurrence
+      # litteral + cancel-in-progress: false des deux cotes. Ce check est ICI
+      # parce qu'il garde des fichiers de .github/ : il doit tourner quand CES
+      # fichiers changent. Il reste AUSSI dans le job lint de deploy.yml
+      # (defense en profondeur).
+      - name: Verifier le mutex deploy.yml <-> sentinelle.yml
+        run: node .github/scripts/verifier-mutex-workflows.js
+
   lint-workflows:
     runs-on: ubuntu-latest
     steps:

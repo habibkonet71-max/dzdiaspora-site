@@ -10,6 +10,12 @@ on:
         type: boolean
         default: true
 
+# --- CONTRAT : mutex partage avec deploy.yml, voir ce fichier pour le
+# contrat complet. group: DOIT rester identique mot pour mot. ------------
+concurrency:
+  group: deploiement-restauration-dzdiaspora-site
+  cancel-in-progress: false
+
 jobs:
   sentinelle:
     runs-on: ubuntu-latest
